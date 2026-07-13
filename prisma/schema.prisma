@@ -352,3 +352,13 @@ model VirtualLedgerEntry {
 
   @@map("virtual_ledger_entries")
 }
+
+model WaitlistEntry {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  interest  String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("waitlist_entries")
+}

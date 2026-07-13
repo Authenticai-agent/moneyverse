@@ -8,15 +8,33 @@ export default function WaitlistSection() {
   const [email, setEmail] = useState('');
   const [interest, setInterest] = useState<Interest>('parent');
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes('@')) return;
-    const key = 'moneyverse-waitlist';
-    const existing = JSON.parse(localStorage.getItem(key) || '[]');
-    existing.push({ email, interest, joinedAt: new Date().toISOString() });
-    localStorage.setItem(key, JSON.stringify(existing));
-    setSubmitted(true);
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, interest }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Something went wrong. Please try again.');
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,11 +86,17 @@ export default function WaitlistSection() {
               </button>
             </div>
           </div>
+          {error && (
+            <p className="text-sm text-red-600" role="alert">
+              {error}
+            </p>
+          )}
           <button
             type="submit"
-            className="px-6 py-3 rounded-lg bg-mv-primary text-white font-medium hover:bg-mv-primary/90"
+            disabled={loading}
+            className="px-6 py-3 rounded-lg bg-mv-primary text-white font-medium hover:bg-mv-primary/90 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Get early access
+            {loading ? 'Joining...' : 'Get early access'}
           </button>
           <p className="text-xs text-mv-dark/60">
             We do not ask for child data, birth dates, or financial information.

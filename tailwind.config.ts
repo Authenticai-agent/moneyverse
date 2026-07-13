@@ -18,6 +18,10 @@ const config: Config = {
           light: '#F8F8FF',
         },
       },
+      fontFamily: {
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-fredoka)', 'system-ui', 'sans-serif'],
+      },
     },
   },
   plugins: [],
