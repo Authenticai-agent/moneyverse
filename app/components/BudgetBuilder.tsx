@@ -4,13 +4,13 @@ import { useMemo, useState } from 'react';
 import BudgetChart from './BudgetChart';
 
 const CATEGORIES = [
-  { key: 'needs', label: 'Needs', color: '#6B4EFF' },
-  { key: 'wants', label: 'Wants', color: '#FFD84D' },
-  { key: 'save', label: 'Save', color: '#5FD38D' },
-  { key: 'give', label: 'Give', color: '#5CE1E6' },
-  { key: 'emergency', label: 'Emergency', color: '#ef4444' },
-  { key: 'goals', label: 'Goals', color: '#f59e0b' },
-  { key: 'spend', label: 'Spend', color: '#a78bfa' },
+  { key: 'needs', label: 'Needs', color: '#6B4EFF', hint: 'Things you must have, like food or school supplies.' },
+  { key: 'wants', label: 'Wants', color: '#FFD84D', hint: 'Fun things you would like but do not need.' },
+  { key: 'save', label: 'Save', color: '#5FD38D', hint: 'Money you put away for the future.' },
+  { key: 'give', label: 'Give', color: '#5CE1E6', hint: 'Money you share to help others or donate.' },
+  { key: 'emergency', label: 'Emergency', color: '#ef4444', hint: 'Money kept ready for unexpected surprises.' },
+  { key: 'goals', label: 'Goals', color: '#f59e0b', hint: 'Money saved for something special you want later.' },
+  { key: 'spend', label: 'Spend', color: '#a78bfa', hint: 'Money you use for everyday small purchases.' },
 ];
 
 export default function BudgetBuilder() {
@@ -70,6 +70,7 @@ export default function BudgetBuilder() {
           onChange={(e) => setTotalBudget(Math.max(1, Number(e.target.value)))}
           className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
         />
+        <p className="text-xs text-mv-dark/60 mt-1">The total amount of money you have to split up.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -86,6 +87,7 @@ export default function BudgetBuilder() {
               onChange={(e) => handleChange(cat.key, Number(e.target.value))}
               className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
             />
+            <p className="text-xs text-mv-dark/60 mt-1">{cat.hint}</p>
           </div>
         ))}
       </div>

@@ -62,6 +62,7 @@ export default function SavingsGoalCalculator() {
             onChange={(e) => setGoalName(e.target.value)}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">What you are saving for, like a bike or a new game.</p>
         </div>
 
         <div>
@@ -76,6 +77,7 @@ export default function SavingsGoalCalculator() {
             onChange={(e) => setTarget(Math.max(1, Number(e.target.value)))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">The total money you need to reach your goal.</p>
         </div>
 
         <div>
@@ -90,6 +92,7 @@ export default function SavingsGoalCalculator() {
             onChange={(e) => setCurrent(Math.max(0, Number(e.target.value)))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">How much money you already have saved.</p>
         </div>
 
         <div>
@@ -104,6 +107,7 @@ export default function SavingsGoalCalculator() {
             onChange={(e) => setWeekly(Math.max(0, Number(e.target.value)))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">How much money you will put into savings each week.</p>
         </div>
 
         <div>
@@ -118,6 +122,7 @@ export default function SavingsGoalCalculator() {
             onChange={(e) => setTimeline(Math.max(1, Number(e.target.value)))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">How many weeks you want to reach your goal.</p>
         </div>
 
         <div>
@@ -132,6 +137,7 @@ export default function SavingsGoalCalculator() {
             placeholder="parent@example.com"
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">An email to send a printable savings plan to a grown-up.</p>
         </div>
       </div>
 

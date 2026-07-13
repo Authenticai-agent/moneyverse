@@ -16,7 +16,7 @@ interface StaffMember {
   wageRate: number;
 }
 
-interface BusinessConfig {
+export interface BusinessConfig {
   label: string;
   unit: string;
   staffLabel: string;
@@ -80,9 +80,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     costPerUnit: 3,
     wasteCostPerUnit: 0.2,
     advertisingLabel: 'Advertising budget',
-    defaultStaff: [
-      { id: 'mower-1', role: 'Mower', hours: 5, wageRate: 18 },
-    ],
+    defaultStaff: [{ id: 'mower-1', role: 'Mower', hours: 5, wageRate: 18 }],
   },
   landscaping: {
     label: 'Landscaping',
@@ -199,6 +197,7 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
               className="w-full rounded-lg border border-mv-lavender pl-7 pr-4 py-2"
             />
           </div>
+          <p className="text-xs text-mv-dark/60 mt-1">Money you pay to use the building or space for your business.</p>
         </div>
         <div>
           <label className="block text-sm font-medium text-mv-dark mb-1">Cost per {unitSingular}</label>
@@ -213,6 +212,7 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
               className="w-full rounded-lg border border-mv-lavender pl-7 pr-4 py-2"
             />
           </div>
+          <p className="text-xs text-mv-dark/60 mt-1">What you spend on materials to make one item you sell.</p>
         </div>
         <div>
           <label className="block text-sm font-medium text-mv-dark mb-1">
@@ -229,6 +229,7 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
               className="w-full rounded-lg border border-mv-lavender pl-7 pr-4 py-2"
             />
           </div>
+          <p className="text-xs text-mv-dark/60 mt-1">Money lost on items you could not sell, like storage or disposal.</p>
         </div>
         <div>
           <label className="block text-sm font-medium text-mv-dark mb-1">{config.advertisingLabel}</label>
@@ -243,6 +244,7 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
               className="w-full rounded-lg border border-mv-lavender pl-7 pr-4 py-2"
             />
           </div>
+          <p className="text-xs text-mv-dark/60 mt-1">Money you spend to tell people about your business so more customers come.</p>
         </div>
       </div>
 
@@ -253,10 +255,14 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
             {staff.length} {config.staffLabel} · {totalStaffHours} hours total
           </p>
         </div>
+        <p className="text-xs text-mv-dark/60 mb-2">
+          The people who work for you. Each person gets paid for every hour they work.
+        </p>
         <div className="space-y-3">
-          {staff.map((member, index) => (
-            <div key={member.id} className="grid grid-cols-12 gap-2 items-center bg-mv-light rounded-xl p-3">
-              <div className="col-span-3">
+          {staff.map((member) => (
+            <div key={member.id} className="grid grid-cols-1 md:grid-cols-5 gap-2 items-start bg-mv-light rounded-xl p-3">
+              <div className="md:col-span-2">
+                <label className="block text-xs font-medium text-mv-dark mb-1">Role</label>
                 <input
                   type="text"
                   value={member.role}
@@ -264,11 +270,11 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
                   className="w-full rounded border border-mv-lavender px-2 py-1 text-sm"
                   placeholder="Role"
                 />
+                <p className="text-xs text-mv-dark/60 mt-1">What job this person does.</p>
               </div>
-              <div className="col-span-3">
-                <label className="sr-only" htmlFor={`hours-${member.id}`}>Hours</label>
+              <div>
+                <label className="block text-xs font-medium text-mv-dark mb-1">Hours</label>
                 <input
-                  id={`hours-${member.id}`}
                   type="number"
                   min={0}
                   step={0.5}
@@ -277,23 +283,26 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
                   className="w-full rounded border border-mv-lavender px-2 py-1 text-sm"
                   placeholder="Hours"
                 />
+                <p className="text-xs text-mv-dark/60 mt-1">How many hours they work today.</p>
               </div>
-              <div className="col-span-3 relative">
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-mv-dark/60 text-sm">$</span>
-                <input
-                  type="number"
-                  min={0}
-                  step={0.01}
-                  value={member.wageRate}
-                  onChange={(e) => updateStaff(member.id, 'wageRate', Math.max(0, Number(e.target.value)))}
-                  className="w-full rounded border border-mv-lavender pl-5 pr-2 py-1 text-sm"
-                  placeholder="Wage"
-                />
+              <div>
+                <label className="block text-xs font-medium text-mv-dark mb-1">per hour</label>
+                <div className="relative">
+                  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-mv-dark/60 text-sm">$</span>
+                  <input
+                    type="number"
+                    min={0}
+                    step={0.01}
+                    value={member.wageRate}
+                    onChange={(e) => updateStaff(member.id, 'wageRate', Math.max(0, Number(e.target.value)))}
+                    className="w-full rounded border border-mv-lavender pl-5 pr-2 py-1 text-sm"
+                    placeholder="Wage"
+                  />
+                </div>
+                <p className="text-xs text-mv-dark/60 mt-1">How much they earn each hour.</p>
               </div>
-              <div className="col-span-2 text-sm text-mv-dark/70">
-                {formatCurrency(member.hours * member.wageRate)}
-              </div>
-              <div className="col-span-1 text-right">
+              <div className="flex items-center justify-between md:justify-end gap-2">
+                <p className="text-sm text-mv-dark/70">{formatCurrency(member.hours * member.wageRate)}</p>
                 <button
                   type="button"
                   onClick={() => removeStaff(member.id)}
@@ -329,6 +338,7 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
               className="w-full rounded-lg border border-mv-lavender pl-7 pr-4 py-2"
             />
           </div>
+          <p className="text-xs text-mv-dark/60 mt-1">How much one customer pays to buy one item from you.</p>
         </div>
         <div>
           <label className="block text-sm font-medium text-mv-dark mb-1">Inventory ({config.unit})</label>
@@ -339,6 +349,7 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
             onChange={(e) => setInventory(Math.max(0, Number(e.target.value)))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">How many items you make and have ready to sell.</p>
         </div>
       </div>
 
@@ -352,6 +363,7 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
             onChange={(e) => setDemand(Math.max(0, Number(e.target.value)))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">How many items customers want to buy today.</p>
         </div>
         <div>
           <label className="block text-sm font-medium text-mv-dark mb-1">Market factor</label>
@@ -366,6 +378,7 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
               </option>
             ))}
           </select>
+          <p className="text-xs text-mv-dark/60 mt-1">Events like weather or the economy that change how much people buy.</p>
         </div>
         <div>
           <label className="block text-sm font-medium text-mv-dark mb-1">Customer satisfaction</label>
@@ -380,6 +393,7 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
             />
             <span className="text-sm font-medium w-12 text-right">{satisfaction}%</span>
           </div>
+          <p className="text-xs text-mv-dark/60 mt-1">How happy customers are with your business.</p>
         </div>
       </div>
 

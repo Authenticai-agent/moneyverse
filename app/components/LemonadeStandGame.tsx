@@ -123,6 +123,7 @@ export default function LemonadeStandGame() {
             onChange={(e) => setCups(Math.max(0, Number(e.target.value)))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">How many cups you buy so you can serve lemonade.</p>
         </div>
         <div>
           <label htmlFor="lemons" className="block text-sm font-medium text-mv-dark mb-1">
@@ -137,6 +138,7 @@ export default function LemonadeStandGame() {
             onChange={(e) => setLemons(Math.max(0, Number(e.target.value)))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">How many lemons you buy; each lemon makes 3 cups of lemonade.</p>
         </div>
         <div>
           <label htmlFor="sugar" className="block text-sm font-medium text-mv-dark mb-1">
@@ -151,6 +153,7 @@ export default function LemonadeStandGame() {
             onChange={(e) => setSugar(Math.max(0, Number(e.target.value)))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">How much sugar you buy; each batch makes 10 cups of lemonade.</p>
         </div>
       </div>
 
@@ -167,6 +170,7 @@ export default function LemonadeStandGame() {
           onChange={(e) => setPrice(Math.max(0.1, Number(e.target.value)))}
           className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
         />
+        <p className="text-xs text-mv-dark/60 mt-1">How much you charge for one cup of lemonade.</p>
       </div>
 
       <div className="mb-6 p-4 bg-mv-light rounded-xl flex justify-between items-center">

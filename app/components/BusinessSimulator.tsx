@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import BusinessPhase, { BUSINESS_CONFIGS, BusinessType } from './BusinessPhase';
+import BusinessPhase, { BUSINESS_CONFIGS, BusinessConfig, BusinessType } from './BusinessPhase';
 
 export default function BusinessSimulator() {
   const [businessType, setBusinessType] = useState<BusinessType>('bakery');
@@ -29,12 +29,13 @@ export default function BusinessSimulator() {
           onChange={(e) => handleTypeChange(e.target.value as BusinessType)}
           className="w-full rounded-lg border border-mv-lavender px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-mv-primary"
         >
-          {Object.entries(BUSINESS_CONFIGS).map(([key, cfg]) => (
+          {(Object.entries(BUSINESS_CONFIGS) as [BusinessType, BusinessConfig][]).map(([key, cfg]) => (
             <option key={key} value={key}>
               {cfg.label}
             </option>
           ))}
         </select>
+        <p className="text-xs text-mv-dark/60 mt-1">Pick the kind of business you want to run today.</p>
       </div>
 
       <div className="mb-8">
@@ -49,6 +50,7 @@ export default function BusinessSimulator() {
           placeholder="Give your business a name"
           className="w-full rounded-lg border border-mv-lavender px-4 py-2 focus:outline-none focus:ring-2 focus:ring-mv-primary"
         />
+        <p className="text-xs text-mv-dark/60 mt-1">Give your business a fun name that customers will remember.</p>
       </div>
 
       <BusinessPhase businessType={businessType} businessName={businessName} />

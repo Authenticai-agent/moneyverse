@@ -65,6 +65,7 @@ export default function MoneyTreeForm() {
             onChange={(e) => setStartingAmount(Number(e.target.value))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">The money you begin with in your savings.</p>
         </div>
 
         <div>
@@ -79,6 +80,7 @@ export default function MoneyTreeForm() {
             onChange={(e) => setWeeklySavings(Number(e.target.value))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">How much money you add every week.</p>
         </div>
 
         <div>
@@ -94,6 +96,7 @@ export default function MoneyTreeForm() {
             onChange={(e) => setYears(Number(e.target.value))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">How long you let your savings grow.</p>
         </div>
 
         <div>
@@ -110,6 +113,7 @@ export default function MoneyTreeForm() {
             onChange={(e) => setGrowthRate(Number(e.target.value))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
+          <p className="text-xs text-mv-dark/60 mt-1">How fast your money is expected to grow each year.</p>
         </div>
       </div>
 
@@ -124,6 +128,7 @@ export default function MoneyTreeForm() {
         <label htmlFor="inflation" className="text-sm text-mv-dark">
           Adjust for inflation (estimate 2.5% per year)
         </label>
+        <p className="text-xs text-mv-dark/60 mt-1">See how rising prices can reduce buying power over time.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
