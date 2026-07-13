@@ -14,7 +14,7 @@ Implemented and verified.
 - Updated `app/page.tsx` to render `MoneyVerseHero` as the landing hero, keeping the existing 3D `Hero`/`InteractiveHero` files in the repo for reuse.
 - Wired the primary CTA to `/tools` and the secondary "Join the waitlist" CTA to `/register`.
 - Confirmed the Tailwind `mv` color tokens and `font-display`/`font-sans` families resolve correctly.
-- Preserved the existing waitlist section below the hero.
+- Removed the standalone waitlist section below the hero; the hero's "Join the waitlist" CTA now handles waitlist entry.
 
 ## Verification
 
