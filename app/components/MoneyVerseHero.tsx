@@ -445,9 +445,9 @@ export default function MoneyVerseHero() {
           <p className="mt-4 flex max-w-[452px] items-start gap-2.5 text-[13.5px] leading-[1.5] text-[#6E6A85]">
             <span className="mt-px flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold text-mv-primary" style={{ background: '#EDE6FF' }}>＋</span>
             <span>
-              <b className="font-semibold text-[#413B5A]">Waitlist unlocks MoneyVerse Plus:</b> advanced simulators
-              (business, credit &amp; real-life money), parent-set missions, allowance &amp; family goals, premium
-              cosmetics, and a classroom edition for teachers.
+              <b className="font-semibold text-[#413B5A]">Join the waitlist for MoneyVerse Plus updates:</b> advanced
+              simulators (business, credit &amp; real-life money), parent-set missions, allowance &amp; family goals,
+              and a classroom edition for teachers. We will email you when the paid version is ready.
             </span>
           </p>
         </div>
