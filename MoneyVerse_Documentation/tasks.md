@@ -55,6 +55,7 @@
 - [x] Daily Money Quests
 - [x] Business simulator (lemonade stand to bakery)
 - [x] Shareable achievement cards
+- [x] New landing hero — design 2a (static marketing hero with carousel)
 - [ ] Cosmetic rewards
 - [ ] World-state persistence
 - [ ] Anti-replay and anti-farming tests

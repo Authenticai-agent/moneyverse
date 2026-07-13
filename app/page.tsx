@@ -1,12 +1,12 @@
-import Hero from './components/Hero';
+import MoneyVerseHero from './components/MoneyVerseHero';
 import WaitlistSection from './components/WaitlistSection';
 
 export default function Home() {
   return (
-    <main className="bg-mv-light text-mv-dark">
-      <Hero />
+    <main className="text-mv-dark">
+      <MoneyVerseHero />
 
-      <section className="min-h-screen flex items-center justify-center px-6 py-20">
+      <section className="min-h-screen flex items-center justify-center px-6 py-20 bg-mv-light">
         <WaitlistSection />
       </section>
     </main>
