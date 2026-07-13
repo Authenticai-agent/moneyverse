@@ -9,6 +9,13 @@ const formatNumber = (n: number) => new Intl.NumberFormat('en-US').format(n);
 
 export type BusinessType = 'bakery' | 'amazon' | 'birdhouse' | 'mowing' | 'landscaping';
 
+interface StaffMember {
+  id: string;
+  role: string;
+  hours: number;
+  wageRate: number;
+}
+
 interface BusinessConfig {
   label: string;
   unit: string;
@@ -18,6 +25,7 @@ interface BusinessConfig {
   costPerUnit: number;
   wasteCostPerUnit: number;
   advertisingLabel: string;
+  defaultStaff: StaffMember[];
 }
 
 export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
@@ -30,6 +38,10 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     costPerUnit: 0.5,
     wasteCostPerUnit: 0.2,
     advertisingLabel: 'Advertising budget',
+    defaultStaff: [
+      { id: 'baker-1', role: 'Baker', hours: 5, wageRate: 15 },
+      { id: 'baker-2', role: 'Baker', hours: 8, wageRate: 15 },
+    ],
   },
   amazon: {
     label: 'Amazon (e-commerce)',
@@ -40,6 +52,10 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     costPerUnit: 2,
     wasteCostPerUnit: 1,
     advertisingLabel: 'Ad spend / marketplace fees',
+    defaultStaff: [
+      { id: 'picker-1', role: 'Picker', hours: 6, wageRate: 20 },
+      { id: 'packer-1', role: 'Packer', hours: 8, wageRate: 20 },
+    ],
   },
   birdhouse: {
     label: 'Birdhouse Building',
@@ -50,6 +66,10 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     costPerUnit: 5,
     wasteCostPerUnit: 1,
     advertisingLabel: 'Advertising budget',
+    defaultStaff: [
+      { id: 'builder-1', role: 'Builder', hours: 4, wageRate: 12 },
+      { id: 'builder-2', role: 'Builder', hours: 6, wageRate: 12 },
+    ],
   },
   mowing: {
     label: 'Grass Mowing',
@@ -60,6 +80,9 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     costPerUnit: 3,
     wasteCostPerUnit: 0.2,
     advertisingLabel: 'Advertising budget',
+    defaultStaff: [
+      { id: 'mower-1', role: 'Mower', hours: 5, wageRate: 18 },
+    ],
   },
   landscaping: {
     label: 'Landscaping',
@@ -70,6 +93,10 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     costPerUnit: 15,
     wasteCostPerUnit: 2,
     advertisingLabel: 'Advertising budget',
+    defaultStaff: [
+      { id: 'crew-1', role: 'Crew member', hours: 4, wageRate: 22 },
+      { id: 'crew-2', role: 'Crew member', hours: 6, wageRate: 22 },
+    ],
   },
 };
 
@@ -91,16 +118,15 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
   const config = BUSINESS_CONFIGS[businessType];
 
   const [rent, setRent] = useState(config.rent);
-  const [wageRate, setWageRate] = useState(config.wageRate);
   const [costPerUnit, setCostPerUnit] = useState(config.costPerUnit);
   const [wasteCostPerUnit, setWasteCostPerUnit] = useState(config.wasteCostPerUnit);
   const [price, setPrice] = useState(3);
   const [inventory, setInventory] = useState(30);
-  const [staffHours, setStaffHours] = useState(2);
   const [advertising, setAdvertising] = useState(10);
   const [demand, setDemand] = useState(50);
   const [satisfaction, setSatisfaction] = useState(85);
   const [factor, setFactor] = useState(MARKET_FACTORS[2].label);
+  const [staff, setStaff] = useState<StaffMember[]>(config.defaultStaff);
   const [result, setResult] = useState<{
     demand: number;
     sold: number;
@@ -108,15 +134,19 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
     waste: number;
     revenue: number;
     cost: number;
+    staffCost: number;
     profit: number;
   } | null>(null);
 
   useEffect(() => {
     setRent(config.rent);
-    setWageRate(config.wageRate);
     setCostPerUnit(config.costPerUnit);
     setWasteCostPerUnit(config.wasteCostPerUnit);
+    setStaff(config.defaultStaff);
   }, [config]);
+
+  const totalStaffHours = staff.reduce((sum, s) => sum + s.hours, 0);
+  const staffCost = staff.reduce((sum, s) => sum + s.hours * s.wageRate, 0);
 
   const handleRun = () => {
     const marketMultiplier = MARKET_FACTORS.find((f) => f.label === factor)?.multiplier ?? 1;
@@ -125,13 +155,33 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
     const waste = inventory - sold;
 
     const revenue = sold * price;
-    const cost = rent + staffHours * wageRate + advertising + inventory * costPerUnit + waste * wasteCostPerUnit;
+    const cost = rent + staffCost + advertising + inventory * costPerUnit + waste * wasteCostPerUnit;
     const profit = revenue - cost;
 
-    setResult({ demand, sold, satisfaction, waste, revenue, cost, profit });
+    setResult({ demand, sold, satisfaction, waste, revenue, cost, staffCost, profit });
   };
 
-  const unitTitle = config.unit.charAt(0).toUpperCase() + config.unit.slice(1);
+  const updateStaff = (id: string, field: keyof StaffMember, value: string | number) => {
+    setStaff((prev) => prev.map((s) => (s.id === id ? { ...s, [field]: value } : s)));
+  };
+
+  const addStaff = () => {
+    setStaff((prev) => [
+      ...prev,
+      {
+        id: `${Date.now()}`,
+        role: config.staffLabel.charAt(0).toUpperCase() + config.staffLabel.slice(1),
+        hours: 4,
+        wageRate: config.wageRate,
+      },
+    ]);
+  };
+
+  const removeStaff = (id: string) => {
+    setStaff((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const unitSingular = config.unit.replace(/s$/, '');
 
   return (
     <div className="space-y-6">
@@ -151,22 +201,7 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-mv-dark mb-1">Wage rate</label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-mv-dark/60">$</span>
-            <input
-              type="number"
-              min={0}
-              step={0.01}
-              value={wageRate}
-              onChange={(e) => setWageRate(Math.max(0, Number(e.target.value)))}
-              className="w-full rounded-lg border border-mv-lavender pl-7 pr-4 py-2"
-            />
-          </div>
-          <p className="text-xs text-mv-dark/60 mt-1">per {config.staffLabel} per hour</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-mv-dark mb-1">Cost per {config.unit.slice(0, -1)}</label>
+          <label className="block text-sm font-medium text-mv-dark mb-1">Cost per {unitSingular}</label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-mv-dark/60">$</span>
             <input
@@ -180,7 +215,9 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-mv-dark mb-1">Waste cost per unsold {config.unit.slice(0, -1)}</label>
+          <label className="block text-sm font-medium text-mv-dark mb-1">
+            Waste cost per unsold {unitSingular}
+          </label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-mv-dark/60">$</span>
             <input
@@ -193,11 +230,94 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
             />
           </div>
         </div>
+        <div>
+          <label className="block text-sm font-medium text-mv-dark mb-1">{config.advertisingLabel}</label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-mv-dark/60">$</span>
+            <input
+              type="number"
+              min={0}
+              step={0.01}
+              value={advertising}
+              onChange={(e) => setAdvertising(Math.max(0, Number(e.target.value)))}
+              className="w-full rounded-lg border border-mv-lavender pl-7 pr-4 py-2"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <label className="block text-sm font-medium text-mv-dark">Staff</label>
+          <p className="text-sm text-mv-dark/70">
+            {staff.length} {config.staffLabel} · {totalStaffHours} hours total
+          </p>
+        </div>
+        <div className="space-y-3">
+          {staff.map((member, index) => (
+            <div key={member.id} className="grid grid-cols-12 gap-2 items-center bg-mv-light rounded-xl p-3">
+              <div className="col-span-3">
+                <input
+                  type="text"
+                  value={member.role}
+                  onChange={(e) => updateStaff(member.id, 'role', e.target.value)}
+                  className="w-full rounded border border-mv-lavender px-2 py-1 text-sm"
+                  placeholder="Role"
+                />
+              </div>
+              <div className="col-span-3">
+                <label className="sr-only" htmlFor={`hours-${member.id}`}>Hours</label>
+                <input
+                  id={`hours-${member.id}`}
+                  type="number"
+                  min={0}
+                  step={0.5}
+                  value={member.hours}
+                  onChange={(e) => updateStaff(member.id, 'hours', Math.max(0, Number(e.target.value)))}
+                  className="w-full rounded border border-mv-lavender px-2 py-1 text-sm"
+                  placeholder="Hours"
+                />
+              </div>
+              <div className="col-span-3 relative">
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-mv-dark/60 text-sm">$</span>
+                <input
+                  type="number"
+                  min={0}
+                  step={0.01}
+                  value={member.wageRate}
+                  onChange={(e) => updateStaff(member.id, 'wageRate', Math.max(0, Number(e.target.value)))}
+                  className="w-full rounded border border-mv-lavender pl-5 pr-2 py-1 text-sm"
+                  placeholder="Wage"
+                />
+              </div>
+              <div className="col-span-2 text-sm text-mv-dark/70">
+                {formatCurrency(member.hours * member.wageRate)}
+              </div>
+              <div className="col-span-1 text-right">
+                <button
+                  type="button"
+                  onClick={() => removeStaff(member.id)}
+                  className="text-red-500 hover:text-red-700 text-sm"
+                  aria-label={`Remove ${member.role}`}
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={addStaff}
+          className="mt-2 text-sm text-mv-primary font-medium hover:underline"
+        >
+          + Add {config.staffLabel.slice(0, -1)}
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-mv-dark mb-1">Price per {config.unit.slice(0, -1)}</label>
+          <label className="block text-sm font-medium text-mv-dark mb-1">Price per {unitSingular}</label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-mv-dark/60">$</span>
             <input
@@ -219,30 +339,6 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
             onChange={(e) => setInventory(Math.max(0, Number(e.target.value)))}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2"
           />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-mv-dark mb-1">Staff hours</label>
-          <input
-            type="number"
-            min={0}
-            value={staffHours}
-            onChange={(e) => setStaffHours(Math.max(0, Number(e.target.value)))}
-            className="w-full rounded-lg border border-mv-lavender px-4 py-2"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-mv-dark mb-1">{config.advertisingLabel}</label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-mv-dark/60">$</span>
-            <input
-              type="number"
-              min={0}
-              step={0.01}
-              value={advertising}
-              onChange={(e) => setAdvertising(Math.max(0, Number(e.target.value)))}
-              className="w-full rounded-lg border border-mv-lavender pl-7 pr-4 py-2"
-            />
-          </div>
         </div>
       </div>
 
@@ -315,7 +411,7 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
               <p className="font-bold text-mv-dark">{formatNumber(result.waste)}</p>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div className="bg-white rounded-xl p-4 border border-mv-lavender">
               <p className="text-sm text-mv-dark/70">Revenue</p>
               <p className="text-2xl font-bold text-mv-green">{formatCurrency(result.revenue)}</p>
@@ -331,12 +427,21 @@ export default function BusinessPhase({ businessType, businessName }: BusinessPh
               </p>
             </div>
           </div>
+          <div className="bg-white rounded-xl p-4 border border-mv-lavender">
+            <p className="text-sm font-medium text-mv-dark mb-2">Cost breakdown</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+              <p>Staff: <strong>{formatCurrency(result.staffCost)}</strong></p>
+              <p>Rent: <strong>{formatCurrency(rent)}</strong></p>
+              <p>Advertising: <strong>{formatCurrency(advertising)}</strong></p>
+              <p>Materials/waste: <strong>{formatCurrency(result.cost - result.staffCost - rent - advertising)}</strong></p>
+            </div>
+          </div>
           <p className="text-sm text-mv-dark/70 mt-4">
             {result.profit > 0
               ? `Your ${businessName} made a profit. Try raising advertising or inventory if demand is strong.`
               : result.profit === 0
-              ? 'You broke even. Adjust price, waste, or advertising.'
-              : `Your ${businessName} lost money. Try fewer staff, lower inventory, or a better price.`}
+              ? 'You broke even. Adjust price, waste, or staffing.'
+              : `Your ${businessName} lost money. Try fewer staff hours, lower inventory, or a better price.`}
           </p>
         </div>
       )}
