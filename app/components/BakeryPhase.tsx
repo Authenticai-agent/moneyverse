@@ -7,7 +7,11 @@ const formatCurrency = (n: number) => new Intl.NumberFormat('en-US', { style: 'c
 const RENT = 50;
 const WAGE = 15;
 
-export default function BakeryPhase() {
+interface BakeryPhaseProps {
+  businessName?: string;
+}
+
+export default function BakeryPhase({ businessName = 'Bakery' }: BakeryPhaseProps) {
   const [price, setPrice] = useState(3);
   const [inventory, setInventory] = useState(30);
   const [wages, setWages] = useState(2);
@@ -41,7 +45,7 @@ export default function BakeryPhase() {
   return (
     <div className="space-y-6">
       <p className="text-mv-dark/70">
-        Run a bakery. Set your price, inventory, staff, and advertising. Watch customer satisfaction, waste, and profit margin.
+        Run your {businessName.toLowerCase()}. Set your price, inventory, staff, and advertising. Watch customer satisfaction, waste, and profit margin.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -64,7 +68,7 @@ export default function BakeryPhase() {
       </div>
 
       <button onClick={handleRun} className="px-6 py-3 rounded-lg bg-mv-primary text-white font-medium hover:bg-mv-primary/90">
-        Run bakery day
+        Run {businessName.toLowerCase()} day
       </button>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm bg-mv-light rounded-xl p-4">
@@ -76,7 +80,7 @@ export default function BakeryPhase() {
 
       {result && (
         <div className="bg-mv-light rounded-2xl p-6 border border-mv-lavender">
-          <h3 className="text-xl font-bold text-mv-primary mb-4">Bakery Day Results</h3>
+          <h3 className="text-xl font-bold text-mv-primary mb-4">{businessName} Day Results</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div className="bg-white rounded-xl p-3 border border-mv-lavender"><p className="text-xs text-mv-dark/70">Demand</p><p className="font-bold text-mv-dark">{result.demand}</p></div>
             <div className="bg-white rounded-xl p-3 border border-mv-lavender"><p className="text-xs text-mv-dark/70">Sold</p><p className="font-bold text-mv-dark">{result.sold}</p></div>
@@ -90,10 +94,10 @@ export default function BakeryPhase() {
           </div>
           <p className="text-sm text-mv-dark/70 mt-4">
             {result.profit > 0
-              ? 'Your bakery made a profit. Try raising advertising or inventory if demand is strong.'
+              ? `Your ${businessName.toLowerCase()} made a profit. Try raising advertising or inventory if demand is strong.`
               : result.profit === 0
               ? 'You broke even. Adjust price, waste, or advertising.'
-              : 'Your bakery lost money. Try fewer staff, lower inventory, or a better price.'}
+              : `Your ${businessName.toLowerCase()} lost money. Try fewer staff, lower inventory, or a better price.`}
           </p>
         </div>
       )}
