@@ -1,9 +1,11 @@
-import MoneyVerseHeroWrapper from './components/MoneyVerseHeroWrapper';
+'use client';
+
+import MoneyVerseHero from './components/MoneyVerseHero';
 
 export default function Home() {
   return (
     <main className="text-mv-dark">
-      <MoneyVerseHeroWrapper />
+      <MoneyVerseHero />
     </main>
   );
 }
