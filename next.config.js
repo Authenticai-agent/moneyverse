@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  webpack: (config, { isServer }) => {
+    // Workaround for Next.js 15.5 dev-server missing chunk bug (e.g., Cannot find module './1331.js').
+    // Disable server-side code splitting so the server bundle inlines dependencies instead of trying to load
+    // chunks whose relative paths are incorrectly generated.
+    if (isServer) {
+      config.optimization.splitChunks = false;
+    }
+    return config;
+  },
   async headers() {
     return [
       {

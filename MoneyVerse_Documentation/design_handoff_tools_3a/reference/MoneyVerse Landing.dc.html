@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ECEAF6; font-family: 'Inter', system-ui, sans-serif; color: #1C1F2E; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: 'Fredoka', system-ui, sans-serif; margin: 0; }
+  a { color: #6B4EFF; text-decoration: none; }
+  a:hover { color: #5A3EE6; }
+  ::selection { background: #D9CFFF; }
+  @keyframes mvFloatUp { 0% { transform: translateY(24px) scale(.7); opacity: 0; } 18% { opacity: 1; } 82% { opacity: 1; } 100% { transform: translateY(-150px) scale(1); opacity: 0; } }
+  @keyframes mvBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  @keyframes mvFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
+  @keyframes mvSway { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+  @keyframes mvSpin { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
+  @keyframes mvPop { 0% { transform: scale(0); opacity: 0; } 68% { transform: scale(1.14); } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes mvRise { 0% { transform: translateY(26px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  @keyframes mvDrift { 0% { transform: translateX(-40px); } 100% { transform: translateX(40px); } }
+  @keyframes mvConfetti { 0% { transform: translateY(-16px) rotate(0deg); opacity: 0; } 12% { opacity: 1; } 100% { transform: translateY(190px) rotate(340deg); opacity: 0; } }
+  @keyframes mvGlow { 0%,100% { box-shadow: 0 12px 32px -8px rgba(255,216,77,.5); } 50% { box-shadow: 0 12px 48px 2px rgba(255,216,77,.75); } }
+  @keyframes mvDraw { to { stroke-dashoffset: 0; } }
+  @keyframes mvRing { from { stroke-dashoffset: 339; } to { stroke-dashoffset: 108; } }
+  @keyframes mvPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.045); } }
+  @keyframes mvFade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes mvPing { 0% { transform: scale(1); opacity: .5; } 100% { transform: scale(3.4); opacity: 0; } }
+  @keyframes mvRadar { to { width: 92%; } }
+  @keyframes mvBikeFill { to { width: 65%; } }
+  @keyframes mvGrowX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @keyframes mvRingSm { to { stroke-dashoffset: 30; } }
+</style>
+</helmet>
+
+<section style="display:flex; gap:80px; align-items:flex-start; padding:80px 80px 0; width:max-content;">
+
+  <!-- ============ 3a — FREE TOOLS INDEX ============ -->
+  <div id="3a" style="display:flex; flex-direction:column; gap:20px;">
+    <div style="display:flex; align-items:center; gap:14px;">
+      <span style="background:#6B4EFF; color:#fff; font-family:'Fredoka'; font-weight:600; font-size:18px; padding:6px 16px; border-radius:999px;">3a</span>
+      <div>
+        <div style="font-family:'Fredoka'; font-weight:600; font-size:20px; color:#1C1F2E;">Free Tools index</div>
+        <div style="font-size:14px; color:#6E6A85;">Explore MoneyVerse · /tools · every card opens its game page</div>
+      </div>
+    </div>
+
+    <div data-screen-label="Tools index" style="position:relative; width:1180px; height:920px; border-radius:32px; overflow:hidden; background:#FBFBFE; box-shadow:0 44px 90px -34px rgba(60,40,120,.5);">
+      <div style="position:absolute; top:-160px; right:-120px; width:520px; height:520px; border-radius:50%; background:radial-gradient(circle,#EDE7FF 0%,rgba(237,231,255,0) 70%);"></div>
+      <div style="position:absolute; bottom:-140px; left:-100px; width:420px; height:420px; border-radius:50%; background:radial-gradient(circle,#E4F9FA 0%,rgba(228,249,250,0) 70%);"></div>
+      <div style="position:absolute; inset:0; background-image:radial-gradient(#E7E2F6 1.3px, transparent 1.3px); background-size:26px 26px; opacity:.45;"></div>
+
+      <nav style="position:relative; z-index:6; display:flex; align-items:center; justify-content:space-between; padding:28px 48px;">
+        <div style="display:flex; align-items:center; gap:11px;">
+          <div style="width:40px; height:40px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); display:flex; align-items:center; justify-content:center; box-shadow:0 5px 14px rgba(243,194,24,.5);"><span style="font-family:'Fredoka'; font-weight:700; color:#8A5A12; font-size:21px;">$</span></div>
+          <span style="font-family:'Fredoka'; font-weight:600; font-size:23px; color:#1C1F2E;">Money<span style="color:#6B4EFF;">Verse</span></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:30px;">
+          <div style="display:flex; gap:26px; font-size:15px; font-weight:500; color:#413B5A;"><span>How it works</span><span style="color:#6B4EFF; font-weight:600;">Free Tools</span><span>For Parents</span></div>
+          <span style="border:2px solid #6B4EFF; color:#6B4EFF; font-weight:600; font-size:14px; padding:9px 18px; border-radius:999px;">Join waitlist</span>
+        </div>
+      </nav>
+
+      <div style="position:relative; z-index:5; padding:14px 48px 0;">
+        <span style="display:inline-flex; align-items:center; gap:8px; background:#EDE6FF; color:#5A3EE6; font-weight:600; font-size:13px; padding:8px 15px; border-radius:999px; animation:mvRise .5s cubic-bezier(.2,.9,.3,1) both;">🧰 8 free tools · no sign-up needed</span>
+        <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:30px;">
+          <div>
+            <h1 style="font-size:44px; line-height:1.04; font-weight:600; letter-spacing:-.8px; margin:16px 0 0; animation:mvRise .5s cubic-bezier(.2,.9,.3,1) .06s both;">Explore <span style="color:#6B4EFF;">MoneyVerse.</span></h1>
+            <p style="font-size:16.5px; line-height:1.5; color:#4A4560; max-width:560px; margin:12px 0 0; animation:mvRise .5s cubic-bezier(.2,.9,.3,1) .12s both;">Free, safe money tools and games built for kids, families, and classrooms. No bank connection required.</p>
+          </div>
+          <div style="display:flex; gap:8px; padding-bottom:6px; animation:mvRise .5s cubic-bezier(.2,.9,.3,1) .18s both;">
+            <span style="background:#fff; border:1.5px solid #EDE7FA; color:#413B5A; font-weight:600; font-size:12.5px; padding:8px 13px; border-radius:12px;">🚫 No ads</span>
+            <span style="background:#fff; border:1.5px solid #EDE7FA; color:#413B5A; font-weight:600; font-size:12.5px; padding:8px 13px; border-radius:12px;">🔒 Kid-safe</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:18px; margin-top:28px;">
+
+          <!-- 1 · Money Tree Simulator -->
+          <div style="position:relative; background:rgba(255,255,255,.94); border:1px solid #ECE7FB; border-radius:22px; box-shadow:0 18px 40px -24px rgba(80,60,150,.35); padding:18px; display:flex; flex-direction:column; gap:11px; cursor:pointer; transition:transform .25s ease, box-shadow .25s ease; animation:mvRise .6s cubic-bezier(.2,.9,.3,1) .1s both;" style-hover="transform:translateY(-6px); box-shadow:0 32px 60px -26px rgba(80,60,150,.55);">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+              <div style="width:44px; height:44px; border-radius:50%; background:radial-gradient(circle at 34% 28%,#7BE3A3,#4FC47E); display:flex; align-items:center; justify-content:center; font-size:22px;">🌳</div>
+              <span style="background:#EAFBF2; color:#2F9E67; font-weight:700; font-size:10px; letter-spacing:.4px; padding:4px 9px; border-radius:999px;">SIMULATOR</span>
+            </div>
+            <div>
+              <div style="font-family:'Fredoka'; font-weight:600; font-size:16.5px; color:#1C1F2E;">Money Tree Simulator</div>
+              <div style="font-size:12.5px; line-height:1.45; color:#6E6A85; margin-top:4px;">See how weekly savings grow with compound interest.</div>
+            </div>
+            <div style="height:56px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:14px; padding:8px 12px; display:flex; align-items:center; gap:10px;">
+              <svg width="100%" height="38" viewBox="0 0 150 38" preserveAspectRatio="none" style="flex:1; display:block;">
+                <path d="M4,34 C36,32 56,28 82,20 C108,12 128,8 146,3" fill="none" stroke="#2F9E67" stroke-width="3" stroke-linecap="round" stroke-dasharray="170" stroke-dashoffset="170" style="animation:mvDraw 1.3s ease .5s forwards;"></path>
+              </svg>
+              <div style="text-align:right;"><div style="font-family:'Fredoka'; font-weight:700; font-size:15px; color:#2F9E67; line-height:1;">$148</div><div style="font-size:9.5px; color:#A8A2C0; margin-top:1px;">by week 12</div></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:auto; color:#6B4EFF; font-weight:600; font-size:13px;">Plant yours <span style="font-size:15px;">→</span></div>
+          </div>
+
+          <!-- 2 · Savings Goal Calculator -->
+          <div style="position:relative; background:rgba(255,255,255,.94); border:1px solid #ECE7FB; border-radius:22px; box-shadow:0 18px 40px -24px rgba(80,60,150,.35); padding:18px; display:flex; flex-direction:column; gap:11px; cursor:pointer; transition:transform .25s ease, box-shadow .25s ease; animation:mvRise .6s cubic-bezier(.2,.9,.3,1) .17s both;" style-hover="transform:translateY(-6px); box-shadow:0 32px 60px -26px rgba(80,60,150,.55);">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+              <div style="width:44px; height:44px; border-radius:50%; background:radial-gradient(circle at 34% 28%,#8B74FF,#6B4EFF); display:flex; align-items:center; justify-content:center; font-size:22px;">🎯</div>
+              <span style="background:#EDE6FF; color:#5A3EE6; font-weight:700; font-size:10px; letter-spacing:.4px; padding:4px 9px; border-radius:999px;">CALCULATOR</span>
+            </div>
+            <div>
+              <div style="font-family:'Fredoka'; font-weight:600; font-size:16.5px; color:#1C1F2E;">Savings Goal Calculator</div>
+              <div style="font-size:12.5px; line-height:1.45; color:#6E6A85; margin-top:4px;">Plan how long it will take to save for a goal.</div>
+            </div>
+            <div style="height:56px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:14px; padding:8px 12px; display:flex; align-items:center; gap:11px;">
+              <svg width="40" height="40" viewBox="0 0 40 40" style="flex-shrink:0;">
+                <circle cx="20" cy="20" r="15" stroke="#EDE7F8" stroke-width="5" fill="none"></circle>
+                <circle cx="20" cy="20" r="15" stroke="#6B4EFF" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="94.2" stroke-dashoffset="94.2" transform="rotate(-90 20 20)" style="animation:mvRingSm 1.2s cubic-bezier(.3,.9,.3,1) .4s forwards;"></circle>
+              </svg>
+              <div><div style="font-family:'Fredoka'; font-weight:700; font-size:15px; color:#1C1F2E; line-height:1;">$68 saved</div><div style="font-size:9.5px; color:#A8A2C0; margin-top:2px;">of a $100 goal · 4 wks left</div></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:auto; color:#6B4EFF; font-weight:600; font-size:13px;">Plan a goal <span style="font-size:15px;">→</span></div>
+          </div>
+
+          <!-- 3 · Kids Budget Calculator -->
+          <div style="position:relative; background:rgba(255,255,255,.94); border:1px solid #ECE7FB; border-radius:22px; box-shadow:0 18px 40px -24px rgba(80,60,150,.35); padding:18px; display:flex; flex-direction:column; gap:11px; cursor:pointer; transition:transform .25s ease, box-shadow .25s ease; animation:mvRise .6s cubic-bezier(.2,.9,.3,1) .24s both;" style-hover="transform:translateY(-6px); box-shadow:0 32px 60px -26px rgba(80,60,150,.55);">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+              <div style="width:44px; height:44px; border-radius:50%; background:radial-gradient(circle at 34% 28%,#7FE9EE,#2FB8BE); display:flex; align-items:center; justify-content:center; font-size:22px;">🪙</div>
+              <span style="background:#E4F9FA; color:#127C82; font-weight:700; font-size:10px; letter-spacing:.4px; padding:4px 9px; border-radius:999px;">CALCULATOR</span>
+            </div>
+            <div>
+              <div style="font-family:'Fredoka'; font-weight:600; font-size:16.5px; color:#1C1F2E;">Kids Budget Calculator</div>
+              <div style="font-size:12.5px; line-height:1.45; color:#6E6A85; margin-top:4px;">Learn to split money into Spend, Save, Give, and Goals.</div>
+            </div>
+            <div style="height:56px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:14px; padding:10px 12px; display:flex; flex-direction:column; justify-content:center; gap:6px;">
+              <div style="display:flex; height:12px; border-radius:999px; overflow:hidden; gap:2px;">
+                <div style="width:40%; background:#6B4EFF; transform-origin:left; animation:mvGrowX .7s cubic-bezier(.3,.9,.3,1) .35s both;"></div>
+                <div style="width:30%; background:#5FD38D; transform-origin:left; animation:mvGrowX .7s cubic-bezier(.3,.9,.3,1) .5s both;"></div>
+                <div style="width:10%; background:#FFD84D; transform-origin:left; animation:mvGrowX .7s cubic-bezier(.3,.9,.3,1) .65s both;"></div>
+                <div style="width:20%; background:#5CE1E6; transform-origin:left; animation:mvGrowX .7s cubic-bezier(.3,.9,.3,1) .8s both;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:9px; font-weight:600; color:#A8A2C0;"><span>Spend</span><span>Save</span><span>Give</span><span>Goals</span></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:auto; color:#6B4EFF; font-weight:600; font-size:13px;">Split it up <span style="font-size:15px;">→</span></div>
+          </div>
+
+          <!-- 4 · Lemonade Stand Profit Game -->
+          <div style="position:relative; background:rgba(255,255,255,.94); border:1px solid #ECE7FB; border-radius:22px; box-shadow:0 18px 40px -24px rgba(80,60,150,.35); padding:18px; display:flex; flex-direction:column; gap:11px; cursor:pointer; transition:transform .25s ease, box-shadow .25s ease; animation:mvRise .6s cubic-bezier(.2,.9,.3,1) .31s both;" style-hover="transform:translateY(-6px); box-shadow:0 32px 60px -26px rgba(80,60,150,.55);">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+              <div style="width:44px; height:44px; border-radius:50%; background:radial-gradient(circle at 34% 28%,#FFE29A,#FFB74D); display:flex; align-items:center; justify-content:center; font-size:22px;">🍋</div>
+              <span style="background:#FFF3CF; color:#A9760A; font-weight:700; font-size:10px; letter-spacing:.4px; padding:4px 9px; border-radius:999px;">GAME</span>
+            </div>
+            <div>
+              <div style="font-family:'Fredoka'; font-weight:600; font-size:16.5px; color:#1C1F2E;">Lemonade Stand Profit Game</div>
+              <div style="font-size:12.5px; line-height:1.45; color:#6E6A85; margin-top:4px;">Set prices, buy ingredients, and learn profit and revenue.</div>
+            </div>
+            <div style="height:56px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:14px; padding:8px 10px; display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap;">
+              <span style="background:#fff; border:1px solid #EDE7FA; color:#6E6A85; font-weight:600; font-size:10.5px; padding:5px 9px; border-radius:999px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .35s both;">Cost $0.50</span>
+              <span style="color:#A8A2C0; font-size:11px;">→</span>
+              <span style="background:#FFF3CF; color:#A9760A; font-weight:700; font-size:10.5px; padding:5px 9px; border-radius:999px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .55s both;">Price $1.50</span>
+              <span style="background:#EAFBF2; color:#2F9E67; font-weight:700; font-size:10.5px; padding:5px 9px; border-radius:999px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .8s both;">+$1.00 profit</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:auto; color:#6B4EFF; font-weight:600; font-size:13px;">Open your stand <span style="font-size:15px;">→</span></div>
+          </div>
+
+          <!-- 5 · Business Simulator -->
+          <div style="position:relative; background:rgba(255,255,255,.94); border:1px solid #ECE7FB; border-radius:22px; box-shadow:0 18px 40px -24px rgba(80,60,150,.35); padding:18px; display:flex; flex-direction:column; gap:11px; cursor:pointer; transition:transform .25s ease, box-shadow .25s ease; animation:mvRise .6s cubic-bezier(.2,.9,.3,1) .38s both;" style-hover="transform:translateY(-6px); box-shadow:0 32px 60px -26px rgba(80,60,150,.55);">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+              <div style="width:44px; height:44px; border-radius:50%; background:radial-gradient(circle at 34% 28%,#8B74FF,#6B4EFF); display:flex; align-items:center; justify-content:center; font-size:22px;">🏢</div>
+              <span style="background:#EDE6FF; color:#5A3EE6; font-weight:700; font-size:10px; letter-spacing:.4px; padding:4px 9px; border-radius:999px;">GAME</span>
+            </div>
+            <div>
+              <div style="font-family:'Fredoka'; font-weight:600; font-size:16.5px; color:#1C1F2E;">Business Simulator</div>
+              <div style="font-size:12.5px; line-height:1.45; color:#6E6A85; margin-top:4px;">Grow a lemonade stand into a bakery while learning business basics.</div>
+            </div>
+            <div style="height:56px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:14px; padding:8px 14px; display:flex; align-items:center;">
+              <div style="width:28px; height:28px; border-radius:50%; background:#FFF3CF; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .3s both;">🍋</div>
+              <div style="flex:1; height:3px; background:#6B4EFF; border-radius:999px; margin:0 5px; transform-origin:left; animation:mvGrowX .6s ease .5s both;"></div>
+              <div style="width:28px; height:28px; border-radius:50%; background:#EDE6FF; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .75s both;">🧁</div>
+              <div style="flex:1; height:3px; background:#EDE7F8; border-radius:999px; margin:0 5px;"></div>
+              <div style="width:28px; height:28px; border-radius:50%; background:#F1EEF9; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; opacity:.5;">🏪</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:auto; color:#6B4EFF; font-weight:600; font-size:13px;">Start building <span style="font-size:15px;">→</span></div>
+          </div>
+
+          <!-- 6 · Daily Money Quests -->
+          <div style="position:relative; background:rgba(255,255,255,.94); border:1px solid #ECE7FB; border-radius:22px; box-shadow:0 18px 40px -24px rgba(80,60,150,.35); padding:18px; display:flex; flex-direction:column; gap:11px; cursor:pointer; transition:transform .25s ease, box-shadow .25s ease; animation:mvRise .6s cubic-bezier(.2,.9,.3,1) .45s both;" style-hover="transform:translateY(-6px); box-shadow:0 32px 60px -26px rgba(80,60,150,.55);">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+              <div style="width:44px; height:44px; border-radius:50%; background:radial-gradient(circle at 34% 28%,#7BE3A3,#4FC47E); display:flex; align-items:center; justify-content:center; font-size:22px;">⚡</div>
+              <span style="background:#EAFBF2; color:#2F9E67; font-weight:700; font-size:10px; letter-spacing:.4px; padding:4px 9px; border-radius:999px;">QUESTS</span>
+            </div>
+            <div>
+              <div style="font-family:'Fredoka'; font-weight:600; font-size:16.5px; color:#1C1F2E;">Daily Money Quests</div>
+              <div style="font-size:12.5px; line-height:1.45; color:#6E6A85; margin-top:4px;">Practice needs vs wants, scam spotting, and budgeting.</div>
+            </div>
+            <div style="height:56px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:14px; padding:8px 12px; display:flex; align-items:center; gap:7px;">
+              <span style="width:22px; height:22px; border-radius:50%; background:#2F9E67; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .35s both;">✓</span>
+              <span style="width:22px; height:22px; border-radius:50%; background:#2F9E67; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .5s both;">✓</span>
+              <span style="width:22px; height:22px; border-radius:50%; border:1.5px dashed #C9BFE8; color:#8B7FC0; display:flex; align-items:center; justify-content:center; font-size:12px;">＋</span>
+              <span style="margin-left:auto; background:#FFF3CF; color:#A9760A; font-weight:700; font-size:11px; padding:5px 10px; border-radius:999px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .7s both;">🔥 6 day streak</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:auto; color:#6B4EFF; font-weight:600; font-size:13px;">Today's quest <span style="font-size:15px;">→</span></div>
+          </div>
+
+          <!-- 7 · Scam Shield Quiz -->
+          <div style="position:relative; background:rgba(255,255,255,.94); border:1px solid #ECE7FB; border-radius:22px; box-shadow:0 18px 40px -24px rgba(80,60,150,.35); padding:18px; display:flex; flex-direction:column; gap:11px; cursor:pointer; transition:transform .25s ease, box-shadow .25s ease; animation:mvRise .6s cubic-bezier(.2,.9,.3,1) .52s both;" style-hover="transform:translateY(-6px); box-shadow:0 32px 60px -26px rgba(80,60,150,.55);">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+              <div style="width:44px; height:44px; border-radius:50%; background:radial-gradient(circle at 34% 28%,#7FE9EE,#2FB8BE); display:flex; align-items:center; justify-content:center; font-size:22px;">🛡️</div>
+              <span style="background:#E4F9FA; color:#127C82; font-weight:700; font-size:10px; letter-spacing:.4px; padding:4px 9px; border-radius:999px;">QUIZ</span>
+            </div>
+            <div>
+              <div style="font-family:'Fredoka'; font-weight:600; font-size:16.5px; color:#1C1F2E;">Scam Shield Quiz</div>
+              <div style="font-size:12.5px; line-height:1.45; color:#6E6A85; margin-top:4px;">Learn to spot phishing, fake giveaways, and online scams.</div>
+            </div>
+            <div style="height:56px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:14px; padding:10px 12px; display:flex; flex-direction:column; justify-content:center; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:10.5px; font-weight:600; color:#413B5A;">Scam radar</span><span style="font-size:10.5px; font-weight:700; color:#2FB8BE;">Sharp 🔍</span></div>
+              <div style="height:9px; background:#EDE7F8; border-radius:999px; overflow:hidden;"><div style="height:100%; width:0; background:linear-gradient(90deg,#5CE1E6,#2FB8BE); border-radius:999px; animation:mvRadar 1.2s cubic-bezier(.3,.9,.3,1) .4s forwards;"></div></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:auto; color:#6B4EFF; font-weight:600; font-size:13px;">Test your radar <span style="font-size:15px;">→</span></div>
+          </div>
+
+          <!-- 8 · Achievement Cards -->
+          <div style="position:relative; background:rgba(255,255,255,.94); border:1px solid #ECE7FB; border-radius:22px; box-shadow:0 18px 40px -24px rgba(80,60,150,.35); padding:18px; display:flex; flex-direction:column; gap:11px; cursor:pointer; transition:transform .25s ease, box-shadow .25s ease; animation:mvRise .6s cubic-bezier(.2,.9,.3,1) .59s both;" style-hover="transform:translateY(-6px); box-shadow:0 32px 60px -26px rgba(80,60,150,.55);">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+              <div style="width:44px; height:44px; border-radius:50%; background:radial-gradient(circle at 34% 28%,#FFE29A,#FFB74D); display:flex; align-items:center; justify-content:center; font-size:22px;">🏆</div>
+              <span style="background:#FFF3CF; color:#A9760A; font-weight:700; font-size:10px; letter-spacing:.4px; padding:4px 9px; border-radius:999px;">CREATOR</span>
+            </div>
+            <div>
+              <div style="font-family:'Fredoka'; font-weight:600; font-size:16.5px; color:#1C1F2E;">Achievement Cards</div>
+              <div style="font-size:12.5px; line-height:1.45; color:#6E6A85; margin-top:4px;">Create safe, shareable cards that celebrate money skills.</div>
+            </div>
+            <div style="height:56px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:14px; padding:8px 12px; display:flex; align-items:center; gap:10px;">
+              <div style="width:56px; height:38px; border-radius:8px; background:linear-gradient(135deg,#8B74FF,#6B4EFF); display:flex; align-items:center; justify-content:center; font-size:17px; box-shadow:0 6px 14px -6px rgba(107,78,255,.6); flex-shrink:0; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .35s both;">🏆</div>
+              <div>
+                <div style="display:flex; gap:2px; font-size:11px;"><span style="animation:mvPop .4s cubic-bezier(.2,1.3,.4,1) .5s both;">⭐</span><span style="animation:mvPop .4s cubic-bezier(.2,1.3,.4,1) .62s both;">⭐</span><span style="animation:mvPop .4s cubic-bezier(.2,1.3,.4,1) .74s both;">⭐</span></div>
+                <div style="font-size:9.5px; color:#A8A2C0; margin-top:3px;">Parent-approved sharing</div>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:auto; color:#6B4EFF; font-weight:600; font-size:13px;">Make a card <span style="font-size:15px;">→</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section style="display:flex; gap:80px; align-items:flex-start; padding:80px 80px 0; width:max-content;">
+
+  <!-- ============ 2a — LEARN MONEY BY LIVING IT (carousel) ============ -->
+  <div id="2a" style="display:flex; flex-direction:column; gap:20px;">
+    <div style="display:flex; align-items:center; gap:14px;">
+      <span style="background:#6B4EFF; color:#fff; font-family:'Fredoka'; font-weight:600; font-size:18px; padding:6px 16px; border-radius:999px;">2a</span>
+      <div>
+        <div style="font-family:'Fredoka'; font-weight:600; font-size:20px; color:#1C1F2E;">Learn money by living it</div>
+        <div style="font-size:14px; color:#6E6A85;">Refined 1b · financial education as adventures · auto-rotating showcase</div>
+      </div>
+    </div>
+
+    <div style="position:relative; width:1180px; height:760px; border-radius:32px; overflow:hidden; background:#FBFBFE; box-shadow:0 44px 90px -34px rgba(60,40,120,.5);">
+      <div style="position:absolute; top:-160px; right:-120px; width:520px; height:520px; border-radius:50%; background:radial-gradient(circle,#EDE7FF 0%,rgba(237,231,255,0) 70%);"></div>
+      <div style="position:absolute; bottom:-140px; left:-100px; width:420px; height:420px; border-radius:50%; background:radial-gradient(circle,#FFF4CE 0%,rgba(255,244,206,0) 70%);"></div>
+      <div style="position:absolute; inset:0; background-image:radial-gradient(#E7E2F6 1.3px, transparent 1.3px); background-size:26px 26px; opacity:.45;"></div>
+      <div style="position:absolute; top:150px; left:44%; width:26px; height:26px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); box-shadow:0 5px 12px rgba(243,194,24,.4); animation:mvFloat 6s ease-in-out infinite;"></div>
+
+      <nav style="position:relative; z-index:6; display:flex; align-items:center; justify-content:space-between; padding:28px 48px;">
+        <div style="display:flex; align-items:center; gap:11px;">
+          <div style="width:40px; height:40px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); display:flex; align-items:center; justify-content:center; box-shadow:0 5px 14px rgba(243,194,24,.5);"><span style="font-family:'Fredoka'; font-weight:700; color:#8A5A12; font-size:21px;">$</span></div>
+          <span style="font-family:'Fredoka'; font-weight:600; font-size:23px; color:#1C1F2E;">Money<span style="color:#6B4EFF;">Verse</span></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:30px;">
+          <div style="display:flex; gap:26px; font-size:15px; font-weight:500; color:#413B5A;"><span>How it works</span><span>Free Tools</span><span>For Parents</span></div>
+          <span style="border:2px solid #6B4EFF; color:#6B4EFF; font-weight:600; font-size:14px; padding:9px 18px; border-radius:999px;">Join waitlist</span>
+        </div>
+      </nav>
+
+      <div style="position:relative; z-index:5; display:grid; grid-template-columns:0.92fr 1.08fr; gap:34px; align-items:center; padding:6px 48px 0; height:calc(760px - 96px);">
+        <div>
+          <span style="display:inline-flex; align-items:center; gap:8px; background:#EDE6FF; color:#5A3EE6; font-weight:600; font-size:13px; padding:8px 15px; border-radius:999px;">✨ Money skills, disguised as play</span>
+          <h1 style="font-size:56px; line-height:1.0; font-weight:600; letter-spacing:-1px; margin:20px 0 0;">Learn money by<br><span style="color:#6B4EFF;">living it.</span></h1>
+          <p style="font-size:19px; line-height:1.55; color:#4A4560; max-width:452px; margin:22px 0 0;">Outsmart a scam. Grow a business. Save up for that bike. MoneyVerse turns real financial skills into adventures kids actually finish, with every number worked out just like real life.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:28px;">
+            <span style="background:#fff; border:1.5px solid #EDE7FA; color:#413B5A; font-weight:600; font-size:13.5px; padding:9px 15px; border-radius:12px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .3s both;">🛡️ Outsmart scams</span>
+            <span style="background:#fff; border:1.5px solid #EDE7FA; color:#413B5A; font-weight:600; font-size:13.5px; padding:9px 15px; border-radius:12px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .5s both;">🏢 Grow a business</span>
+            <span style="background:#fff; border:1.5px solid #EDE7FA; color:#413B5A; font-weight:600; font-size:13.5px; padding:9px 15px; border-radius:12px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .7s both;">🚲 Save for a goal</span>
+            <span style="background:#fff; border:1.5px solid #EDE7FA; color:#413B5A; font-weight:600; font-size:13.5px; padding:9px 15px; border-radius:12px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .9s both;">🧾 Real money math</span>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:32px;">
+            <span style="display:inline-flex; align-items:center; gap:8px; background:#6B4EFF; color:#fff; font-weight:600; font-size:16px; padding:15px 26px; border-radius:999px; box-shadow:0 14px 30px -10px rgba(107,78,255,.7);">Explore free tools <span style="font-size:18px;">→</span></span>
+            <span style="display:inline-flex; align-items:center; background:#fff; color:#5A3EE6; font-weight:600; font-size:16px; padding:15px 26px; border-radius:999px; border:1.5px solid #D9CFF5;">Join the waitlist</span>
+          </div>
+          <p style="display:flex; align-items:flex-start; gap:9px; font-size:13.5px; line-height:1.5; color:#6E6A85; max-width:452px; margin:16px 0 0;"><span style="flex-shrink:0; width:20px; height:20px; border-radius:50%; background:#EDE6FF; color:#6B4EFF; font-weight:700; font-size:12px; display:inline-flex; align-items:center; justify-content:center; margin-top:1px;">＋</span><span><b style="color:#413B5A; font-weight:600;">Waitlist unlocks MoneyVerse Plus:</b> advanced simulators (business, credit &amp; real-life money), parent-set missions, allowance &amp; family goals, premium cosmetics, and a classroom edition for teachers.</span></p>
+        </div>
+
+        <div style="position:relative; display:flex; align-items:center; justify-content:center;">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:20px;">
+            <div data-carousel style="position:relative; width:472px; height:556px;">
+
+              <!-- ---- CARD 0: GROW A BUSINESS ---- -->
+              <div data-card="0" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:1; transform:none; z-index:2; pointer-events:auto; transition:opacity .6s ease, transform .6s cubic-bezier(.2,.9,.3,1);">
+                <div style="width:472px; position:relative; background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border:1px solid #ECE7FB; border-radius:26px; box-shadow:0 34px 68px -28px rgba(80,60,150,.5); padding:22px;">
+                  <div style="position:absolute; top:-13px; left:22px; display:flex; align-items:center; gap:5px; background:#6B4EFF; color:#fff; font-weight:700; font-size:11px; padding:5px 12px; border-radius:999px; box-shadow:0 8px 18px -6px rgba(107,78,255,.7);">🏢 Grow-a-business adventure</div>
+                  <div style="display:flex; align-items:center; justify-content:space-between;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                      <div style="width:46px; height:46px; border-radius:50%; background:radial-gradient(circle at 34% 28%,#FFE29A,#FFB74D); display:flex; align-items:center; justify-content:center; font-size:24px;">🍪</div>
+                      <div><div style="font-family:'Fredoka'; font-weight:600; font-size:17px;">Zoe's Cookie Co.</div><div style="font-size:12px; color:#8480A0;">CEO · Level 4</div></div>
+                    </div>
+                    <span style="display:inline-flex; align-items:center; gap:5px; background:#FFF3CF; color:#A9760A; font-weight:700; font-size:13px; padding:6px 12px; border-radius:999px;">🔥 6 days</span>
+                  </div>
+
+                  <div style="position:relative; margin-top:18px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:18px; padding:16px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                      <span style="font-size:13px; font-weight:600; color:#413B5A;">Monthly revenue</span>
+                      <span style="background:#EAFBF2; color:#2F9E67; font-weight:700; font-size:11.5px; padding:3px 9px; border-radius:999px;">▲ 38%</span>
+                    </div>
+                    <div style="position:absolute; top:12px; right:12px; background:#fff; border-radius:12px; box-shadow:0 8px 20px -8px rgba(80,60,150,.5); padding:6px 12px; text-align:right; animation:mvFade .6s ease 1.3s both;">
+                      <div style="font-family:'Fredoka'; font-weight:700; font-size:17px; color:#6B4EFF; line-height:1;"><span data-count="1240" data-prefix="$">$1,240</span></div>
+                      <div style="font-size:10px; color:#A8A2C0; margin-top:1px;">June</div>
+                    </div>
+                    <svg width="100%" height="118" viewBox="0 0 406 118" preserveAspectRatio="none" style="margin-top:10px; display:block;">
+                      <line x1="6" y1="34" x2="400" y2="34" stroke="#ECE6FA" stroke-width="1"></line>
+                      <line x1="6" y1="64" x2="400" y2="64" stroke="#ECE6FA" stroke-width="1"></line>
+                      <line x1="6" y1="94" x2="400" y2="94" stroke="#ECE6FA" stroke-width="1"></line>
+                      <defs><linearGradient id="mvArea2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6B4EFF" stop-opacity="0.26"></stop><stop offset="1" stop-color="#6B4EFF" stop-opacity="0"></stop></linearGradient></defs>
+                      <path d="M10,96 C46,90 58,80 92,80 C124,80 140,90 168,86 C200,82 214,58 246,54 C280,50 296,46 328,42 C360,38 376,28 396,22 L396,116 L10,116 Z" fill="url(#mvArea2)" style="opacity:0; animation:mvFade .9s ease 1.1s forwards;"></path>
+                      <path d="M10,96 C46,90 58,80 92,80 C124,80 140,90 168,86 C200,82 214,58 246,54 C280,50 296,46 328,42 C360,38 376,28 396,22" fill="none" stroke="#6B4EFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="520" stroke-dashoffset="520" style="animation:mvDraw 1.5s cubic-bezier(.4,.7,.3,1) .5s forwards;"></path>
+                      <circle cx="396" cy="22" r="6" fill="#6B4EFF" style="transform-box:view-box; transform-origin:396px 22px; animation:mvPing 1.9s ease-out 1.4s infinite;"></circle>
+                      <circle cx="396" cy="22" r="5.5" fill="#6B4EFF"></circle>
+                      <circle cx="396" cy="22" r="2" fill="#fff"></circle>
+                    </svg>
+                    <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:10.5px; color:#A8A2C0; font-weight:500;"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>
+                  </div>
+
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:13px; margin-top:14px;">
+                    <div style="background:#FAF9FE; border:1px solid #F0ECFA; border-radius:18px; padding:14px 15px;">
+                      <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:13px; font-weight:600; color:#413B5A;">Your team</span><span style="background:#EDE6FF; color:#5A3EE6; font-weight:700; font-size:11px; padding:2px 8px; border-radius:999px;">3</span></div>
+                      <div style="display:flex; flex-direction:column; gap:8px; margin-top:11px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between;"><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#6B4EFF; color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fredoka'; font-weight:700; font-size:11px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .6s both;">S</div><span style="font-size:12.5px; color:#3A3550;">Sam</span></div><span style="background:#EDE6FF; color:#5A3EE6; font-weight:700; font-size:10px; padding:2px 7px; border-radius:6px;">W-2</span></div>
+                        <div style="display:flex; align-items:center; justify-content:space-between;"><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#2FB8BE; color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fredoka'; font-weight:700; font-size:11px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .75s both;">A</div><span style="font-size:12.5px; color:#3A3550;">Ava</span></div><span style="background:#EDE6FF; color:#5A3EE6; font-weight:700; font-size:10px; padding:2px 7px; border-radius:6px;">W-2</span></div>
+                        <div style="display:flex; align-items:center; justify-content:space-between;"><div style="display:flex; align-items:center; gap:8px;"><div style="width:24px; height:24px; border-radius:50%; background:#F3C218; color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fredoka'; font-weight:700; font-size:11px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .9s both;">M</div><span style="font-size:12.5px; color:#3A3550;">Max</span></div><span style="background:#E4F9FA; color:#127C82; font-weight:700; font-size:10px; padding:2px 7px; border-radius:6px;">1099</span></div>
+                        <div style="display:flex; align-items:center; justify-content:center; gap:6px; border:1.5px dashed #D9CFF2; border-radius:9px; padding:6px; color:#8B7FC0; font-weight:600; font-size:11.5px; margin-top:2px;">＋ Hire</div>
+                      </div>
+                    </div>
+
+                    <div style="background:#FAF9FE; border:1px solid #F0ECFA; border-radius:18px; padding:14px 15px;">
+                      <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:13px; font-weight:600; color:#413B5A;">Tax Center</span><span style="background:#EAFBF2; color:#2F9E67; font-weight:700; font-size:9.5px; padding:2px 7px; border-radius:6px;">AUTO · IRS</span></div>
+                      <div style="display:flex; flex-direction:column; gap:7px; margin-top:11px; font-size:12.5px;">
+                        <div style="display:flex; justify-content:space-between; color:#6E6A85;"><span>Federal</span><span style="font-weight:600; color:#3A3550;"><span data-count="82" data-prefix="$">$82</span></span></div>
+                        <div style="display:flex; justify-content:space-between; color:#6E6A85;"><span>State</span><span style="font-weight:600; color:#3A3550;"><span data-count="41" data-prefix="$">$41</span></span></div>
+                        <div style="display:flex; justify-content:space-between; color:#6E6A85;"><span>City</span><span style="font-weight:600; color:#3A3550;"><span data-count="25" data-prefix="$">$25</span></span></div>
+                        <div style="height:1px; background:#EDE7F8; margin:3px 0;"></div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-weight:600; color:#413B5A;">Set aside</span><span style="font-family:'Fredoka'; font-weight:700; font-size:15px; color:#6B4EFF;"><span data-count="148" data-prefix="$">$148</span></span></div>
+                      </div>
+                      <div style="font-size:10px; color:#A8A2C0; margin-top:6px;">from $820 profit this month</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ---- CARD 1: OUTSMART A SCAM ---- -->
+              <div data-card="1" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; transform:translateY(22px) scale(.97); z-index:1; pointer-events:none; transition:opacity .6s ease, transform .6s cubic-bezier(.2,.9,.3,1);">
+                <div style="width:472px; position:relative; background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border:1px solid #ECE7FB; border-radius:26px; box-shadow:0 34px 68px -28px rgba(80,60,150,.5); padding:22px;">
+                  <div style="position:absolute; top:-13px; left:22px; display:flex; align-items:center; gap:5px; background:#2FB8BE; color:#fff; font-weight:700; font-size:11px; padding:5px 12px; border-radius:999px; box-shadow:0 8px 18px -6px rgba(47,184,190,.7);">🛡️ Outsmart-a-scam adventure</div>
+                  <div style="display:flex; align-items:center; justify-content:space-between;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                      <div style="width:46px; height:46px; border-radius:50%; background:radial-gradient(circle at 34% 28%,#7FE9EE,#2FB8BE); display:flex; align-items:center; justify-content:center; font-size:23px;">🛡️</div>
+                      <div><div style="font-family:'Fredoka'; font-weight:600; font-size:17px;">Scam Shield</div><div style="font-size:12px; color:#8480A0;">Detective · Level 3</div></div>
+                    </div>
+                    <span style="display:inline-flex; align-items:center; gap:5px; background:#E4F9FA; color:#127C82; font-weight:700; font-size:13px; padding:6px 12px; border-radius:999px;">🎯 12 caught</span>
+                  </div>
+
+                  <div style="margin-top:18px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:18px; padding:16px;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                      <span style="width:9px; height:9px; border-radius:50%; background:#E5533C;"></span>
+                      <span style="font-size:12.5px; font-weight:600; color:#413B5A;">Unknown sender</span>
+                      <span style="font-size:11px; color:#A8A2C0;">· now</span>
+                    </div>
+                    <div style="background:#fff; border:1px solid #F0ECFA; border-radius:4px 16px 16px 16px; padding:13px 15px; font-size:13.5px; line-height:1.5; color:#3A3550;">🎉 You <b>WON a $500 gift card!</b> Claim in the next 10 min 👉 <span style="color:#2F7BD6; text-decoration:underline;">bit.ly/claim-now-free</span></div>
+                  </div>
+
+                  <div style="margin-top:14px;">
+                    <div style="font-size:12.5px; font-weight:600; color:#413B5A; margin-bottom:9px;">Red flags you caught</div>
+                    <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                      <span style="display:inline-flex; align-items:center; gap:6px; background:#FDECEC; border:1px solid #F7D3D3; color:#C0392B; font-weight:600; font-size:12.5px; padding:7px 12px; border-radius:999px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .2s both;">⚠️ Too good to be true</span>
+                      <span style="display:inline-flex; align-items:center; gap:6px; background:#FDECEC; border:1px solid #F7D3D3; color:#C0392B; font-weight:600; font-size:12.5px; padding:7px 12px; border-radius:999px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .4s both;">🔗 Sketchy link</span>
+                      <span style="display:inline-flex; align-items:center; gap:6px; background:#FDECEC; border:1px solid #F7D3D3; color:#C0392B; font-weight:600; font-size:12.5px; padding:7px 12px; border-radius:999px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .6s both;">⏰ Rushing you</span>
+                    </div>
+                  </div>
+
+                  <div style="margin-top:14px; display:flex; align-items:center; gap:12px; background:#EAFBF2; border:1px solid #CDEFDD; border-radius:16px; padding:14px 15px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .85s both;">
+                    <div style="width:38px; height:38px; border-radius:50%; background:#2F9E67; color:#fff; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0;">🚩</div>
+                    <div style="flex:1;"><div style="font-family:'Fredoka'; font-weight:600; font-size:15px; color:#1C1F2E;">It's a scam. Nice catch!</div><div style="font-size:12px; color:#3E9C6B;">You kept your coins safe.</div></div>
+                    <span style="background:#2F9E67; color:#fff; font-weight:700; font-size:12.5px; padding:6px 11px; border-radius:999px; flex-shrink:0;">+<span data-count="40">40</span> XP</span>
+                  </div>
+
+                  <div style="margin-top:14px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:16px; padding:13px 15px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;"><span style="font-size:12.5px; font-weight:600; color:#413B5A;">Scam radar</span><span style="font-size:12px; font-weight:700; color:#2FB8BE;">Sharp 🔍</span></div>
+                    <div style="height:10px; background:#EDE7F8; border-radius:999px; overflow:hidden;"><div style="height:100%; width:0; background:linear-gradient(90deg,#5CE1E6,#2FB8BE); border-radius:999px; animation:mvRadar 1.3s cubic-bezier(.3,.9,.3,1) .3s forwards;"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ---- CARD 2: SAVE FOR A GOAL ---- -->
+              <div data-card="2" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; transform:translateY(22px) scale(.97); z-index:1; pointer-events:none; transition:opacity .6s ease, transform .6s cubic-bezier(.2,.9,.3,1);">
+                <div style="width:472px; position:relative; background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border:1px solid #ECE7FB; border-radius:26px; box-shadow:0 34px 68px -28px rgba(80,60,150,.5); padding:22px;">
+                  <div style="position:absolute; top:-13px; left:22px; display:flex; align-items:center; gap:5px; background:#FFD84D; color:#8A5A12; font-weight:700; font-size:11px; padding:5px 12px; border-radius:999px; box-shadow:0 8px 18px -6px rgba(243,194,24,.7);">🚲 Save-for-a-goal adventure</div>
+                  <div style="display:flex; align-items:center; justify-content:space-between;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                      <div style="width:46px; height:46px; border-radius:50%; background:radial-gradient(circle at 34% 28%,#8B74FF,#6B4EFF); display:flex; align-items:center; justify-content:center; font-size:23px;">🚲</div>
+                      <div><div style="font-family:'Fredoka'; font-weight:600; font-size:17px;">Zoe's Bike Fund</div><div style="font-size:12px; color:#8480A0;">Goal · Trail Blazer 20”</div></div>
+                    </div>
+                    <span style="display:inline-flex; align-items:center; gap:5px; background:#FFF3CF; color:#A9760A; font-weight:700; font-size:13px; padding:6px 12px; border-radius:999px;">🔥 6 days</span>
+                  </div>
+
+                  <div style="margin-top:18px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:18px; padding:16px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:13px; font-weight:600; color:#413B5A;">Mountain bike</span><span style="font-size:12px; color:#8480A0;">Target $180</span></div>
+                    <div style="display:flex; align-items:baseline; gap:7px; margin-top:6px;"><span style="font-family:'Fredoka'; font-weight:700; font-size:30px; color:#6B4EFF; line-height:1;">$<span data-count="117">117</span></span><span style="font-size:14px; color:#A8A2C0;">saved so far</span></div>
+                    <div style="position:relative; height:22px; margin-top:14px;">
+                      <div style="position:absolute; left:0; top:4px; right:0; height:14px; background:#EDE7F8; border-radius:999px;"></div>
+                      <div style="position:absolute; left:0; top:4px; height:14px; width:0; background:linear-gradient(90deg,#8B74FF,#6B4EFF); border-radius:999px; animation:mvBikeFill 1.4s cubic-bezier(.3,.9,.3,1) .4s forwards;">
+                        <div style="position:absolute; right:-11px; top:50%; transform:translateY(-50%); font-size:19px; filter:drop-shadow(0 3px 4px rgba(107,78,255,.4));">🚲</div>
+                      </div>
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-top:9px;"><span style="font-size:12px; font-weight:700; color:#2F9E67;">65% there</span><span style="font-size:12px; color:#8480A0;">4 weeks to go 🎉</span></div>
+                  </div>
+
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:13px; margin-top:14px;">
+                    <div style="background:#EAFBF2; border:1px solid #D5EFDF; border-radius:18px; padding:14px 15px;"><div style="font-size:12px; color:#3E9C6B; font-weight:500;">This week</div><div style="font-family:'Fredoka'; font-weight:700; font-size:22px; color:#3E9C6B;">+$<span data-count="15">15</span></div></div>
+                    <div style="background:#EDE6FF; border:1px solid #DED3FA; border-radius:18px; padding:14px 15px;"><div style="font-size:12px; color:#5A3EE6; font-weight:500;">Auto-save</div><div style="font-family:'Fredoka'; font-weight:700; font-size:22px; color:#6B4EFF;">$15<span style="font-size:13px; color:#8B7FC0;"> /wk</span></div></div>
+                  </div>
+
+                  <div style="margin-top:14px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:18px; padding:14px 16px;">
+                    <div style="font-size:13px; font-weight:600; color:#413B5A; margin-bottom:11px;">Milestones</div>
+                    <div style="display:flex; flex-direction:column; gap:9px; font-size:12.5px;">
+                      <div style="display:flex; align-items:center; gap:9px;"><span style="width:20px; height:20px; border-radius:50%; background:#2F9E67; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .3s both;">✓</span><span style="color:#3A3550;">Helmet fund · $20</span></div>
+                      <div style="display:flex; align-items:center; gap:9px;"><span style="width:20px; height:20px; border-radius:50%; background:#2F9E67; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .45s both;">✓</span><span style="color:#3A3550;">First $50 saved</span></div>
+                      <div style="display:flex; align-items:center; gap:9px;"><span style="width:20px; height:20px; border-radius:50%; background:#2F9E67; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .6s both;">✓</span><span style="color:#3A3550;">Halfway there 🎉</span></div>
+                      <div style="display:flex; align-items:center; gap:9px;"><span style="width:20px; height:20px; border-radius:50%; background:#ECE6F6; color:#B4ABCE; display:flex; align-items:center; justify-content:center; font-size:10px; flex-shrink:0;">🔒</span><span style="color:#A8A2C0;">New bike unlocked</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div style="display:flex; align-items:center; gap:9px;">
+              <button data-dot="0" aria-label="Grow a business" style="border:none; padding:0; cursor:pointer; height:9px; width:26px; border-radius:999px; background:#6B4EFF; transition:width .3s ease, background .3s ease;"></button>
+              <button data-dot="1" aria-label="Outsmart a scam" style="border:none; padding:0; cursor:pointer; height:9px; width:9px; border-radius:999px; background:#D9D2F0; transition:width .3s ease, background .3s ease;"></button>
+              <button data-dot="2" aria-label="Save for a goal" style="border:none; padding:0; cursor:pointer; height:9px; width:9px; border-radius:999px; background:#D9D2F0; transition:width .3s ease, background .3s ease;"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section style="display:flex; gap:80px; align-items:flex-start; padding:80px; width:max-content;">
+
+  <!-- ============ 1a — GROW ============ -->
+  <div id="1a" style="display:flex; flex-direction:column; gap:20px;">
+    <div style="display:flex; align-items:center; gap:14px;">
+      <span style="background:#1C1F2E; color:#fff; font-family:'Fredoka'; font-weight:600; font-size:18px; padding:6px 16px; border-radius:999px;">1a</span>
+      <div>
+        <div style="font-family:'Fredoka'; font-weight:600; font-size:20px; color:#1C1F2E;">Grow</div>
+        <div style="font-size:14px; color:#6E6A85;">Playful &amp; warm · living money-tree animation</div>
+      </div>
+    </div>
+
+    <div style="position:relative; width:1180px; height:760px; border-radius:32px; overflow:hidden; background:linear-gradient(158deg,#F3EEFF 0%,#F9F8FF 50%,#E8FBF1 100%); box-shadow:0 44px 90px -34px rgba(60,40,120,.5);">
+      <div style="position:absolute; top:-140px; right:-70px; width:440px; height:440px; border-radius:50%; background:radial-gradient(circle,#E4DAFF 0%,rgba(228,218,255,0) 70%);"></div>
+      <div style="position:absolute; bottom:-120px; left:-80px; width:360px; height:360px; border-radius:50%; background:radial-gradient(circle,#D6F5E2 0%,rgba(214,245,226,0) 70%);"></div>
+
+      <nav style="position:relative; z-index:6; display:flex; align-items:center; justify-content:space-between; padding:28px 48px;">
+        <div style="display:flex; align-items:center; gap:11px;">
+          <div style="width:40px; height:40px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); display:flex; align-items:center; justify-content:center; box-shadow:0 5px 14px rgba(243,194,24,.5);"><span style="font-family:'Fredoka'; font-weight:700; color:#8A5A12; font-size:21px;">$</span></div>
+          <span style="font-family:'Fredoka'; font-weight:600; font-size:23px; color:#1C1F2E;">Money<span style="color:#6B4EFF;">Verse</span></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:30px;">
+          <div style="display:flex; gap:26px; font-size:15px; font-weight:500; color:#413B5A;"><span>For Kids</span><span>Free Tools</span><span>For Parents</span></div>
+          <span style="border:2px solid #6B4EFF; color:#6B4EFF; font-weight:600; font-size:14px; padding:9px 18px; border-radius:999px;">Join waitlist</span>
+        </div>
+      </nav>
+
+      <div style="position:relative; z-index:5; display:grid; grid-template-columns:1.02fr .98fr; gap:20px; align-items:center; padding:6px 48px 0; height:calc(760px - 96px);">
+        <div>
+          <span style="display:inline-flex; align-items:center; gap:8px; background:#EDE6FF; color:#5A3EE6; font-weight:600; font-size:13px; padding:8px 15px; border-radius:999px;"><span style="width:8px; height:8px; border-radius:50%; background:#5FD38D;"></span>Made for curious kids · ages 6–14</span>
+          <h1 style="font-size:60px; line-height:1.0; font-weight:600; letter-spacing:-1px; margin:20px 0 0;">Grow your money<br>like a <span style="color:#6B4EFF;">champ.</span></h1>
+          <p style="font-size:19px; line-height:1.55; color:#4A4560; max-width:445px; margin:22px 0 0;">Play, save, and build in a safe money world, no real cash, no ads, just money skills that actually stick.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:32px;">
+            <span style="display:inline-flex; align-items:center; gap:8px; background:#6B4EFF; color:#fff; font-weight:600; font-size:16px; padding:15px 26px; border-radius:999px; box-shadow:0 14px 30px -10px rgba(107,78,255,.7);">Explore free tools <span style="font-size:18px;">→</span></span>
+            <span style="display:inline-flex; align-items:center; background:#fff; color:#3A3550; font-weight:600; font-size:16px; padding:15px 26px; border-radius:999px; border:1.5px solid #E3DCF6;">Join the waitlist</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; margin-top:28px; background:rgba(255,255,255,.7); border:1px solid #EAE3FA; border-radius:16px; padding:12px 18px; width:max-content;">
+            <div style="width:34px; height:34px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); display:flex; align-items:center; justify-content:center;"><span style="font-family:'Fredoka'; font-weight:700; color:#8A5A12; font-size:16px;">$</span></div>
+            <div><span data-count="148" style="font-family:'Fredoka'; font-weight:700; font-size:22px; color:#1C1F2E;">148</span> <span style="font-size:14px; color:#6E6A85;">coins saved by kids this week</span></div>
+          </div>
+          <div style="margin-top:20px; font-size:13px; color:#8480A0; font-weight:500;">No bank connection · No ads · Kid-safe by design</div>
+        </div>
+
+        <div style="position:relative; height:100%; display:flex; align-items:center; justify-content:center;">
+          <div style="position:absolute; width:380px; height:380px; border-radius:50%; background:radial-gradient(circle,#DFF7E8 0%,rgba(223,247,232,0) 72%);"></div>
+          <div style="position:relative; animation:mvBob 5s ease-in-out infinite;">
+            <div style="position:relative; width:280px; height:230px;">
+              <div style="position:absolute; left:112px; bottom:0; width:26px; height:120px; border-radius:12px; background:linear-gradient(#B07A46,#8B5A2B);"></div>
+              <div style="position:absolute; left:70px; bottom:150px; width:150px; height:150px; border-radius:50%; background:radial-gradient(circle at 38% 32%,#7BE3A3,#5FD38D 70%); animation:mvPop .7s cubic-bezier(.2,1.3,.4,1) .15s both;"></div>
+              <div style="position:absolute; left:26px; bottom:110px; width:110px; height:110px; border-radius:50%; background:radial-gradient(circle at 38% 32%,#6FDD98,#4FC47E 70%); animation:mvPop .7s cubic-bezier(.2,1.3,.4,1) .35s both;"></div>
+              <div style="position:absolute; left:150px; bottom:104px; width:118px; height:118px; border-radius:50%; background:radial-gradient(circle at 38% 32%,#6FDD98,#4FC47E 70%); animation:mvPop .7s cubic-bezier(.2,1.3,.4,1) .5s both;"></div>
+              <div style="position:absolute; left:96px; bottom:170px; width:34px; height:34px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(243,194,24,.5); animation:mvPop .6s cubic-bezier(.2,1.3,.4,1) .8s both;"><span style="font-family:'Fredoka'; font-weight:700; color:#8A5A12; font-size:16px;">$</span></div>
+            </div>
+            <div style="width:150px; height:96px; margin:-6px auto 0; border-radius:0 0 26px 26px / 0 0 40px 40px; background:linear-gradient(#CFEFFF,#A9E1FB); border:3px solid #fff; box-shadow:0 10px 24px -10px rgba(80,120,160,.6); position:relative; overflow:hidden;"><div style="position:absolute; bottom:0; left:0; right:0; height:46px; background:linear-gradient(#7ED0F5,#5CC0EE);"></div></div>
+          </div>
+          <div style="position:absolute; left:70px; bottom:170px; width:30px; height:30px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(243,194,24,.5); animation:mvFloatUp 3.4s ease-in infinite;"><span style="font-family:'Fredoka'; font-weight:700; color:#8A5A12; font-size:14px;">$</span></div>
+          <div style="position:absolute; left:150px; bottom:150px; width:26px; height:26px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); box-shadow:0 4px 10px rgba(243,194,24,.5); animation:mvFloatUp 3.9s ease-in .8s infinite;"></div>
+          <div style="position:absolute; left:225px; bottom:180px; width:32px; height:32px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(243,194,24,.5); animation:mvFloatUp 3.2s ease-in 1.6s infinite;"><span style="font-family:'Fredoka'; font-weight:700; color:#8A5A12; font-size:15px;">$</span></div>
+          <div style="position:absolute; left:110px; bottom:200px; width:22px; height:22px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); box-shadow:0 4px 10px rgba(243,194,24,.5); animation:mvFloatUp 4.2s ease-in 2.3s infinite;"></div>
+          <div style="position:absolute; top:60px; left:60px; width:12px; height:12px; border-radius:3px; background:#6B4EFF; animation:mvConfetti 4s linear .5s infinite;"></div>
+          <div style="position:absolute; top:40px; left:240px; width:10px; height:10px; border-radius:3px; background:#5CE1E6; animation:mvConfetti 4.6s linear 1.4s infinite;"></div>
+          <div style="position:absolute; top:80px; left:180px; width:11px; height:11px; border-radius:50%; background:#FFD84D; animation:mvConfetti 4.2s linear 2.1s infinite;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 1b — BUILD ============ -->
+  <div id="1b" style="display:flex; flex-direction:column; gap:20px;">
+    <div style="display:flex; align-items:center; gap:14px;">
+      <span style="background:#1C1F2E; color:#fff; font-family:'Fredoka'; font-weight:600; font-size:18px; padding:6px 16px; border-radius:999px;">1b</span>
+      <div>
+        <div style="font-family:'Fredoka'; font-weight:600; font-size:20px; color:#1C1F2E;">Build</div>
+        <div style="font-size:14px; color:#6E6A85;">Elegant &amp; punchy · self-assembling dashboard</div>
+      </div>
+    </div>
+
+    <div style="position:relative; width:1180px; height:760px; border-radius:32px; overflow:hidden; background:#FBFBFE; box-shadow:0 44px 90px -34px rgba(60,40,120,.5);">
+      <div style="position:absolute; top:-160px; right:-120px; width:520px; height:520px; border-radius:50%; background:radial-gradient(circle,#EDE7FF 0%,rgba(237,231,255,0) 70%);"></div>
+      <div style="position:absolute; inset:0; background-image:radial-gradient(#E7E2F6 1.3px, transparent 1.3px); background-size:26px 26px; opacity:.5;"></div>
+
+      <nav style="position:relative; z-index:6; display:flex; align-items:center; justify-content:space-between; padding:28px 48px;">
+        <div style="display:flex; align-items:center; gap:11px;">
+          <div style="width:40px; height:40px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); display:flex; align-items:center; justify-content:center; box-shadow:0 5px 14px rgba(243,194,24,.5);"><span style="font-family:'Fredoka'; font-weight:700; color:#8A5A12; font-size:21px;">$</span></div>
+          <span style="font-family:'Fredoka'; font-weight:600; font-size:23px; color:#1C1F2E;">Money<span style="color:#6B4EFF;">Verse</span></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:30px;">
+          <div style="display:flex; gap:26px; font-size:15px; font-weight:500; color:#413B5A;"><span>How it works</span><span>Free Tools</span><span>For Parents</span></div>
+          <span style="border:2px solid #6B4EFF; color:#6B4EFF; font-weight:600; font-size:14px; padding:9px 18px; border-radius:999px;">Join waitlist</span>
+        </div>
+      </nav>
+
+      <div style="position:relative; z-index:5; display:grid; grid-template-columns:1fr 1fr; gap:36px; align-items:center; padding:6px 48px 0; height:calc(760px - 96px);">
+        <div>
+          <span style="display:inline-flex; align-items:center; gap:8px; background:#E4F9FA; color:#127C82; font-weight:600; font-size:13px; padding:8px 15px; border-radius:999px;">Learn by doing, not memorizing</span>
+          <h1 style="font-size:57px; line-height:1.02; font-weight:600; letter-spacing:-1px; margin:20px 0 0;">Money skills<br>that finally <span style="color:#6B4EFF;">click.</span></h1>
+          <p style="font-size:19px; line-height:1.55; color:#4A4560; max-width:440px; margin:22px 0 0;">Run a lemonade stand. Build a budget. Outsmart a scam. MoneyVerse turns real money skills into games kids actually finish.</p>
+          <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:32px;">
+            <span style="display:inline-flex; align-items:center; gap:8px; background:#6B4EFF; color:#fff; font-weight:600; font-size:16px; padding:15px 26px; border-radius:999px; box-shadow:0 14px 30px -10px rgba(107,78,255,.7);">Explore free tools <span style="font-size:18px;">→</span></span>
+            <span style="display:inline-flex; align-items:center; background:#E4F9FA; color:#127C82; font-weight:600; font-size:16px; padding:15px 26px; border-radius:999px;">See how it works</span>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:30px;">
+            <span style="background:#fff; border:1.5px solid #EDE7FA; color:#413B5A; font-weight:600; font-size:14px; padding:9px 15px; border-radius:12px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .3s both;">🍋 Lemonade Stand</span>
+            <span style="background:#fff; border:1.5px solid #EDE7FA; color:#413B5A; font-weight:600; font-size:14px; padding:9px 15px; border-radius:12px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .5s both;">📊 Budget Builder</span>
+            <span style="background:#fff; border:1.5px solid #EDE7FA; color:#413B5A; font-weight:600; font-size:14px; padding:9px 15px; border-radius:12px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .7s both;">🛡️ Scam Shield</span>
+            <span style="background:#fff; border:1.5px solid #EDE7FA; color:#413B5A; font-weight:600; font-size:14px; padding:9px 15px; border-radius:12px; animation:mvPop .5s cubic-bezier(.2,1.3,.4,1) .9s both;">🌳 Money Tree</span>
+          </div>
+        </div>
+
+        <div style="position:relative; display:flex; align-items:center; justify-content:center;">
+          <div style="width:430px; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); border:1px solid #ECE7FB; border-radius:26px; box-shadow:0 34px 68px -28px rgba(80,60,150,.5); padding:26px; animation:mvRise .7s cubic-bezier(.2,.9,.3,1) both;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#8B74FF,#6B4EFF); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Fredoka'; font-weight:700; font-size:19px;">M</div>
+                <div><div style="font-family:'Fredoka'; font-weight:600; font-size:17px;">Maya's Money</div><div style="font-size:12px; color:#8480A0;">Level 4 · Saver</div></div>
+              </div>
+              <span style="display:inline-flex; align-items:center; gap:5px; background:#FFF3CF; color:#A9760A; font-weight:700; font-size:13px; padding:6px 12px; border-radius:999px;">🔥 6 day streak</span>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:22px; margin-top:22px;">
+              <div style="position:relative; width:130px; height:130px; flex-shrink:0;">
+                <svg width="130" height="130" viewBox="0 0 130 130">
+                  <circle cx="65" cy="65" r="54" stroke="#EEE9FB" stroke-width="14" fill="none"></circle>
+                  <circle cx="65" cy="65" r="54" stroke="#6B4EFF" stroke-width="14" fill="none" stroke-linecap="round" stroke-dasharray="339" stroke-dashoffset="339" transform="rotate(-90 65 65)" style="animation:mvRing 1.5s cubic-bezier(.3,.9,.3,1) .4s forwards;"></circle>
+                </svg>
+                <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;"><span style="font-family:'Fredoka'; font-weight:700; font-size:26px; color:#1C1F2E;"><span data-count="68" data-prefix="$">$68</span></span><span style="font-size:12px; color:#8480A0;">of $100 goal</span></div>
+              </div>
+              <div style="flex:1; display:flex; flex-direction:column; gap:12px;">
+                <div style="background:#F4F1FE; border-radius:16px; padding:14px;"><div style="font-size:12px; color:#8480A0; font-weight:500;">Total saved</div><div style="font-family:'Fredoka'; font-weight:700; font-size:22px; color:#6B4EFF;"><span data-count="148" data-prefix="$">$148</span></div></div>
+                <div style="background:#EAFBF2; border-radius:16px; padding:14px;"><div style="font-size:12px; color:#3E9C6B; font-weight:500;">This week</div><div style="font-family:'Fredoka'; font-weight:700; font-size:22px; color:#3E9C6B;">+<span data-count="24" data-prefix="$">$24</span></div></div>
+              </div>
+            </div>
+
+            <div style="margin-top:20px; background:#FAF9FE; border:1px solid #F0ECFA; border-radius:16px; padding:16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;"><span style="font-size:13px; font-weight:600; color:#413B5A;">Savings this month</span><span style="font-size:12px; color:#3E9C6B; font-weight:600;">▲ 32%</span></div>
+              <svg width="100%" height="70" viewBox="0 0 340 70" preserveAspectRatio="none">
+                <defs><linearGradient id="mvArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6B4EFF" stop-opacity="0.28"></stop><stop offset="1" stop-color="#6B4EFF" stop-opacity="0"></stop></linearGradient></defs>
+                <path d="M0,56 L48,50 L96,54 L144,40 L192,44 L240,28 L288,22 L340,10 L340,70 L0,70 Z" fill="url(#mvArea)" style="opacity:0; animation:mvFade .8s ease 1.1s forwards;"></path>
+                <path d="M0,56 L48,50 L96,54 L144,40 L192,44 L240,28 L288,22 L340,10" fill="none" stroke="#6B4EFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="420" stroke-dashoffset="420" style="animation:mvDraw 1.4s ease .5s forwards;"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 1c — PLAYGROUND ============ -->
+  <div id="1c" style="display:flex; flex-direction:column; gap:20px;">
+    <div style="display:flex; align-items:center; gap:14px;">
+      <span style="background:#1C1F2E; color:#fff; font-family:'Fredoka'; font-weight:600; font-size:18px; padding:6px 16px; border-radius:999px;">1c</span>
+      <div>
+        <div style="font-family:'Fredoka'; font-weight:600; font-size:20px; color:#1C1F2E;">Playground</div>
+        <div style="font-size:14px; color:#6E6A85;">Bold &amp; viral · parallax town (move your mouse)</div>
+      </div>
+    </div>
+
+    <div data-hero="1c" style="position:relative; width:1180px; height:760px; border-radius:32px; overflow:hidden; background:linear-gradient(180deg,#6B4EFF 0%,#7E6BFF 34%,#79C9EC 78%,#5CE1E6 100%); box-shadow:0 44px 90px -34px rgba(60,40,120,.6); cursor:crosshair;">
+      <div data-depth="0.4" style="position:absolute; top:70px; left:120px; width:120px; height:40px; background:rgba(255,255,255,.85); border-radius:999px; transition:transform .25s ease-out;"></div>
+      <div data-depth="0.7" style="position:absolute; top:130px; right:180px; width:90px; height:32px; background:rgba(255,255,255,.7); border-radius:999px; transition:transform .25s ease-out;"></div>
+      <div data-depth="0.5" style="position:absolute; top:200px; left:360px; width:70px; height:26px; background:rgba(255,255,255,.6); border-radius:999px; transition:transform .25s ease-out;"></div>
+
+      <nav style="position:relative; z-index:8; display:flex; align-items:center; justify-content:space-between; padding:28px 48px;">
+        <div style="display:flex; align-items:center; gap:11px;">
+          <div style="width:40px; height:40px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); display:flex; align-items:center; justify-content:center; box-shadow:0 5px 14px rgba(243,194,24,.6);"><span style="font-family:'Fredoka'; font-weight:700; color:#8A5A12; font-size:21px;">$</span></div>
+          <span style="font-family:'Fredoka'; font-weight:600; font-size:23px; color:#fff;">MoneyVerse</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:30px;">
+          <div style="display:flex; gap:26px; font-size:15px; font-weight:500; color:rgba(255,255,255,.9);"><span>For Kids</span><span>Free Tools</span><span>For Parents</span></div>
+          <span style="border:2px solid rgba(255,255,255,.6); color:#fff; font-weight:600; font-size:14px; padding:9px 18px; border-radius:999px;">Join waitlist</span>
+        </div>
+      </nav>
+
+      <div style="position:absolute; top:120px; right:56px; z-index:7; background:#FFD84D; color:#1C1F2E; border-radius:20px; padding:16px 22px; text-align:center; animation:mvGlow 3s ease-in-out infinite, mvFloat 5s ease-in-out infinite;">
+        <div style="font-family:'Fredoka'; font-weight:700; font-size:34px; line-height:1;"><span data-count="2400000" data-format="compact">2.4M</span></div>
+        <div style="font-size:13px; font-weight:600; margin-top:2px;">coins earned by kids<br>this month</div>
+      </div>
+
+      <div style="position:relative; z-index:6; padding:44px 48px 0; max-width:620px;">
+        <span style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.2); color:#fff; font-weight:600; font-size:13px; padding:8px 15px; border-radius:999px; backdrop-filter:blur(4px);">The world where money is a game</span>
+        <h1 style="font-size:72px; line-height:.98; font-weight:700; letter-spacing:-1.5px; margin:20px 0 0; color:#fff;">Welcome to<br>MoneyVerse.</h1>
+        <p style="font-size:20px; line-height:1.5; color:rgba(255,255,255,.92); max-width:490px; margin:22px 0 0;">A whole world where kids earn, save, and spend play money, and walk away with real-life money smarts.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:34px;">
+          <span style="display:inline-flex; align-items:center; gap:8px; background:#FFD84D; color:#1C1F2E; font-weight:700; font-size:17px; padding:16px 30px; border-radius:999px; box-shadow:0 16px 34px -10px rgba(0,0,0,.35);">Explore free tools <span style="font-size:18px;">→</span></span>
+          <span style="display:inline-flex; align-items:center; background:rgba(255,255,255,.16); color:#fff; font-weight:600; font-size:17px; padding:16px 30px; border-radius:999px; border:1.5px solid rgba(255,255,255,.5); backdrop-filter:blur(4px);">Join the waitlist</span>
+        </div>
+      </div>
+
+      <!-- back hills -->
+      <div data-depth="0.3" style="position:absolute; bottom:-40px; left:-60px; right:-60px; height:230px; background:#4FBF7E; border-radius:50% 50% 0 0 / 90px 90px 0 0; transition:transform .25s ease-out;"></div>
+      <div data-depth="0.5" style="position:absolute; bottom:-60px; left:-120px; width:520px; height:220px; background:#3FA96C; border-radius:50%; transition:transform .25s ease-out;"></div>
+      <div data-depth="0.5" style="position:absolute; bottom:-60px; right:-120px; width:520px; height:220px; background:#3FA96C; border-radius:50%; transition:transform .25s ease-out;"></div>
+
+      <!-- mid buildings -->
+      <div data-depth="0.9" style="position:absolute; bottom:64px; left:120px; transition:transform .25s ease-out;">
+        <div style="position:relative; width:96px;">
+          <div style="height:20px; background:#5A3EE6; border-radius:8px 8px 0 0; margin:0 -6px;"></div>
+          <div style="height:78px; background:#6B4EFF; display:flex; align-items:center; justify-content:center; gap:8px;"><div style="width:8px; height:56px; background:#8B74FF; border-radius:3px;"></div><div style="width:8px; height:56px; background:#8B74FF; border-radius:3px;"></div><div style="width:8px; height:56px; background:#8B74FF; border-radius:3px;"></div></div>
+          <div style="position:absolute; top:26px; left:50%; transform:translateX(-50%); font-family:'Fredoka'; font-weight:700; color:#FFD84D; font-size:20px;">$</div>
+        </div>
+      </div>
+      <div data-depth="0.9" style="position:absolute; bottom:64px; right:150px; transition:transform .25s ease-out;">
+        <div style="width:104px;">
+          <div style="height:22px; background:repeating-linear-gradient(90deg,#FF6B6B 0 13px,#fff 13px 26px); border-radius:8px 8px 0 0;"></div>
+          <div style="height:74px; background:#5CE1E6; display:flex; align-items:flex-end; justify-content:center; padding-bottom:0;"><div style="width:28px; height:44px; background:#2FB8BE; border-radius:6px 6px 0 0;"></div></div>
+        </div>
+      </div>
+
+      <!-- front layer: lemonade stand, tree, balloon, coins -->
+      <div data-depth="1.4" style="position:absolute; bottom:58px; left:50%; transform:translateX(-50%); transition:transform .25s ease-out;">
+        <div style="width:120px; text-align:center;">
+          <div style="background:#FFD84D; color:#8A5A12; font-family:'Fredoka'; font-weight:700; font-size:13px; padding:5px 0; border-radius:8px 8px 0 0;">LEMONADE</div>
+          <div style="height:60px; background:#FFF0B8; display:flex; align-items:center; justify-content:center;"><div style="width:34px; height:40px; background:#FFE47A; border-radius:6px 6px 10px 10px; border:2px solid #F3C218;"></div></div>
+          <div style="height:8px; background:#E0B94A;"></div>
+        </div>
+      </div>
+      <div data-depth="1.6" style="position:absolute; bottom:60px; right:300px; transition:transform .25s ease-out; animation:mvBob 5s ease-in-out infinite;">
+        <div style="position:relative; width:90px; height:130px;">
+          <div style="position:absolute; left:38px; bottom:0; width:16px; height:64px; border-radius:8px; background:#8B5A2B;"></div>
+          <div style="position:absolute; left:8px; bottom:52px; width:74px; height:74px; border-radius:50%; background:radial-gradient(circle at 38% 32%,#7BE3A3,#5FD38D 70%);"></div>
+        </div>
+      </div>
+      <div data-depth="2" style="position:absolute; top:210px; left:150px; transition:transform .25s ease-out; animation:mvFloat 6s ease-in-out infinite;">
+        <div style="position:relative; width:70px;">
+          <div style="width:70px; height:80px; border-radius:50% 50% 46% 46%; background:radial-gradient(circle at 34% 28%,#8B74FF,#6B4EFF);"></div>
+          <div style="width:22px; height:16px; background:#B07A46; border-radius:0 0 5px 5px; margin:2px auto 0;"></div>
+        </div>
+      </div>
+
+      <div data-depth="2.2" style="position:absolute; bottom:150px; left:40%; width:30px; height:30px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); display:flex; align-items:center; justify-content:center; box-shadow:0 5px 12px rgba(0,0,0,.2); transition:transform .25s ease-out; animation:mvSpin 3s linear infinite;"><span style="font-family:'Fredoka'; font-weight:700; color:#8A5A12; font-size:15px;">$</span></div>
+      <div style="position:absolute; bottom:220px; left:56%; width:24px; height:24px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); box-shadow:0 5px 12px rgba(0,0,0,.2); animation:mvFloatUp 4s ease-in .6s infinite;"></div>
+      <div style="position:absolute; bottom:180px; left:66%; width:28px; height:28px; border-radius:50%; background:radial-gradient(circle at 32% 28%,#FFECAE,#FFD84D 58%,#F3C218); display:flex; align-items:center; justify-content:center; box-shadow:0 5px 12px rgba(0,0,0,.2); animation:mvFloatUp 3.6s ease-in 1.5s infinite;"><span style="font-family:'Fredoka'; font-weight:700; color:#8A5A12; font-size:13px;">$</span></div>
+    </div>
+  </div>
+
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount() {
+    let countTok = 0;
+    const animateCount = (el) => {
+      const to = parseFloat(el.getAttribute('data-count')) || 0;
+      const prefix = el.getAttribute('data-prefix') || '';
+      const suffix = el.getAttribute('data-suffix') || '';
+      const compact = el.getAttribute('data-format') === 'compact';
+      const dur = 1400;
+      const ease = (t) => 1 - Math.pow(1 - t, 3);
+      const fmt = (v) => {
+        if (compact) {
+          if (v >= 1000000) return (v / 1000000).toFixed(1) + 'M';
+          if (v >= 1000) return Math.round(v / 1000) + 'K';
+          return String(Math.round(v));
+        }
+        return Math.round(v).toLocaleString();
+      };
+      const id = ++countTok; el._ct = id;
+      const start = performance.now();
+      const tick = (now) => {
+        if (el._ct !== id) return;
+        const p = Math.min(1, (now - start) / dur);
+        el.textContent = prefix + fmt(to * ease(p)) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+
+    const replayAnims = (scope) => {
+      const els = scope.querySelectorAll('[style*="animation"]');
+      els.forEach((el) => {
+        if (el._anim == null) el._anim = el.style.animation;
+        el.style.animation = 'none';
+      });
+      void scope.offsetWidth;
+      els.forEach((el) => { el.style.animation = el._anim || ''; });
+      scope.querySelectorAll('[data-count]').forEach(animateCount);
+    };
+
+    const carousel = document.querySelector('[data-carousel]');
+
+    // Count-up on every stat number that isn't inside the rotating carousel
+    document.querySelectorAll('[data-count]').forEach((el) => {
+      if (!carousel || !carousel.contains(el)) animateCount(el);
+    });
+
+    // Auto-rotating adventure carousel (card 0 → 1 → 2)
+    if (carousel) {
+      const cards = Array.from(carousel.querySelectorAll('[data-card]'));
+      const dots = Array.from(document.querySelectorAll('[data-dot]'));
+      let idx = 0, timer = null;
+      const show = (i) => {
+        idx = (i + cards.length) % cards.length;
+        cards.forEach((c, n) => {
+          const on = n === idx;
+          c.style.opacity = on ? '1' : '0';
+          c.style.transform = on ? 'none' : 'translateY(22px) scale(.97)';
+          c.style.zIndex = on ? '2' : '1';
+          c.style.pointerEvents = on ? 'auto' : 'none';
+        });
+        dots.forEach((d, n) => {
+          const on = n === idx;
+          d.style.width = on ? '26px' : '9px';
+          d.style.background = on ? '#6B4EFF' : '#D9D2F0';
+        });
+        replayAnims(cards[idx]);
+      };
+      const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+      const start = () => { stop(); timer = setInterval(() => show(idx + 1), 5200); };
+      dots.forEach((d, n) => d.addEventListener('click', () => { show(n); start(); }));
+      carousel.addEventListener('mouseenter', stop);
+      carousel.addEventListener('mouseleave', start);
+      show(0);
+      start();
+    }
+
+    // Mouse parallax inside the 1c playground hero
+    const hero = document.querySelector('[data-hero="1c"]');
+    if (hero) {
+      const layers = hero.querySelectorAll('[data-depth]');
+      layers.forEach((l) => {
+        const t = l.style.transform || '';
+        if (t.indexOf('translateX(-50%)') !== -1) l.setAttribute('data-base', 'translateX(-50%)');
+      });
+      const onMove = (e) => {
+        const r = hero.getBoundingClientRect();
+        const cx = (e.clientX - r.left) / r.width - 0.5;
+        const cy = (e.clientY - r.top) / r.height - 0.5;
+        layers.forEach((l) => {
+          const d = parseFloat(l.getAttribute('data-depth')) || 0;
+          const base = l.getAttribute('data-base') || '';
+          l.style.transform = base + ' translate(' + (cx * d * -26).toFixed(1) + 'px,' + (cy * d * -18).toFixed(1) + 'px)';
+        });
+      };
+      hero.addEventListener('mousemove', onMove);
+      hero.addEventListener('mouseleave', () => {
+        layers.forEach((l) => { l.style.transform = l.getAttribute('data-base') || ''; });
+      });
+    }
+  }
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

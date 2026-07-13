@@ -1,5 +1,3 @@
-'use client';
-
 import MoneyVerseHero from './components/MoneyVerseHero';
 
 export default function Home() {
