@@ -1,0 +1,354 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  active
+  suspended
+  deactivated
+}
+
+enum FamilyRole {
+  owner
+  guardian
+  limited_guardian
+}
+
+enum ChildStatus {
+  active
+  paused
+  archived
+}
+
+enum SavingsGoalStatus {
+  active
+  paused
+  completed
+  cancelled
+}
+
+model User {
+  id              String         @id @default(uuid()) @db.Uuid
+  email           String         @unique
+  emailNormalized String         @unique @map("email_normalized")
+  emailVerifiedAt DateTime?      @map("email_verified_at") @db.Timestamptz(6)
+  status          UserStatus     @default(active)
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  credentials     UserCredential?
+  sessions        UserSession[]
+  refreshFamilies RefreshTokenFamily[]
+  memberships     FamilyMembership[]
+  auditEvents     AuditEvent[]
+
+  @@map("users")
+}
+
+model UserCredential {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @unique @map("user_id") @db.Uuid
+  passwordHash   String   @map("password_hash")
+  passwordChangedAt DateTime @default(now()) @map("password_changed_at") @db.Timestamptz(6)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_credentials")
+}
+
+model UserSession {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  status        String    @default("active")
+  device        String?
+  ipHash        String?   @map("ip_hash")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  lastUsedAt    DateTime  @default(now()) @map("last_used_at") @db.Timestamptz(6)
+  expiresAt     DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt     DateTime? @map("revoked_at") @db.Timestamptz(6)
+  revokedReason String?   @map("revoked_reason")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshFamilies RefreshTokenFamily[]
+
+  @@map("user_sessions")
+}
+
+model RefreshTokenFamily {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  sessionId       String    @map("session_id") @db.Uuid
+  currentTokenHash String   @map("current_token_hash")
+  previousTokenHash String? @map("previous_token_hash")
+  rotatedAt       DateTime  @default(now()) @map("rotated_at") @db.Timestamptz(6)
+  revokedAt       DateTime? @map("revoked_at") @db.Timestamptz(6)
+  revokedReason   String?   @map("revoked_reason")
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session UserSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([currentTokenHash])
+  @@map("refresh_token_families")
+}
+
+model Family {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  memberships  FamilyMembership[]
+  childProfiles ChildProfile[]
+
+  @@map("families")
+}
+
+model FamilyMembership {
+  id        String     @id @default(uuid()) @db.Uuid
+  userId    String     @map("user_id") @db.Uuid
+  familyId  String     @map("family_id") @db.Uuid
+  role      FamilyRole @default(guardian)
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime   @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, familyId])
+  @@map("family_memberships")
+}
+
+model ChildProfile {
+  id              String      @id @default(uuid()) @db.Uuid
+  familyId        String      @map("family_id") @db.Uuid
+  nickname        String
+  age             Int         @map("age")
+  avatar          String?
+  status          ChildStatus @default(active)
+  privacySettings Json?       @map("privacy_settings")
+  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime    @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  family           Family           @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  progress         LessonProgress[]
+  masteryRecords   MasteryRecord[]
+  savingsGoals     SavingsGoal[]
+  simulatedAccounts SimulatedAccount[]
+  ledgerEntries    VirtualLedgerEntry[]
+
+  @@map("child_profiles")
+}
+
+model AuditEvent {
+  id            String   @id @default(uuid()) @db.Uuid
+  actorId       String?  @map("actor_id") @db.Uuid
+  action        String
+  targetType    String   @map("target_type")
+  targetId      String?  @map("target_id") @db.Uuid
+  result        String
+  reasonCode    String?  @map("reason_code")
+  correlationId String?  @map("correlation_id")
+  metadata      Json?
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId, createdAt])
+  @@map("audit_events")
+}
+
+model SecurityEvent {
+  id            String   @id @default(uuid()) @db.Uuid
+  actorId       String?  @map("actor_id") @db.Uuid
+  action        String
+  targetType    String   @map("target_type")
+  targetId      String?  @map("target_id") @db.Uuid
+  result        String
+  reasonCode    String?  @map("reason_code")
+  correlationId String?  @map("correlation_id")
+  metadata      Json?
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([action, createdAt])
+  @@map("security_events")
+}
+
+enum ContentStatus {
+  draft
+  published
+  archived
+}
+
+enum LessonProgressStatus {
+  started
+  completed
+  mastered
+}
+
+enum MasteryStatus {
+  in_progress
+  achieved
+}
+
+model Course {
+  id          String        @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  slug        String        @unique
+  status      ContentStatus @default(draft)
+  sortOrder   Int           @default(0) @map("sort_order")
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  modules Module[]
+
+  @@map("courses")
+}
+
+model Module {
+  id          String        @id @default(uuid()) @db.Uuid
+  courseId    String        @map("course_id") @db.Uuid
+  title       String
+  description String?
+  slug        String
+  status      ContentStatus @default(draft)
+  sortOrder   Int           @default(0) @map("sort_order")
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@unique([courseId, slug])
+  @@map("modules")
+}
+
+model Lesson {
+  id                  String        @id @default(uuid()) @db.Uuid
+  moduleId            String        @map("module_id") @db.Uuid
+  title               String
+  description         String?
+  slug                String        @unique
+  minAge              Int           @map("min_age")
+  maxAge              Int           @map("max_age")
+  status              ContentStatus @default(draft)
+  publishedVersionId  String?       @unique @map("published_version_id") @db.Uuid
+  createdAt           DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  module           Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  versions         LessonVersion[]
+  publishedVersion LessonVersion?   @relation("PublishedVersion", fields: [publishedVersionId], references: [id])
+
+  @@map("lessons")
+}
+
+model LessonVersion {
+  id          String        @id @default(uuid()) @db.Uuid
+  lessonId    String        @map("lesson_id") @db.Uuid
+  version     Int
+  content     Json
+  status      ContentStatus @default(draft)
+  publishedAt DateTime?     @map("published_at") @db.Timestamptz(6)
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  lesson       Lesson           @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  publishedFor Lesson?          @relation("PublishedVersion")
+  progress     LessonProgress[]
+  mastery      MasteryRecord[]
+
+  @@unique([lessonId, version])
+  @@map("lesson_versions")
+}
+
+model LessonProgress {
+  id              String               @id @default(uuid()) @db.Uuid
+  childId         String               @map("child_id") @db.Uuid
+  lessonVersionId String               @map("lesson_version_id") @db.Uuid
+  status          LessonProgressStatus @default(started)
+  score           Int?
+  startedAt       DateTime             @default(now()) @map("started_at") @db.Timestamptz(6)
+  completedAt     DateTime?            @map("completed_at") @db.Timestamptz(6)
+  createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime             @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  child   ChildProfile  @relation(fields: [childId], references: [id], onDelete: Cascade)
+  version LessonVersion @relation(fields: [lessonVersionId], references: [id], onDelete: Cascade)
+
+  @@unique([childId, lessonVersionId])
+  @@map("lesson_progress")
+}
+
+model MasteryRecord {
+  id              String        @id @default(uuid()) @db.Uuid
+  childId         String        @map("child_id") @db.Uuid
+  lessonVersionId String        @map("lesson_version_id") @db.Uuid
+  status          MasteryStatus
+  evidence        Json?
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  child   ChildProfile  @relation(fields: [childId], references: [id], onDelete: Cascade)
+  version LessonVersion @relation(fields: [lessonVersionId], references: [id], onDelete: Cascade)
+
+  @@unique([childId, lessonVersionId])
+  @@map("mastery_records")
+}
+
+model SavingsGoal {
+  id              String            @id @default(uuid()) @db.Uuid
+  childId         String            @map("child_id") @db.Uuid
+  title           String
+  description     String?
+  targetAmountMinor Int             @map("target_amount_minor")
+  currency        String            @default("simulated_cash")
+  status          SavingsGoalStatus @default(active)
+  dueDate         DateTime?         @map("due_date") @db.Timestamptz(6)
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  child ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@index([childId, currency])
+  @@map("savings_goals")
+}
+
+model SimulatedAccount {
+  id        String   @id @default(uuid()) @db.Uuid
+  childId   String   @map("child_id") @db.Uuid
+  currency  String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  child   ChildProfile        @relation(fields: [childId], references: [id], onDelete: Cascade)
+  entries VirtualLedgerEntry[]
+
+  @@unique([childId, currency])
+  @@map("simulated_accounts")
+}
+
+model VirtualLedgerEntry {
+  id                String   @id @default(uuid()) @db.Uuid
+  childId           String   @map("child_id") @db.Uuid
+  simulatedAccountId String   @map("simulated_account_id") @db.Uuid
+  amountMinor       Int      @map("amount_minor")
+  currency          String
+  entryType         String   @map("entry_type")
+  sourceType        String   @map("source_type")
+  sourceId          String?  @map("source_id") @db.Uuid
+  idempotencyKey    String   @unique @map("idempotency_key")
+  metadata          Json?
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  child    ChildProfile     @relation(fields: [childId], references: [id], onDelete: Cascade)
+  account  SimulatedAccount @relation(fields: [simulatedAccountId], references: [id], onDelete: Cascade)
+
+  @@map("virtual_ledger_entries")
+}

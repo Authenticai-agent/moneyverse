@@ -1,0 +1,21 @@
+# Security Test Cases
+
+- Parent A requests Parent B’s child by UUID.
+- Child modifies reward amount in the request.
+- Duplicate mission completion uses the same idempotency key.
+- Two concurrent reward requests arrive.
+- Nickname contains script, HTML, CSS, CSV formula, and Unicode confusables.
+- JWT uses `none`, wrong algorithm, wrong issuer, wrong audience, invalid signature, expired time, or wrong token type.
+- Refresh token is replayed.
+- Session is used after logout-all-devices.
+- Classroom code is brute-forced.
+- Export endpoint is called repeatedly.
+- Open redirect targets an unapproved domain.
+- URL fetch points to localhost, metadata IP, or private network.
+- Oversized JSON payload is submitted.
+- Admin attempts to change their own role.
+- Support agent attempts to impersonate without approval.
+- Disabled LLM or Plaid endpoint is called directly.
+- Plaid webhook is replayed or unsigned.
+- CSV export begins a field with `=`, `+`, `-`, or `@`.
+- Error path attempts to leak stack trace or secrets.
