@@ -33,6 +33,7 @@ describe('Security headers', () => {
     expect(csp).toContain("default-src 'self'");
     expect(csp).toContain("frame-ancestors 'none'");
     expect(csp).toMatch(/nonce-[A-Za-z0-9+/=]+/);
-    expect(csp).toContain("'strict-dynamic'");
+    expect(csp).toContain("'unsafe-inline'");
+    expect(csp).toContain("'wasm-unsafe-eval'");
   });
 });
