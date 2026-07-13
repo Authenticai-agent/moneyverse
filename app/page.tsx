@@ -3,12 +3,12 @@ import WaitlistSection from './components/WaitlistSection';
 
 export default function Home() {
   return (
-    <main className="min-h-[300vh] bg-mv-light text-mv-dark">
+    <main className="bg-mv-light text-mv-dark">
       <Hero />
 
-      <div className="h-screen flex items-center justify-center px-6">
+      <section className="min-h-screen flex items-center justify-center px-6 py-20">
         <WaitlistSection />
-      </div>
+      </section>
     </main>
   );
 }

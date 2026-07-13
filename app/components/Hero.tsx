@@ -37,7 +37,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="sticky top-0 h-screen max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+    <section className="relative min-h-screen max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
       <div className="relative z-10">
         <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-mv-primary">
           Learn Money by Building Your Future
