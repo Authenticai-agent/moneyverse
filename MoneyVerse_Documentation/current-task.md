@@ -11,6 +11,7 @@ Implemented and verified.
 ## Completed work
 
 - Added `app/components/MoneyVerseHero.tsx` from the design handoff bundle.
+- Added a lightweight client wrapper (`MoneyVerseHeroWrapper`) that loads the hero client-side only to avoid a Next.js dev-server chunk-load error.
 - Updated `app/page.tsx` to render `MoneyVerseHero` as the landing hero, keeping the existing 3D `Hero`/`InteractiveHero` files in the repo for reuse.
 - Wired the primary CTA to `/tools` and the secondary "Join the waitlist" CTA to `/register`.
 - Confirmed the Tailwind `mv` color tokens and `font-display`/`font-sans` families resolve correctly.
