@@ -12,6 +12,8 @@ import { hashPassword } from '@/lib/auth/password';
 import { resetRateLimit } from '@/lib/rate-limiter';
 import { randomUUID } from 'crypto';
 
+const TEST_CSRF = 'a'.repeat(64);
+
 function findCookie(cookies: Record<string, string>[], name: string): string | undefined {
   for (const jar of cookies) {
     if (name in jar) return jar[name];
@@ -26,11 +28,12 @@ async function registerUser(email: string, password: string) {
 
   await testApiHandler({
     appHandler: registerHandler,
+    requestPatcher(request) { request.headers.set('cookie', 'csrf_token=' + TEST_CSRF); },
     async test({ fetch }) {
       const res = await fetch({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, csrfToken: TEST_CSRF }),
       });
       expect(res.status).toBe(200);
       const json = await res.json();
@@ -53,11 +56,12 @@ async function loginUser(email: string, password: string) {
 
   await testApiHandler({
     appHandler: loginHandler,
+    requestPatcher(request) { request.headers.set('cookie', 'csrf_token=' + TEST_CSRF); },
     async test({ fetch }) {
       const res = await fetch({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, csrfToken: 'ignored' }),
+        body: JSON.stringify({ email, password, csrfToken: TEST_CSRF }),
       });
       expect(res.status).toBe(200);
       const json = await res.json();
@@ -97,11 +101,12 @@ describe('Authentication', () => {
 
     await testApiHandler({
       appHandler: registerHandler,
+    requestPatcher(request) { request.headers.set('cookie', 'csrf_token=' + TEST_CSRF); },
       async test({ fetch }) {
         const res = await fetch({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: 'dup@example.com', password: 'anotherPassword12!' }),
+          body: JSON.stringify({ email: 'dup@example.com', password: 'anotherPassword12!', csrfToken: TEST_CSRF }),
         });
         expect(res.status).toBe(409);
       },
@@ -128,11 +133,12 @@ describe('Authentication', () => {
   it('rejects invalid credentials without exposing account existence', async () => {
     await testApiHandler({
       appHandler: loginHandler,
+    requestPatcher(request) { request.headers.set('cookie', 'csrf_token=' + TEST_CSRF); },
       async test({ fetch }) {
         const res = await fetch({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: 'missing@example.com', password: 'securePassword12!', csrfToken: 'x' }),
+          body: JSON.stringify({ email: 'missing@example.com', password: 'securePassword12!', csrfToken: TEST_CSRF }),
         });
         expect(res.status).toBe(401);
         const json = await res.json();
@@ -278,11 +284,12 @@ describe('Authentication', () => {
     for (let i = 0; i < 12; i++) {
       await testApiHandler({
         appHandler: loginHandler,
+    requestPatcher(request) { request.headers.set('cookie', 'csrf_token=' + TEST_CSRF); },
         async test({ fetch }) {
           await fetch({
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: 'rate@example.com', password: 'wrong', csrfToken: 'x' }),
+            body: JSON.stringify({ email: 'rate@example.com', password: 'wrong', csrfToken: TEST_CSRF }),
           });
         },
       });
@@ -290,11 +297,12 @@ describe('Authentication', () => {
 
     await testApiHandler({
       appHandler: loginHandler,
+    requestPatcher(request) { request.headers.set('cookie', 'csrf_token=' + TEST_CSRF); },
       async test({ fetch }) {
         const res = await fetch({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: 'rate@example.com', password: 'securePassword12!', csrfToken: 'x' }),
+          body: JSON.stringify({ email: 'rate@example.com', password: 'securePassword12!', csrfToken: TEST_CSRF }),
         });
         expect(res.status).toBe(429);
       },
@@ -305,11 +313,12 @@ describe('Authentication', () => {
     await registerUser('secret@example.com', 'securePassword12!');
     await testApiHandler({
       appHandler: loginHandler,
+    requestPatcher(request) { request.headers.set('cookie', 'csrf_token=' + TEST_CSRF); },
       async test({ fetch }) {
         const res = await fetch({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: 'secret@example.com', password: 'securePassword12!', csrfToken: 'x' }),
+          body: JSON.stringify({ email: 'secret@example.com', password: 'securePassword12!', csrfToken: TEST_CSRF }),
         });
         const text = await res.text();
         expect(text).not.toContain('securePassword12!');

@@ -8,6 +8,8 @@ import * as childDetailHandler from '@/app/api/families/current/children/[childI
 import * as familyChildrenHandler from '@/app/api/families/[familyId]/children/route';
 import * as familyChildDetailHandler from '@/app/api/families/[familyId]/children/[childId]/route';
 
+const TEST_CSRF = 'a'.repeat(64);
+
 function findCookie(cookies: Record<string, string>[], name: string): string | undefined {
   for (const jar of cookies) {
     if (name in jar) return jar[name];
@@ -21,11 +23,12 @@ async function createParent(email: string) {
 
   await testApiHandler({
     appHandler: registerHandler,
+    requestPatcher(request) { request.headers.set('cookie', 'csrf_token=' + TEST_CSRF); },
     async test({ fetch }) {
       const res = await fetch({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password: 'securePassword12!' }),
+        body: JSON.stringify({ email, password: 'securePassword12!', csrfToken: TEST_CSRF }),
       });
       expect(res.status).toBe(200);
       const json = await res.json();

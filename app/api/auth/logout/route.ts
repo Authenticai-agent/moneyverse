@@ -5,8 +5,27 @@ import { verifyAccessToken } from '@/lib/auth/tokens';
 import { deleteAccessCookie, deleteRefreshCookie, deleteCsrfCookie } from '@/lib/auth/cookies';
 import { revokeSession } from '@/lib/auth/session';
 import { auditEvent } from '@/lib/audit';
+import { verifyCsrfToken } from '@/lib/auth/csrf-verify';
 
 export async function POST(request: NextRequest) {
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'invalid_body' }, { status: 400 });
+  }
+
+  const csrfToken = typeof body === 'object' && body !== null ? (body as { csrfToken?: string }).csrfToken : undefined;
+  if (!(await verifyCsrfToken(csrfToken))) {
+    await auditEvent({
+      action: 'auth.csrf_failed',
+      targetType: 'session',
+      result: 'blocked',
+      reasonCode: 'csrf_invalid',
+    });
+    return NextResponse.json({ error: 'auth.csrf_invalid' }, { status: 403 });
+  }
+
   const token = (await cookies()).get('access_token')?.value;
   await deleteAccessCookie();
   await deleteRefreshCookie();

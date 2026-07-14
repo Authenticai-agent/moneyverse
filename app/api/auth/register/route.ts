@@ -5,15 +5,21 @@ import { hashPassword } from '@/lib/auth/password';
 import { createSession, createRefreshTokenFamily } from '@/lib/auth/session';
 import { createAccessToken } from '@/lib/auth/tokens';
 import { generateCsrfToken } from '@/lib/auth/csrf';
+import { verifyCsrfToken } from '@/lib/auth/csrf-verify';
 import { setAccessCookie, setRefreshCookie, setCsrfCookie } from '@/lib/auth/cookies';
 import { auditEvent } from '@/lib/audit';
 import { rateLimit } from '@/lib/rate-limiter';
 import { registerSchema } from '@/lib/schemas/auth';
 import { getClientIp } from '@/lib/auth/ip';
+import { verifyHoneypot, verifyTurnstile, verifyOrigin, getTurnstileToken } from '@/lib/security/bot';
 
 export async function POST(request: NextRequest) {
   return withSystemContext(async () => {
     const db = getPrisma();
+
+  if (!verifyOrigin(request)) {
+    return NextResponse.json({ error: 'auth.invalid_origin' }, { status: 403 });
+  }
 
     const ip = getClientIp(request);
     const limit = rateLimit({ key: `register:${ip}`, maxRequests: 5, windowSeconds: 60 * 15 });
@@ -28,9 +34,27 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid_body' }, { status: 400 });
   }
 
+  if (!verifyHoneypot(body)) {
+    return NextResponse.json({ error: 'auth.bot_detected' }, { status: 403 });
+  }
+
+  if (!(await verifyTurnstile(getTurnstileToken(body)))) {
+    return NextResponse.json({ error: 'auth.bot_failed' }, { status: 403 });
+  }
+
   const parsed = registerSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: 'validation_error', issues: parsed.error.issues }, { status: 400 });
+  }
+
+  if (!(await verifyCsrfToken(parsed.data.csrfToken))) {
+    await auditEvent({
+      action: 'auth.csrf_failed',
+      targetType: 'user',
+      result: 'blocked',
+      reasonCode: 'csrf_invalid',
+    });
+    return NextResponse.json({ error: 'auth.csrf_invalid' }, { status: 403 });
   }
 
   const { email, password } = parsed.data;

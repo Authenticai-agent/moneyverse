@@ -10,6 +10,8 @@ import * as lessonProgressHandler from '@/app/api/families/current/children/[chi
 import * as lessonAnswerHandler from '@/app/api/families/current/children/[childId]/lessons/[lessonId]/answer/route';
 import * as childProgressHandler from '@/app/api/families/current/children/[childId]/progress/route';
 
+const TEST_CSRF = 'a'.repeat(64);
+
 function findCookie(cookies: Record<string, string>[], name: string): string | undefined {
   for (const jar of cookies) {
     if (name in jar) return jar[name];
@@ -22,11 +24,12 @@ async function createParent(email: string) {
 
   await testApiHandler({
     appHandler: registerHandler,
+    requestPatcher(request) { request.headers.set('cookie', 'csrf_token=' + TEST_CSRF); },
     async test({ fetch }) {
       const res = await fetch({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password: 'securePassword12!' }),
+        body: JSON.stringify({ email, password: 'securePassword12!', csrfToken: TEST_CSRF }),
       });
       expect(res.status).toBe(200);
       const cookies = (res as unknown as { cookies: Record<string, string>[] }).cookies;

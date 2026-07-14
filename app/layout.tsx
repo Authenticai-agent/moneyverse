@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Fredoka } from 'next/font/google';
 import './globals.css';
 
@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
   },
+};
+
+export const viewport: Viewport = {
   themeColor: '#87CEEB',
 };
 

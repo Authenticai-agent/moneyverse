@@ -32,8 +32,17 @@ describe('Security headers', () => {
     expect(csp).toBeTruthy();
     expect(csp).toContain("default-src 'self'");
     expect(csp).toContain("frame-ancestors 'none'");
-    expect(csp).toContain("'unsafe-inline'");
+    expect(csp).toContain("script-src 'self'");
+    expect(csp).not.toMatch(/script-src[^;]*'unsafe-inline'/);
     expect(csp).toContain("'wasm-unsafe-eval'");
-    expect(csp).not.toMatch(/nonce-/);
+    expect(csp).toMatch(/nonce-/);
+  });
+
+  it('sets cross-origin isolation headers', () => {
+    const request = new NextRequest('http://localhost:3000/');
+    const response = middleware(request);
+    expect(response).toBeTruthy();
+    expect(response.headers.get('Cross-Origin-Opener-Policy')).toBe('same-origin');
+    expect(response.headers.get('Cross-Origin-Resource-Policy')).toBe('same-origin');
   });
 });

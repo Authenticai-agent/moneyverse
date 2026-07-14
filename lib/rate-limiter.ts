@@ -33,3 +33,13 @@ export function resetRateLimit(key?: string): void {
     store.clear();
   }
 }
+
+export function globalRateLimit(ip: string): { allowed: boolean; retryAfterSeconds: number } {
+  const maxRequests = Number(process.env.GLOBAL_REQUEST_LIMIT_PER_IP || '200');
+  return rateLimit({ key: `global:${ip}`, maxRequests, windowSeconds: 60 });
+}
+
+export function dailyQuotaLimit(ip: string): { allowed: boolean; retryAfterSeconds: number } {
+  const maxRequests = Number(process.env.DAILY_REQUEST_LIMIT_PER_IP || '1000');
+  return rateLimit({ key: `daily:${ip}`, maxRequests, windowSeconds: 24 * 60 * 60 });
+}

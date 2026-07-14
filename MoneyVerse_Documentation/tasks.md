@@ -95,6 +95,7 @@
 - [x] Accessibility audit
 - [x] Penetration test
 - [x] Load test
+- [x] Security audit and hardening
 - [ ] Restore test
 - [ ] Incident-response drill
 - [x] Vendor review (dependencies audited and updated)

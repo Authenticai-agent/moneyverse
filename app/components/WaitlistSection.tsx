@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import Turnstile from './Turnstile';
 
 type Interest = 'parent' | 'teacher';
 
 export default function WaitlistSection() {
   const [email, setEmail] = useState('');
   const [interest, setInterest] = useState<Interest>('parent');
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [website, setWebsite] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -21,7 +24,7 @@ export default function WaitlistSection() {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, interest }),
+        body: JSON.stringify({ email, interest, 'cf-turnstile-response': turnstileToken, website }),
       });
 
       if (!res.ok) {
@@ -91,6 +94,17 @@ export default function WaitlistSection() {
               {error}
             </p>
           )}
+          <input
+            type="text"
+            name="website"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            className="absolute opacity-0 left-0 top-0 h-0 w-0"
+          />
+          <Turnstile onVerify={setTurnstileToken} />
           <button
             type="submit"
             disabled={loading}

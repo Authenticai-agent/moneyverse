@@ -4,6 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+function getCookie(name: string): string | undefined {
+  if (typeof document === 'undefined') return undefined;
+  const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'));
+  return match ? decodeURIComponent(match[1]) : undefined;
+}
+
 interface Child {
   id: string;
   nickname: string;
@@ -62,7 +68,11 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-bold text-mv-dark">Parent dashboard</h1>
           <button
             onClick={async () => {
-              await fetch('/api/auth/logout', { method: 'POST' });
+              await fetch('/api/auth/logout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ csrfToken: getCookie('csrf_token') }),
+              });
               router.push('/login');
             }}
             className="px-4 py-2 rounded-lg border border-mv-dark/20 text-mv-dark hover:bg-mv-lavender"
