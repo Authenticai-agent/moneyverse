@@ -9,7 +9,7 @@
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { normalizeAllocation, totalOf } from '@/app/lib/moneytree/engine';
+import { coinsForYear, normalizeAllocation, totalOf } from '@/app/lib/moneytree/engine';
 import { introLine, riskyAllocationLine } from '@/app/lib/moneytree/coach';
 import { mascotById } from '@/app/lib/moneytree/mascots';
 import { useMoneyTreeGame } from '@/app/lib/moneytree/useMoneyTreeGame';
@@ -70,6 +70,14 @@ export default function MoneyTreeGame() {
   const wilting = !!game.lastResult && game.lastResult.total < totalOf(game.lastResult.before);
   const isFinalTurn = !!game.config && (game.year >= game.config.years || !!game.lastResult?.bankrupt);
 
+  // growth stats for the HUD: vs previous year, and vs everything put in so far
+  const currentTotal = totalOf(game.portfolio);
+  const prevTotal = game.results.length >= 2 ? game.results[game.results.length - 2].total : null;
+  let contributed = 0;
+  if (game.config) {
+    for (let y = 1; y <= game.results.length; y++) contributed += coinsForYear(game.config, y);
+  }
+
   return (
     <main className="min-h-screen" style={{ background: '#FBFBFE' }}>
       <div className="relative mx-auto w-full max-w-3xl" style={{ height: 'min(88vh, 760px)', margin: '12px auto', borderRadius: 24, overflow: 'hidden', background: STAGE_BG, border: '1px solid #E3EFE6', boxShadow: '0 24px 56px -30px rgba(60,120,80,.45)' }}>
@@ -78,7 +86,7 @@ export default function MoneyTreeGame() {
         {/* ground */}
         <div aria-hidden style={{ position: 'absolute', bottom: 70, left: -80, right: -80, height: 200, background: '#6FCF94', borderRadius: '50% 50% 0 0 / 110px 110px 0 0' }} />
 
-        <HUD total={game.portfolio ? totalOf(game.portfolio) : 0} stage={game.lastResult?.stage ?? 'seed'} year={game.year} totalYears={game.totalYears} best={game.progress.bestScore} />
+        <HUD total={currentTotal} stage={game.lastResult?.stage ?? 'seed'} year={game.year} totalYears={game.totalYears} best={game.progress.bestScore} prevTotal={prevTotal} contributed={contributed} />
 
         <TreeScene total={totalOf(game.portfolio)} wilting={wilting} fallback={<PlaceholderTree total={totalOf(game.portfolio)} wilting={wilting} />} />
 
