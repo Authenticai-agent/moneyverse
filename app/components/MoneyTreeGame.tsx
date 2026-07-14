@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * MoneyTreeGame — orchestrator for the Money Tree strategy game.
+ * MoneyTreeGame - orchestrator for the Money Tree strategy game.
  * Renders the setup screen, the playable 3D "Stage", or the end report based on
  * the game phase from useMoneyTreeGame. The 3D tree is loaded lazily so the
  * heavy react-three-fiber bundle only arrives when a game is in progress.
@@ -211,7 +211,7 @@ export default function MoneyTreeGame() {
         {coachText && <Coach emoji={coach.emoji} name={coach.name} text={coachText} />}
 
         {/*
-          Always mounted (never conditionally rendered) — toggling this in and
+          Always mounted (never conditionally rendered) - toggling this in and
           out of the tree previously triggered a layout-corruption bug in the
           Stage's other absolutely-positioned children. Visibility is
           controlled with CSS instead of mount/unmount.

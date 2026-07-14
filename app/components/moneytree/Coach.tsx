@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Coach — the mascot speech bubble. Anchored to the left side, below the HUD
+ * Coach - the mascot speech bubble. Anchored to the left side, below the HUD
  * chips, so it never covers the centered tree or the allocation controls at
  * the bottom. Dismissible; re-appears when the message changes.
  */

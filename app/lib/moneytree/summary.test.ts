@@ -36,7 +36,7 @@ function playHeadless(config: GameConfig, allocation: Allocation) {
   return { results, allocations };
 }
 
-describe('summarizeGame — full headless game', () => {
+describe('summarizeGame - full headless game', () => {
   it('produces a positive score for a completed 12-year game', () => {
     const config = baseConfig();
     const { results, allocations } = playHeadless(config, EVEN);
@@ -78,7 +78,7 @@ describe('summarizeGame — full headless game', () => {
   });
 });
 
-describe('summarizeGame — bankruptcy', () => {
+describe('summarizeGame - bankruptcy', () => {
   it('reports bankruptcy and withholds survival rewards', () => {
     const config = baseConfig({ years: 1 });
     const wiped = applyTurn({ safe: 0, growth: 0, moonshot: 500 }, ALL_MOON, 0, 1, { safe: 0, growth: 0, moonshot: -1 }, null);
@@ -93,7 +93,7 @@ describe('summarizeGame — bankruptcy', () => {
   it('a full deliberate cash-out is NOT reported as bankruptcy, since the cash still counts', () => {
     const config = baseConfig({ years: 1 });
     const grown = applyTurn(emptyPortfolio(), EVEN, 300, 1, { safe: 0.03, growth: 0.05, moonshot: 0.08 }, null);
-    // sell everything out of the tree — the tree itself now reads ~0
+    // sell everything out of the tree - the tree itself now reads ~0
     const { portfolio: emptied, proceeds } = sellFromBucket(grown.after, 'safe', 1);
     const stillEmptied = sellFromBucket(emptied, 'growth', 1);
     const fullyEmptied = sellFromBucket(stillEmptied.portfolio, 'moonshot', 1);
@@ -110,7 +110,7 @@ describe('summarizeGame — bankruptcy', () => {
   });
 });
 
-describe('summarizeGame — selling shares', () => {
+describe('summarizeGame - selling shares', () => {
   const config = baseConfig({ years: 8 });
 
   it('with no withdrawals, shadowTotal matches the real total', () => {

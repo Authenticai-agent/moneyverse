@@ -36,7 +36,7 @@ describe('introLine', () => {
   });
 });
 
-describe('allocationCoachLine — persona risk thresholds', () => {
+describe('allocationCoachLine - persona risk thresholds', () => {
   it('the bold coach only warns at a much higher Moonshot share than the cautious coach', () => {
     const bold = MASCOTS.find((m) => m.persona === 'bold')!;
     const cautious = MASCOTS.find((m) => m.persona === 'cautious')!;

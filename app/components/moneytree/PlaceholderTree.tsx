@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * PlaceholderTree — a lightweight 2D tree used while building the game loop.
+ * PlaceholderTree - a lightweight 2D tree used while building the game loop.
  * Replaced by the 3D <TreeScene> in Step 8; kept as the reduced-motion / mobile
  * fallback afterwards.
  */

@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * CashOutPanel — lets the player sell shares out of any bucket mid-game.
+ * CashOutPanel - lets the player sell shares out of any bucket mid-game.
  * Proceeds become cash (no longer invested); the coach reacts in-character
  * right in the panel so the trade-off is explained the moment it happens.
  */
@@ -53,7 +53,7 @@ export default function CashOutPanel({
 
         <div style={{ padding: '14px 16px' }}>
           <p style={{ fontSize: 12.5, color: '#4B4470', margin: '0 0 12px' }}>
-            Sell shares from any bucket to lock in cash. Sold money stops growing — it&rsquo;s yours to keep, but it won&rsquo;t compound anymore.
+            Sell shares from any bucket to lock in cash. Sold money stops growing - it&rsquo;s yours to keep, but it won&rsquo;t compound anymore.
           </p>
 
           {BUCKETS.map((b) => {

@@ -1,5 +1,5 @@
 /**
- * Money Tree: Grow or Bust — shared types
+ * Money Tree: Grow or Bust - shared types
  * ---------------------------------------
  * Pure domain types for the investing strategy game. No React, no DOM.
  * See docs/superpowers/specs/2026-07-13-money-tree-3d-strategy-game-design.md
@@ -28,7 +28,7 @@ export interface GameConfig {
   years: number;
   /** Chosen coach mascot. */
   mascot: MascotId;
-  /** Seed for the market RNG — reproducible games and shareable "markets". */
+  /** Seed for the market RNG - reproducible games and shareable "markets". */
   seed: number;
 }
 
@@ -73,7 +73,7 @@ export interface MarketEvent {
   title: string;
   /** Relative likelihood when an event is drawn (higher = more common). */
   weight: number;
-  /** Whether this event is broadly good, bad, or mixed — used for UI tone. */
+  /** Whether this event is broadly good, bad, or mixed - used for UI tone. */
   tone: 'good' | 'bad' | 'mixed';
   effects: EventEffects;
   /** Kid-friendly explanation surfaced in the EventCard. */
@@ -114,7 +114,7 @@ export interface Withdrawal {
   bucket: Bucket;
   /** Fraction of that bucket's balance sold (0..1]. */
   fraction: number;
-  /** Dollars received — added to cash, no longer invested or growing. */
+  /** Dollars received - added to cash, no longer invested or growing. */
   proceeds: number;
 }
 

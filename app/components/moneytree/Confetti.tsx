@@ -1,6 +1,6 @@
 'use client';
 
-/** Confetti — a short celebratory burst, shown when the tree reaches a new stage. */
+/** Confetti - a short celebratory burst, shown when the tree reaches a new stage. */
 
 const PIECES: Array<{ left: string; size: number; round: boolean; color: string; dur: number; delay: number }> = [
   { left: '8%', size: 12, round: false, color: '#6B4EFF', dur: 1.6, delay: 0 },

@@ -1,6 +1,6 @@
 'use client';
 
-/** MoneyCard — a small collectible concept card. */
+/** MoneyCard - a small collectible concept card. */
 
 import type { MoneyCard as MoneyCardType } from '@/app/lib/moneytree/types';
 

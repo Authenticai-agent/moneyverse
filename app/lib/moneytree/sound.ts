@@ -1,9 +1,9 @@
 'use client';
 
 /**
- * Money Tree — sound engine (pure Web Audio, no asset files)
+ * Money Tree - sound engine (pure Web Audio, no asset files)
  * ------------------------------------------------------------
- * Small synthesized sound cues via oscillators — no external audio files to
+ * Small synthesized sound cues via oscillators - no external audio files to
  * download or license, works offline, tiny bundle cost. Respects a muted
  * preference persisted in localStorage.
  */
@@ -50,12 +50,12 @@ function tone(freq: number, start: number, duration: number, opts: { type?: Osci
   osc.stop(t0 + duration + 0.02);
 }
 
-/** A short ascending arpeggio — used for wins, stage-ups, cashing out. */
+/** A short ascending arpeggio - used for wins, stage-ups, cashing out. */
 function arpeggioUp(notes: number[], step = 0.09, duration = 0.22): void {
   notes.forEach((f, i) => tone(f, i * step, duration, { type: 'triangle' }));
 }
 
-/** A short descending tone pair — used for losses. */
+/** A short descending tone pair - used for losses. */
 function descend(notes: number[], step = 0.1, duration = 0.28): void {
   notes.forEach((f, i) => tone(f, i * step, duration, { type: 'sawtooth', gain: 0.09 }));
 }
@@ -65,7 +65,7 @@ export const sfx = {
   grow: () => tone(440, 0, 0.12, { type: 'sine', gain: 0.08 }),
   /** A quietly positive year. */
   gain: () => arpeggioUp([523.25, 659.25], 0.08, 0.18),
-  /** A down year — not a crash, just a dip. */
+  /** A down year - not a crash, just a dip. */
   loss: () => descend([392, 329.63], 0.09, 0.22),
   /** Reaching a new tree stage (Sapling / Tree / Forest). */
   stageUp: () => arpeggioUp([523.25, 659.25, 783.99, 1046.5], 0.09, 0.3),

@@ -1,9 +1,9 @@
 'use client';
 
 /**
- * SellComparison — only shown if the player cashed out during the game.
+ * SellComparison - only shown if the player cashed out during the game.
  * Lays out exactly what selling did: how much is still growing in the tree,
- * how much cash was locked in, and — the real lesson — what the same money
+ * how much cash was locked in, and - the real lesson - what the same money
  * would be worth today if it had never been sold at all.
  */
 
@@ -25,7 +25,7 @@ export default function SellComparison({
   return (
     <div style={{ background: '#FFFBF0', border: '1px solid #F5E6C8', borderRadius: 16, padding: 14, marginTop: 14, textAlign: 'left' }}>
       <div className="font-display" style={{ fontWeight: 700, fontSize: 13, color: '#1C1F2E', marginBottom: 10 }}>
-        💰 You cashed out along the way — here&rsquo;s what that cost
+        💰 You cashed out along the way - here&rsquo;s what that cost
       </div>
 
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 10 }}>
@@ -49,8 +49,8 @@ export default function SellComparison({
         </div>
         <p style={{ fontSize: 11.5, color: '#6E6A85', margin: 0, lineHeight: 1.4 }}>
           {cost > 0
-            ? `Cashing out early cost you ${money(cost)} in future growth — that money stopped compounding the moment you sold it. That's the real price of selling early.`
-            : `In this game, selling didn't cost you anything — the market moved in your favor after you cashed out. That's not always the case, so this was a bit lucky!`}
+            ? `Cashing out early cost you ${money(cost)} in future growth - that money stopped compounding the moment you sold it. That's the real price of selling early.`
+            : `In this game, selling didn't cost you anything - the market moved in your favor after you cashed out. That's not always the case, so this was a bit lucky!`}
         </p>
       </div>
     </div>

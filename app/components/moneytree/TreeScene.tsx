@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * TreeScene — the 3D money tree.
+ * TreeScene - the 3D money tree.
  * Loads the GLB tree, auto-normalises it to a target height (so any model size
  * works), grows it with the portfolio value, and sprinkles coins as it gains.
  * Falls back to the 2D PlaceholderTree on reduced-motion, no-WebGL, or load error.

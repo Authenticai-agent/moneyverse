@@ -1,5 +1,5 @@
 /**
- * Money Tree — core engine (pure)
+ * Money Tree - core engine (pure)
  * -------------------------------
  * Turn resolution and the supporting math. No React, no randomness of its own:
  * all randomness comes from an injected `Rng`, so every function is
@@ -178,7 +178,7 @@ export function applyTurn(
 
 /**
  * Resolve one yearly turn with randomness.
- * Draws the event first, then rolls returns, then applies them — a fixed order
+ * Draws the event first, then rolls returns, then applies them - a fixed order
  * so a given seed always produces the same game.
  */
 export function resolveTurn(
@@ -194,7 +194,7 @@ export function resolveTurn(
 }
 
 /**
- * Cash out a fraction of one bucket. Proceeds leave the portfolio entirely —
+ * Cash out a fraction of one bucket. Proceeds leave the portfolio entirely -
  * they become plain cash the player holds, no longer invested and no longer
  * growing. Fraction is clamped to [0, 1]; selling from an empty bucket is a
  * no-op with zero proceeds.
@@ -212,7 +212,7 @@ export function sellFromBucket(
 /**
  * The honest counterfactual: what the tree would be worth today if the player
  * had never cashed anything out. Replays the SAME sequence of contributions,
- * allocation choices, market returns, and events recorded in `results` — the
+ * allocation choices, market returns, and events recorded in `results` - the
  * only thing that changes is that nothing is ever withdrawn along the way, so
  * every dollar keeps compounding. Used to show the true cost of selling early.
  */

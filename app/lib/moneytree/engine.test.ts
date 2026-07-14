@@ -116,7 +116,7 @@ describe('rollBucketReturn bounds', () => {
   });
 });
 
-describe('applyTurn — money math', () => {
+describe('applyTurn - money math', () => {
   it('grows a single bucket by its return', () => {
     const before: Portfolio = { safe: 100, growth: 0, moonshot: 0 };
     const res = applyTurn(before, ALL_SAFE, 0, 1, { ...noReturns, safe: 0.03 }, null);
@@ -181,7 +181,7 @@ describe('applyTurn — money math', () => {
   });
 });
 
-describe('resolveTurn — randomness & determinism', () => {
+describe('resolveTurn - randomness & determinism', () => {
   it('is identical for the same seed', () => {
     const a = resolveTurn(emptyPortfolio(), ALL_SAFE, 110, 1, createRng(777));
     const b = resolveTurn(emptyPortfolio(), ALL_SAFE, 110, 1, createRng(777));
@@ -258,7 +258,7 @@ describe('replayWithoutWithdrawals', () => {
     for (let year = 1; year <= 6; year++) {
       const res = resolveTurn(port, { safe: 1, growth: 1, moonshot: 1 }, 100, year, rng);
       results.push(res);
-      port = res.after; // no selling — real trajectory == shadow trajectory
+      port = res.after; // no selling - real trajectory == shadow trajectory
     }
     expect(replayWithoutWithdrawals(results)).toBeCloseTo(totalOf(port), 6);
   });
@@ -272,7 +272,7 @@ describe('replayWithoutWithdrawals', () => {
       results.push(res);
       port = res.after;
       if (year === 3) {
-        // cash out everything in growth after year 3 — it stops growing from here on
+        // cash out everything in growth after year 3 - it stops growing from here on
         const sold = sellFromBucket(port, 'growth', 1);
         port = sold.portfolio;
       }

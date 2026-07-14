@@ -1,5 +1,5 @@
 /**
- * Money Tree — local progress persistence
+ * Money Tree - local progress persistence
  * ---------------------------------------
  * Best score, collected cards, and earned badges are stored on the device only
  * (no account, no backend). All access is SSR-guarded so it is safe to import
@@ -43,11 +43,11 @@ export function saveProgress(progress: MoneyTreeProgress): void {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   } catch {
-    /* storage full or disabled — progress is best-effort, ignore */
+    /* storage full or disabled - progress is best-effort, ignore */
   }
 }
 
-/** Fold a finished game's summary into stored progress. Pure — caller persists. */
+/** Fold a finished game's summary into stored progress. Pure - caller persists. */
 export function mergeSummary(
   prev: MoneyTreeProgress,
   summary: GameSummary

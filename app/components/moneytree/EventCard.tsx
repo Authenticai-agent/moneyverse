@@ -1,9 +1,9 @@
 'use client';
 
 /**
- * EventCard — shown after a year resolves. Every year gets an explanation and a
- * "smart move" tip via yearInsight — an economic event's own copy when one
- * struck, or a rotating data-driven explanation on a calm year — so no year
+ * EventCard - shown after a year resolves. Every year gets an explanation and a
+ * "smart move" tip via yearInsight - an economic event's own copy when one
+ * struck, or a rotating data-driven explanation on a calm year - so no year
  * ever shows bare, unexplained numbers.
  */
 
@@ -46,7 +46,7 @@ export default function EventCard({
     <div className="fixed inset-0 z-[9] flex items-center justify-center p-4" style={{ background: 'rgba(20,16,40,.4)', backdropFilter: 'blur(2px)' }}>
       <div style={{ width: '100%', maxWidth: 440, background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 30px 60px -20px rgba(30,20,60,.5)' }}>
         <div style={{ background: TONE_BG[insight.tone], color: TONE_FG[insight.tone], padding: '12px 16px', fontWeight: 800, fontSize: 15 }}>
-          {insight.emoji} {insight.title} — Year {result.year}
+          {insight.emoji} {insight.title} - Year {result.year}
         </div>
         <div style={{ padding: '14px 16px' }}>
           <p style={{ fontSize: 13, color: '#2C2A3A', margin: '0 0 10px' }}>{insight.whatHappened}</p>

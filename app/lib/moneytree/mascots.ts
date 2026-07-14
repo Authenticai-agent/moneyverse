@@ -1,5 +1,5 @@
 /**
- * Money Tree — mascot registry
+ * Money Tree - mascot registry
  * ----------------------------
  * The four coach characters, each backed by a GLB model in
  * /public/models/moneytree. `emoji` is a lightweight stand-in used in 2D UI and
@@ -10,7 +10,7 @@ import type { MascotId } from './types';
 
 /**
  * Each coach has a distinct investing personality that colors every line they
- * say — from the setup screen to yearly nudges to the end report. The facts
+ * say - from the setup screen to yearly nudges to the end report. The facts
  * they teach never change; only their risk appetite and tone do.
  */
 export type CoachPersona = 'bold' | 'balanced' | 'calm' | 'cautious';
@@ -35,7 +35,7 @@ export const MASCOTS: Mascot[] = [
     role: 'Money Wizard',
     persona: 'balanced',
     personaLabel: 'Balanced strategist',
-    tagline: 'Believes in a little of everything — spreads coins evenly across all three buckets.',
+    tagline: 'Believes in a little of everything - spreads coins evenly across all three buckets.',
     emoji: '🧙',
     model: '/models/moneytree/low-poly-wizard.glb',
   },
@@ -45,7 +45,7 @@ export const MASCOTS: Mascot[] = [
     role: 'Money Robot',
     persona: 'cautious',
     personaLabel: 'Ultra-safe analyst',
-    tagline: 'Hates surprises — keeps almost everything in Safe Seed.',
+    tagline: 'Hates surprises - keeps almost everything in Safe Seed.',
     emoji: '🤖',
     model: '/models/moneytree/cute-mechanical-robot.glb',
   },
@@ -55,7 +55,7 @@ export const MASCOTS: Mascot[] = [
     role: 'Coin Explorer',
     persona: 'bold',
     personaLabel: 'Bold risk-taker',
-    tagline: 'Chases big wins in Moonshot — but never bets it all.',
+    tagline: 'Chases big wins in Moonshot - but never bets it all.',
     emoji: '🧭',
     model: '/models/moneytree/cute-chibi-adventurer.glb',
   },
@@ -65,7 +65,7 @@ export const MASCOTS: Mascot[] = [
     role: 'Future Investor',
     persona: 'calm',
     personaLabel: 'Mellow & patient',
-    tagline: 'Plays the long game — slow, steady, never in a rush.',
+    tagline: 'Plays the long game - slow, steady, never in a rush.',
     emoji: '🦸',
     model: '/models/moneytree/cyberpunk-player.glb',
   },

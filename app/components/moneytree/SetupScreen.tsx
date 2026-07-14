@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * SetupScreen — the player builds their plan and picks a coach.
+ * SetupScreen - the player builds their plan and picks a coach.
  * Emits a GameConfig to start the game.
  */
 
@@ -134,7 +134,7 @@ export default function SetupScreen({ onStart }: { onStart: (config: GameConfig)
 
       {/* mascot picker */}
       <div style={{ marginTop: 20 }}>
-        <span style={{ fontSize: 12.5, fontWeight: 600, color: '#413B5A' }}>Pick your coach — each has their own investing style</span>
+        <span style={{ fontSize: 12.5, fontWeight: 600, color: '#413B5A' }}>Pick your coach - each has their own investing style</span>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 8 }}>
           {MASCOTS.map((m) => {
             const active = m.id === mascot;
@@ -180,7 +180,7 @@ export default function SetupScreen({ onStart }: { onStart: (config: GameConfig)
         🌱 Plant my tree & play
       </button>
       <p style={{ fontSize: 11, lineHeight: 1.45, color: '#A8A2C0', marginTop: 12, textAlign: 'center' }}>
-        A game for learning. Real investing goes up and down — no real money, no advice.
+        A game for learning. Real investing goes up and down - no real money, no advice.
       </p>
     </div>
   );

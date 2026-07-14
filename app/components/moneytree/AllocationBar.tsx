@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * AllocationBar — the bottom action bar where the player sets exactly what
+ * AllocationBar - the bottom action bar where the player sets exactly what
  * percentage of this year's coins goes to each bucket, then grows the year.
  * Allocations are percentages that always sum to 100: bumping one bucket ±5%
  * rebalances the others, so the split is always valid and directly chosen.
@@ -71,7 +71,7 @@ export default function AllocationBar({
       style={{ background: 'rgba(255,255,255,.96)', backdropFilter: 'blur(8px)', borderTop: '1px solid #E3EFE6', padding: '10px 14px 14px' }}
     >
       <div style={{ textAlign: 'center', fontSize: 12, color: '#6E6A85', marginBottom: 6 }}>
-        Split your <b style={{ color: '#6B4EFF' }}>{money(coins)}</b> — set the percentages
+        Split your <b style={{ color: '#6B4EFF' }}>{money(coins)}</b> - set the percentages
       </div>
 
       {/* proportion bar */}

@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * GrowthBreakdown — explains what "planted" and "grew" actually mean, instead
+ * GrowthBreakdown - explains what "planted" and "grew" actually mean, instead
  * of showing bare badges. Each row is labeled with a plain-language sentence,
  * and the math connecting them (planted + grew = total, grew ÷ planted = %) is
  * shown explicitly so the numbers aren't just decoration.
@@ -39,7 +39,7 @@ export default function GrowthBreakdown({
             You planted {money(contributed)}
           </div>
           <p style={{ fontSize: 11.5, color: '#6E6A85', margin: '2px 0 0', lineHeight: 1.4 }}>
-            This is your own money — everything you started with, plus every coin you added over {years} {years1}.
+            This is your own money - everything you started with, plus every coin you added over {years} {years1}.
           </p>
         </div>
       </div>
@@ -52,8 +52,8 @@ export default function GrowthBreakdown({
           </div>
           <p style={{ fontSize: 11.5, color: '#6E6A85', margin: '2px 0 0', lineHeight: 1.4 }}>
             {grew >= 0
-              ? `This is extra money you didn’t put in yourself — it’s what your investments earned on their own over ${years} ${years1}, through compounding.`
-              : `This wasn’t money you added — it’s value your investments lost over ${years} ${years1} because of risky bets or a market crash.`}
+              ? `This is extra money you didn’t put in yourself - it’s what your investments earned on their own over ${years} ${years1}, through compounding.`
+              : `This wasn’t money you added - it’s value your investments lost over ${years} ${years1} because of risky bets or a market crash.`}
           </p>
         </div>
       </div>
@@ -66,7 +66,7 @@ export default function GrowthBreakdown({
               {percent(growthPct)} total growth
             </div>
             <p style={{ fontSize: 11.5, color: '#6E6A85', margin: '2px 0 0', lineHeight: 1.4 }}>
-              That&apos;s {money(Math.abs(grew))} ÷ {money(contributed)} planted — how much bigger (or smaller) your money became compared to what you put in.
+              That&apos;s {money(Math.abs(grew))} ÷ {money(contributed)} planted - how much bigger (or smaller) your money became compared to what you put in.
             </p>
           </div>
         </div>
@@ -84,7 +84,7 @@ export default function GrowthBreakdown({
       </div>
 
       <div style={{ background: grewBg, borderRadius: 10, padding: '8px 10px', marginTop: 10, fontSize: 11.5, color: grewColor, fontWeight: 600, textAlign: 'center' }}>
-        💡 &ldquo;Planted&rdquo; is money you put in. &ldquo;Grew&rdquo; is money your investments made for you — that&apos;s the whole point of investing!
+        💡 &ldquo;Planted&rdquo; is money you put in. &ldquo;Grew&rdquo; is money your investments made for you - that&apos;s the whole point of investing!
       </div>
     </div>
   );

@@ -1,11 +1,11 @@
 /**
- * Money Tree — end-of-game summary (pure)
+ * Money Tree - end-of-game summary (pure)
  * ---------------------------------------
  * Grades a finished game: final score, which Money Cards were unlocked, and
  * which badges were earned. Kept pure and separate from the React hook so it is
  * easy to test headlessly.
  *
- * Selling shares mid-game moves money OUT of the tree into cash — it doesn't
+ * Selling shares mid-game moves money OUT of the tree into cash - it doesn't
  * vanish, so a player's true outcome is treeValue + cashOut ("combined
  * wealth"), not the tree alone. Score, stage, and bankruptcy are all judged on
  * combined wealth, so cashing out on purpose is never mistaken for going

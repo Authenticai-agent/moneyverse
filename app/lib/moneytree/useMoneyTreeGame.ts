@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Money Tree — game state hook
+ * Money Tree - game state hook
  * ----------------------------
  * Owns the game lifecycle (setup → playing → resolving → report) on top of the
  * pure engine. Authoritative mutable data lives in refs (so callbacks never see
@@ -9,7 +9,7 @@
  *
  * Selling: the player can cash out part or all of a bucket during the
  * 'playing' phase. Proceeds move to a separate cash pile that no longer
- * compounds — the tree only knows about what's still invested. Combined
+ * compounds - the tree only knows about what's still invested. Combined
  * wealth (tree + cash) is what "bankrupt" and the final score are judged on,
  * so a deliberate full cash-out is never confused with going broke.
  */
@@ -30,7 +30,7 @@ import {
 } from './storage';
 import type { Allocation, Bucket, GameConfig, GamePhase, Portfolio, TurnResult, Withdrawal } from './types';
 
-/** Percentages that sum to 100 — a friendly, diversified default. */
+/** Percentages that sum to 100 - a friendly, diversified default. */
 export const DEFAULT_ALLOCATION: Allocation = { safe: 34, growth: 33, moonshot: 33 };
 
 function randomSeed(): number {
@@ -181,7 +181,7 @@ export function useMoneyTreeGame(): MoneyTreeGame {
     if (phaseRef.current !== 'resolving' || !config) return;
 
     // Combined wealth (still-invested tree + cash already taken out) decides
-    // whether the player is truly out of the game — a deliberate full
+    // whether the player is truly out of the game - a deliberate full
     // cash-out must never be mistaken for going bankrupt.
     const combinedWealth = (lastResultRef.current?.total ?? 0) + cashRef.current;
     const trulyBankrupt = combinedWealth <= BANKRUPT_THRESHOLD;

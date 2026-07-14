@@ -1,4 +1,4 @@
-/** Money Tree — small formatting helpers shared by the UI. */
+/** Money Tree - small formatting helpers shared by the UI. */
 
 /** Round to whole dollars with a leading $ and thousands separators. */
 export function money(n: number): string {

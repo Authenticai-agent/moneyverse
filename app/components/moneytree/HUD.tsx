@@ -1,6 +1,6 @@
 'use client';
 
-/** HUD — floating status chips over the 3D stage. */
+/** HUD - floating status chips over the 3D stage. */
 
 import { money, percent } from '@/app/lib/moneytree/format';
 import { STAGE_THRESHOLDS } from '@/app/lib/moneytree/content';
@@ -16,7 +16,7 @@ function GrowthStat({ label, fraction }: { label: string; fraction: number | nul
   if (fraction === null) {
     return (
       <span style={{ fontSize: 10.5, color: '#B4ABCE', fontWeight: 600 }}>
-        {label} —
+        {label} -
       </span>
     );
   }

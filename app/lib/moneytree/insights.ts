@@ -1,9 +1,9 @@
 /**
- * Money Tree — per-year insights (pure)
+ * Money Tree - per-year insights (pure)
  * --------------------------------------
  * Every resolved year must teach something, whether or not an economic event
  * struck. When an event fires, its own copy is used. On a "calm" year (no
- * event — the more common case), a rotating set of data-driven templates
+ * event - the more common case), a rotating set of data-driven templates
  * explains what the numbers mean, so the game never shows a bare, unexplained
  * result. Templates are picked deterministically by year so the game stays
  * pure/testable (no randomness at render time).
@@ -39,24 +39,24 @@ const CALM_TEMPLATES: CalmTemplate[] = [
     return {
       emoji: '📊',
       title: 'A Calm Year',
-      whatHappened: `No big news this year — just everyday ups and downs. ${BUCKET_PROFILES[best].emoji} ${BUCKET_PROFILES[best].label} did best at ${percent(r[best])}, while ${BUCKET_PROFILES[worst].emoji} ${BUCKET_PROFILES[worst].label} lagged at ${percent(r[worst])}.`,
+      whatHappened: `No big news this year - just everyday ups and downs. ${BUCKET_PROFILES[best].emoji} ${BUCKET_PROFILES[best].label} did best at ${percent(r[best])}, while ${BUCKET_PROFILES[worst].emoji} ${BUCKET_PROFILES[worst].label} lagged at ${percent(r[worst])}.`,
       smartMove:
-        "Markets don't need a big event to move — prices wiggle a little almost every year. It's the big picture over many years that matters, not any single one.",
+        "Markets don't need a big event to move - prices wiggle a little almost every year. It's the big picture over many years that matters, not any single one.",
     };
   },
   (r) => ({
     emoji: '🌤️',
     title: 'Smooth Sailing',
     whatHappened: `A quiet year in the markets. ${BUCKET_PROFILES.safe.emoji} Safe Seed barely moved (${percent(r.safe)}) because it's built to hold steady, while your riskier buckets swung around a bit more.`,
-    smartMove: 'Boring years are good news — they mean you can keep adding coins without stress. Steady beats flashy over time.',
+    smartMove: 'Boring years are good news - they mean you can keep adding coins without stress. Steady beats flashy over time.',
   }),
   (r) => {
     const spreadPp = Math.round((Math.max(r.safe, r.growth, r.moonshot) - Math.min(r.safe, r.growth, r.moonshot)) * 100);
     return {
       emoji: '🎢',
       title: 'Risk in Action',
-      whatHappened: `Notice the spread this year? 🚀 Moonshot moved ${percent(r.moonshot)} while 🏦 Safe barely budged at ${percent(r.safe)} — about a ${spreadPp}-point gap.`,
-      smartMove: "That gap IS risk: bigger possible moves, up or down. Riskier buckets can win big or lose big — Safe just... stays safe.",
+      whatHappened: `Notice the spread this year? 🚀 Moonshot moved ${percent(r.moonshot)} while 🏦 Safe barely budged at ${percent(r.safe)} - about a ${spreadPp}-point gap.`,
+      smartMove: "That gap IS risk: bigger possible moves, up or down. Riskier buckets can win big or lose big - Safe just... stays safe.",
     };
   },
   (r) => ({
@@ -64,16 +64,16 @@ const CALM_TEMPLATES: CalmTemplate[] = [
     title: 'Behind the Numbers',
     whatHappened: `Every bucket moved a little differently this year: 🏦 Safe ${percent(r.safe)}, 🌳 Growth ${percent(r.growth)}, 🚀 Moonshot ${percent(
       r.moonshot
-    )}. That's the market doing what markets do — nobody controls it, not even grown-ups!`,
+    )}. That's the market doing what markets do - nobody controls it, not even grown-ups!`,
     smartMove: 'Since nobody can predict every wiggle, the best strategy is to stay invested and diversified, year after year.',
   }),
   (r) => ({
     emoji: '🔍',
     title: 'Market Check-In',
-    whatHappened: `This year had no major headlines — just the normal push and pull of buyers and sellers. Your ${percent(
+    whatHappened: `This year had no major headlines - just the normal push and pull of buyers and sellers. Your ${percent(
       (r.safe + r.growth + r.moonshot) / 3
     )} average move kept your money quietly working in the background.`,
-    smartMove: 'This is what most years actually look like. The exciting headlines are rare — patience is what wins in the long run.',
+    smartMove: 'This is what most years actually look like. The exciting headlines are rare - patience is what wins in the long run.',
   }),
 ];
 

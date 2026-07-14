@@ -1,11 +1,11 @@
 /**
- * Money Tree — seeded pseudo-random number generator
+ * Money Tree - seeded pseudo-random number generator
  * --------------------------------------------------
  * A deterministic RNG so a game is reproducible from its seed. This enables
  * shareable "markets" ("beat my exact game") and makes the engine unit-testable
  * without `Math.random`.
  *
- * Algorithm: mulberry32 — tiny, fast, good-enough distribution for a game.
+ * Algorithm: mulberry32 - tiny, fast, good-enough distribution for a game.
  */
 
 export interface Rng {
@@ -21,7 +21,7 @@ export interface Rng {
   pick<T>(items: readonly T[]): T;
 }
 
-/** mulberry32 — deterministic 32-bit PRNG. */
+/** mulberry32 - deterministic 32-bit PRNG. */
 function mulberry32(seed: number): () => number {
   let a = seed >>> 0;
   return function () {

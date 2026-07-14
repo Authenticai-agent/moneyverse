@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * ReportScreen — the end-of-game debrief. Score, what-worked / watch-out /
+ * ReportScreen - the end-of-game debrief. Score, what-worked / watch-out /
  * try-next lessons, unlocked cards and badges, replay + share.
  */
 
@@ -26,16 +26,16 @@ function insights(summary: GameSummary, config: GameConfig, results: TurnResult[
   const last = results[results.length - 1];
   const sawRecession = results.some((r) => r.event?.id === 'recession');
   const worked = summary.bankrupt
-    ? 'You took big swings — brave, but risky.'
+    ? 'You took big swings - brave, but risky.'
     : `Your ${BUCKET_PROFILES[biggestBucket(last)].label} did the heavy lifting.`;
   const watchOut = summary.bankrupt
     ? 'Betting almost everything on Moonshots let one crash wipe you out.'
     : sawRecession
-      ? 'A recession shook the markets — spreading your risk softened the blow.'
+      ? 'A recession shook the markets - spreading your risk softened the blow.'
       : 'Riskier buckets swing hard; keep some money safe for the bumps.';
   const tryNext =
     config.years < 8
-      ? `You grew for ${config.years} year${config.years === 1 ? '' : 's'}. Try more years — compounding gets powerful with time.`
+      ? `You grew for ${config.years} year${config.years === 1 ? '' : 's'}. Try more years - compounding gets powerful with time.`
       : summary.total >= 20000
         ? 'Amazing! Try a shorter horizon or a bolder mix to test your skills.'
         : 'Stay patient and diversified to reach a $20,000 Money Forest.';
@@ -101,7 +101,7 @@ export default function ReportScreen({
           <>
             <div style={{ fontSize: 56 }}>🪵💀</div>
             <h2 className="font-display" style={{ fontSize: 26, fontWeight: 700, color: '#C0392B', margin: '4px 0' }}>Wiped out!</h2>
-            <p style={{ fontSize: 13, color: '#6E6A85' }}>Your tree lost everything — but every investor learns from a crash. Spread your risk and try again. 🌱</p>
+            <p style={{ fontSize: 13, color: '#6E6A85' }}>Your tree lost everything - but every investor learns from a crash. Spread your risk and try again. 🌱</p>
           </>
         ) : (
           <>

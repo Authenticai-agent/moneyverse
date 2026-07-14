@@ -1,5 +1,5 @@
 /**
- * Money Tree — content tables
+ * Money Tree - content tables
  * ---------------------------
  * All game data and educational copy lives here as plain data so it is easy to
  * read, tune, and expand without touching engine logic.
@@ -17,7 +17,7 @@ export const BUCKET_PROFILES: Record<Bucket, BucketProfile> = {
     id: 'safe',
     emoji: '🏦',
     label: 'Safe Seed',
-    blurb: 'Small, steady growth. Never loses — like a savings account or bonds.',
+    blurb: 'Small, steady growth. Never loses - like a savings account or bonds.',
     minReturn: 0.02,
     maxReturn: 0.04,
     wipeChance: 0,
@@ -26,7 +26,7 @@ export const BUCKET_PROFILES: Record<Bucket, BucketProfile> = {
     id: 'growth',
     emoji: '🌳',
     label: 'Growth Tree',
-    blurb: 'Bumpy but climbs over time — like a fund of many companies.',
+    blurb: 'Bumpy but climbs over time - like a fund of many companies.',
     minReturn: -0.1,
     maxReturn: 0.2,
     wipeChance: 0,
@@ -35,7 +35,7 @@ export const BUCKET_PROFILES: Record<Bucket, BucketProfile> = {
     id: 'moonshot',
     emoji: '🚀',
     label: 'Moonshot',
-    blurb: 'Huge highs and scary lows. A big bet that can soar — or crash.',
+    blurb: 'Huge highs and scary lows. A big bet that can soar - or crash.',
     minReturn: -0.6,
     maxReturn: 1.5,
     wipeChance: 0.04,
@@ -59,7 +59,7 @@ export const EVENTS: MarketEvent[] = [
       whatHappened:
         'The economy slowed down. People and businesses spent less, so lots of companies were worth less this year. Safe money held steady, but riskier bets fell.',
       smartMove:
-        "Don't panic and sell everything. Recessions are normal and markets usually bounce back — staying invested is often the smart move.",
+        "Don't panic and sell everything. Recessions are normal and markets usually bounce back - staying invested is often the smart move.",
     },
   },
   {
@@ -71,7 +71,7 @@ export const EVENTS: MarketEvent[] = [
     effects: { returnDeltas: { growth: 0.1, moonshot: 0.4 } },
     copy: {
       whatHappened:
-        'The economy grew fast! People spent more and companies earned more, so investments jumped — especially the risky ones.',
+        'The economy grew fast! People spent more and companies earned more, so investments jumped - especially the risky ones.',
       smartMove:
         "Enjoy it, but remember booms don't last forever. Keep some money spread across safer buckets too.",
     },
@@ -87,7 +87,7 @@ export const EVENTS: MarketEvent[] = [
       whatHappened:
         'Prices went up, so each dollar buys a little less than before. Money sitting still quietly loses value.',
       smartMove:
-        'This is why we invest! To beat inflation, your money needs to grow faster than prices rise — safe-only is not always safe.',
+        'This is why we invest! To beat inflation, your money needs to grow faster than prices rise - safe-only is not always safe.',
     },
   },
   {
@@ -114,7 +114,7 @@ export const EVENTS: MarketEvent[] = [
     copy: {
       whatHappened: 'A birthday gift and some extra chores earned you a bonus of cash this year!',
       smartMove:
-        'Found money is a great chance to invest a little more instead of spending it all — your future self will thank you.',
+        'Found money is a great chance to invest a little more instead of spending it all - your future self will thank you.',
     },
   },
   {
@@ -148,7 +148,7 @@ export const EVENTS: MarketEvent[] = [
 
 /* --------------------------- stage thresholds --------------------------- */
 
-/** Dollar thresholds for each stage — mirrors the original Money Tree tool. */
+/** Dollar thresholds for each stage - mirrors the original Money Tree tool. */
 export const STAGE_THRESHOLDS: { stage: Stage; min: number; emoji: string; label: string }[] = [
   { stage: 'seed', min: 0, emoji: '🌱', label: 'Seed' },
   { stage: 'sapling', min: 1000, emoji: '🌿', label: 'Sapling' },
@@ -166,7 +166,7 @@ export const MONEY_CARDS: MoneyCard[] = [
     id: 'compounding',
     emoji: '📈',
     concept: 'Compound Growth',
-    blurb: 'Your money earns money — and that earning earns too. The longer you wait, the faster it snowballs.',
+    blurb: 'Your money earns money - and that earning earns too. The longer you wait, the faster it snowballs.',
     unlock: 'Finish a game of 8 years or more.',
   },
   {
@@ -194,14 +194,14 @@ export const MONEY_CARDS: MoneyCard[] = [
     id: 'consistency',
     emoji: '💧',
     concept: 'Keep Watering',
-    blurb: 'Adding money regularly — not just once — keeps feeding the snowball and smooths out the bumpy years.',
+    blurb: 'Adding money regularly - not just once - keeps feeding the snowball and smooths out the bumpy years.',
     unlock: 'Play with weekly or monthly contributions.',
   },
   {
     id: 'opportunity-cost',
     emoji: '⏳',
     concept: 'Opportunity Cost',
-    blurb: 'Money you cash out stops growing. Selling early can be smart — but it always costs you future compounding.',
+    blurb: 'Money you cash out stops growing. Selling early can be smart - but it always costs you future compounding.',
     unlock: 'Sell shares from any bucket during a game.',
   },
 ];
@@ -237,6 +237,6 @@ export const BADGES: Badge[] = [
     id: 'diamond-hands',
     emoji: '💎',
     name: 'Diamond Hands',
-    description: 'Ride out a down year without selling a single share — and still finish ahead.',
+    description: 'Ride out a down year without selling a single share - and still finish ahead.',
   },
 ];
