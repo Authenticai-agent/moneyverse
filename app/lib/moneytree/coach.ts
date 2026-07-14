@@ -124,7 +124,7 @@ export function sellReactionLine(
 }
 
 /** Whether a resolved year was, on balance, a win, a loss, or roughly flat. */
-function outcomeTone(result: TurnResult): 'good' | 'bad' | 'flat' {
+export function outcomeTone(result: TurnResult): 'good' | 'bad' | 'flat' {
   const before = totalOf(result.before);
   const diff = result.total - before - result.contribution;
   if (Math.abs(diff) < 1) return 'flat';

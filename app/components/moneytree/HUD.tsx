@@ -41,6 +41,8 @@ export default function HUD({
   best,
   prevTotal,
   contributed,
+  muted,
+  onToggleMuted,
 }: {
   total: number;
   stage: Stage;
@@ -51,6 +53,8 @@ export default function HUD({
   prevTotal: number | null;
   /** Total dollars put in so far (start + contributions placed). */
   contributed: number;
+  muted: boolean;
+  onToggleMuted: () => void;
 }) {
   const yoy = prevTotal !== null && prevTotal > 0 ? (total - prevTotal) / prevTotal : null;
   const totalGrowth = contributed > 0 ? (total - contributed) / contributed : null;
@@ -76,6 +80,18 @@ export default function HUD({
             🏆 Best {money(best)}
           </div>
         )}
+        <button
+          type="button"
+          onClick={onToggleMuted}
+          aria-label={muted ? 'Unmute sound' : 'Mute sound'}
+          style={{
+            pointerEvents: 'auto', cursor: 'pointer', border: '1px solid #E3EFE6', background: 'rgba(255,255,255,.92)',
+            borderRadius: 999, width: 30, height: 30, fontSize: 14, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 6px 14px -8px rgba(60,40,120,.3)',
+          }}
+        >
+          {muted ? '🔇' : '🔊'}
+        </button>
       </div>
     </div>
   );
