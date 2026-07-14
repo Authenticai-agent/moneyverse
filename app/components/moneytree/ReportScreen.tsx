@@ -7,7 +7,8 @@
 
 import { useState } from 'react';
 import { BADGES, MONEY_CARDS, STAGE_THRESHOLDS } from '@/app/lib/moneytree/content';
-import { money } from '@/app/lib/moneytree/format';
+import { reportLine } from '@/app/lib/moneytree/coach';
+import { money, percent } from '@/app/lib/moneytree/format';
 import type { Mascot } from '@/app/lib/moneytree/mascots';
 import type { GameSummary } from '@/app/lib/moneytree/summary';
 import { BUCKETS, type Bucket, type GameConfig, type TurnResult } from '@/app/lib/moneytree/types';
@@ -66,6 +67,16 @@ export default function ReportScreen({
   const cards = MONEY_CARDS.filter((c) => summary.unlockedCardIds.includes(c.id));
   const badges = BADGES.filter((b) => summary.earnedBadgeIds.includes(b.id));
 
+  const grew = summary.total - summary.contributed;
+  const growthPct = summary.contributed > 0 ? grew / summary.contributed : null;
+  const coachSummary = reportLine({
+    bankrupt: summary.bankrupt,
+    years: config.years,
+    contributed: summary.contributed,
+    grew,
+    growthPct,
+  });
+
   const share = async () => {
     const text = `🌳 I grew a money tree to ${money(summary.total)} in ${config.years} years on MoneyVerse! Can you beat it?`;
     const url = typeof window !== 'undefined' ? window.location.href : '';
@@ -99,10 +110,26 @@ export default function ReportScreen({
           </>
         )}
         <div className="font-display" style={{ fontSize: 40, fontWeight: 800, color: '#6B4EFF', lineHeight: 1.1 }}>{money(summary.total)}</div>
-        <div style={{ fontSize: 12, color: '#8480A0' }}>
-          Planted {money(summary.contributed)}
-          {isNewBest && <span style={{ color: '#6B4EFF', fontWeight: 800 }}> · 🎉 New best!</span>}
+
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center', marginTop: 6 }}>
+          <span style={{ fontSize: 12, color: '#6E6A85', background: '#F2F0FB', borderRadius: 999, padding: '4px 11px' }}>
+            🪙 You planted <b style={{ color: '#1C1F2E' }}>{money(summary.contributed)}</b>
+          </span>
+          {grew > 0 && (
+            <span style={{ fontSize: 12, color: '#2F9E67', background: '#EAFBF2', borderRadius: 999, padding: '4px 11px', fontWeight: 600 }}>
+              ✨ it grew by {money(grew)}
+            </span>
+          )}
+          {growthPct !== null && (
+            <span style={{ fontSize: 12, color: grew >= 0 ? '#2F9E67' : '#C0392B', background: grew >= 0 ? '#EAFBF2' : '#FFECEC', borderRadius: 999, padding: '4px 11px', fontWeight: 700 }}>
+              {grew >= 0 ? '📈' : '📉'} {percent(growthPct)} total growth
+            </span>
+          )}
         </div>
+
+        {isNewBest && (
+          <div style={{ fontSize: 12, color: '#6B4EFF', fontWeight: 800, marginTop: 6 }}>🎉 New best!</div>
+        )}
       </div>
 
       {/* lessons */}
@@ -120,12 +147,12 @@ export default function ReportScreen({
       </div>
 
       {/* coach note */}
-      <div style={{ display: 'flex', gap: 10, alignItems: 'center', background: '#F6F4FF', borderRadius: 14, padding: 12, marginTop: 14 }}>
-        <div style={{ fontSize: 30 }}>{coach.emoji}</div>
-        <p style={{ fontSize: 12.5, color: '#4B4470', margin: 0 }}>
-          <b style={{ color: '#6B4EFF' }}>{coach.name}:</b>{' '}
-          {summary.bankrupt ? 'Losing money teaches the best lessons — free of charge! Diversify next round.' : 'Time and patience did the work. Compounding is your superpower. 🌟'}
-        </p>
+      <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', background: 'linear-gradient(135deg,#F6F4FF,#EFF7FF)', border: '1px solid #E6E0FA', borderRadius: 16, padding: 14, marginTop: 16 }}>
+        <div style={{ fontSize: 34, lineHeight: 1 }}>{coach.emoji}</div>
+        <div>
+          <div className="font-display" style={{ fontWeight: 700, fontSize: 13, color: '#6B4EFF', marginBottom: 3 }}>{coach.name} says</div>
+          <p style={{ fontSize: 13, color: '#3C3760', margin: 0, lineHeight: 1.55 }}>{coachSummary}</p>
+        </div>
       </div>
 
       {/* badges */}
