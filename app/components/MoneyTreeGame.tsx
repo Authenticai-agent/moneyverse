@@ -10,7 +10,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { coinsForYear, normalizeAllocation, totalOf } from '@/app/lib/moneytree/engine';
-import { introLine, riskyAllocationLine } from '@/app/lib/moneytree/coach';
+import { allocationCoachLine, introLine } from '@/app/lib/moneytree/coach';
 import { mascotById } from '@/app/lib/moneytree/mascots';
 import { useMoneyTreeGame } from '@/app/lib/moneytree/useMoneyTreeGame';
 import AllocationBar from './moneytree/AllocationBar';
@@ -65,8 +65,8 @@ export default function MoneyTreeGame() {
 
   // playing or resolving → the Stage
   const weights = normalizeAllocation(game.allocation);
-  const risky = riskyAllocationLine(weights.moonshot);
-  const coachText = game.phase === 'playing' ? (risky ?? (game.year === 1 ? introLine(coach.name) : null)) : null;
+  const riskLine = allocationCoachLine(coach, weights);
+  const coachText = game.phase === 'playing' ? (riskLine ?? (game.year === 1 ? introLine(coach) : null)) : null;
   const wilting = !!game.lastResult && game.lastResult.total < totalOf(game.lastResult.before);
   const isFinalTurn = !!game.config && (game.year >= game.config.years || !!game.lastResult?.bankrupt);
 
@@ -97,7 +97,7 @@ export default function MoneyTreeGame() {
         )}
 
         {game.phase === 'resolving' && game.lastResult && (
-          <EventCard result={game.lastResult} onContinue={game.next} isFinal={isFinalTurn} />
+          <EventCard result={game.lastResult} onContinue={game.next} isFinal={isFinalTurn} mascot={coach} />
         )}
       </div>
     </main>

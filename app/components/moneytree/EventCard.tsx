@@ -8,8 +8,10 @@
  */
 
 import { BUCKET_PROFILES } from '@/app/lib/moneytree/content';
+import { eventReactionLine } from '@/app/lib/moneytree/coach';
 import { money, percent } from '@/app/lib/moneytree/format';
 import { yearInsight } from '@/app/lib/moneytree/insights';
+import type { Mascot } from '@/app/lib/moneytree/mascots';
 import { BUCKETS, type TurnResult } from '@/app/lib/moneytree/types';
 
 const TONE_BG: Record<string, string> = {
@@ -23,8 +25,19 @@ const TONE_FG: Record<string, string> = {
   mixed: '#B8860B',
 };
 
-export default function EventCard({ result, onContinue, isFinal }: { result: TurnResult; onContinue: () => void; isFinal: boolean }) {
+export default function EventCard({
+  result,
+  onContinue,
+  isFinal,
+  mascot,
+}: {
+  result: TurnResult;
+  onContinue: () => void;
+  isFinal: boolean;
+  mascot: Mascot;
+}) {
   const insight = yearInsight(result);
+  const reaction = eventReactionLine(mascot, result);
 
   return (
     <div className="absolute inset-0 z-[9] flex items-center justify-center p-4" style={{ background: 'rgba(20,16,40,.35)', backdropFilter: 'blur(2px)' }}>
@@ -49,9 +62,16 @@ export default function EventCard({ result, onContinue, isFinal }: { result: Tur
             })}
           </div>
 
-          <p style={{ fontSize: 12.5, color: '#2F9E67', margin: '0 0 12px', background: '#EAFBF2', borderRadius: 10, padding: '8px 10px' }}>
+          <p style={{ fontSize: 12.5, color: '#2F9E67', margin: '0 0 10px', background: '#EAFBF2', borderRadius: 10, padding: '8px 10px' }}>
             💡 {insight.smartMove}
           </p>
+
+          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', margin: '0 0 12px' }}>
+            <span style={{ fontSize: 22, lineHeight: 1 }}>{mascot.emoji}</span>
+            <p style={{ fontSize: 12, color: '#5A5478', margin: 0, lineHeight: 1.4, fontStyle: 'italic' }}>
+              <b style={{ color: '#6B4EFF', fontStyle: 'normal' }}>{mascot.name}:</b> {reaction}
+            </p>
+          </div>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>

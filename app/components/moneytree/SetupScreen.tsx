@@ -7,10 +7,17 @@
 
 import { useState } from 'react';
 import { compoundingLine } from '@/app/lib/moneytree/coach';
-import { MASCOTS, mascotById } from '@/app/lib/moneytree/mascots';
+import { MASCOTS, mascotById, type CoachPersona } from '@/app/lib/moneytree/mascots';
 import type { ContributionFrequency, GameConfig, MascotId } from '@/app/lib/moneytree/types';
 
 const PURPLE = '#6B4EFF';
+
+const PERSONA_TINT: Record<CoachPersona, { bg: string; fg: string }> = {
+  bold: { bg: '#FFEAF0', fg: '#D8407A' },
+  balanced: { bg: '#F0E9FF', fg: '#6B4EFF' },
+  calm: { bg: '#EAF2FF', fg: '#3A6DD8' },
+  cautious: { bg: '#EAFBF2', fg: '#2F9E67' },
+};
 
 const FREQUENCIES: { id: ContributionFrequency; label: string }[] = [
   { id: 'weekly', label: 'every week' },
@@ -127,10 +134,11 @@ export default function SetupScreen({ onStart }: { onStart: (config: GameConfig)
 
       {/* mascot picker */}
       <div style={{ marginTop: 20 }}>
-        <span style={{ fontSize: 12.5, fontWeight: 600, color: '#413B5A' }}>Pick your coach</span>
+        <span style={{ fontSize: 12.5, fontWeight: 600, color: '#413B5A' }}>Pick your coach — each has their own investing style</span>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 8 }}>
           {MASCOTS.map((m) => {
             const active = m.id === mascot;
+            const tint = PERSONA_TINT[m.persona];
             return (
               <button
                 key={m.id}
@@ -138,14 +146,22 @@ export default function SetupScreen({ onStart }: { onStart: (config: GameConfig)
                 onClick={() => setMascot(m.id)}
                 aria-pressed={active}
                 style={{
-                  cursor: 'pointer', textAlign: 'center', borderRadius: 14, padding: '12px 16px', minWidth: 96,
+                  cursor: 'pointer', textAlign: 'left', borderRadius: 14, padding: '12px 14px', flex: '1 1 190px', maxWidth: 240,
                   background: '#fff', border: `2px solid ${active ? PURPLE : '#ECE7F8'}`,
                   boxShadow: active ? '0 8px 20px -10px rgba(107,78,255,.6)' : 'none',
                 }}
               >
-                <div style={{ fontSize: 34 }}>{m.emoji}</div>
-                <div className="font-display" style={{ fontWeight: 700, fontSize: 13, color: '#1C1F2E' }}>{m.name}</div>
-                <div style={{ fontSize: 10, color: '#8480A0' }}>{m.role}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ fontSize: 30 }}>{m.emoji}</div>
+                  <div>
+                    <div className="font-display" style={{ fontWeight: 700, fontSize: 13.5, color: '#1C1F2E' }}>{m.name}</div>
+                    <div style={{ fontSize: 10, color: '#8480A0' }}>{m.role}</div>
+                  </div>
+                </div>
+                <span style={{ display: 'inline-block', marginTop: 8, background: tint.bg, color: tint.fg, borderRadius: 999, padding: '3px 9px', fontSize: 10, fontWeight: 700 }}>
+                  {m.personaLabel}
+                </span>
+                <p style={{ fontSize: 11, color: '#6E6A85', margin: '7px 0 0', lineHeight: 1.35 }}>{m.tagline}</p>
               </button>
             );
           })}

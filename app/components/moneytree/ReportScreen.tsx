@@ -70,7 +70,7 @@ export default function ReportScreen({
 
   const grew = summary.total - summary.contributed;
   const growthPct = summary.contributed > 0 ? grew / summary.contributed : null;
-  const coachSummary = reportLine({
+  const coachSummary = reportLine(coach, {
     bankrupt: summary.bankrupt,
     years: config.years,
     contributed: summary.contributed,
