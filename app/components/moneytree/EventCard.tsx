@@ -1,12 +1,15 @@
 'use client';
 
 /**
- * EventCard — shown after a year resolves. Explains the market move (and any
- * economic event) in kid words, then continues the game.
+ * EventCard — shown after a year resolves. Every year gets an explanation and a
+ * "smart move" tip via yearInsight — an economic event's own copy when one
+ * struck, or a rotating data-driven explanation on a calm year — so no year
+ * ever shows bare, unexplained numbers.
  */
 
 import { BUCKET_PROFILES } from '@/app/lib/moneytree/content';
 import { money, percent } from '@/app/lib/moneytree/format';
+import { yearInsight } from '@/app/lib/moneytree/insights';
 import { BUCKETS, type TurnResult } from '@/app/lib/moneytree/types';
 
 const TONE_BG: Record<string, string> = {
@@ -21,17 +24,16 @@ const TONE_FG: Record<string, string> = {
 };
 
 export default function EventCard({ result, onContinue, isFinal }: { result: TurnResult; onContinue: () => void; isFinal: boolean }) {
-  const { event } = result;
-  const tone = event?.tone ?? 'mixed';
+  const insight = yearInsight(result);
 
   return (
     <div className="absolute inset-0 z-[9] flex items-center justify-center p-4" style={{ background: 'rgba(20,16,40,.35)', backdropFilter: 'blur(2px)' }}>
       <div style={{ width: '100%', maxWidth: 440, background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 30px 60px -20px rgba(30,20,60,.5)' }}>
-        <div style={{ background: event ? TONE_BG[tone] : '#EEF4FF', color: event ? TONE_FG[tone] : '#3A6DD8', padding: '12px 16px', fontWeight: 800, fontSize: 15 }}>
-          {event ? `${event.emoji} ${event.title} — Year ${result.year}` : `📊 Markets moved — Year ${result.year}`}
+        <div style={{ background: TONE_BG[insight.tone], color: TONE_FG[insight.tone], padding: '12px 16px', fontWeight: 800, fontSize: 15 }}>
+          {insight.emoji} {insight.title} — Year {result.year}
         </div>
         <div style={{ padding: '14px 16px' }}>
-          {event && <p style={{ fontSize: 13, color: '#2C2A3A', margin: '0 0 10px' }}>{event.copy.whatHappened}</p>}
+          <p style={{ fontSize: 13, color: '#2C2A3A', margin: '0 0 10px' }}>{insight.whatHappened}</p>
 
           {/* per-bucket returns */}
           <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
@@ -47,11 +49,9 @@ export default function EventCard({ result, onContinue, isFinal }: { result: Tur
             })}
           </div>
 
-          {event && (
-            <p style={{ fontSize: 12.5, color: '#2F9E67', margin: '0 0 12px', background: '#EAFBF2', borderRadius: 10, padding: '8px 10px' }}>
-              💡 {event.copy.smartMove}
-            </p>
-          )}
+          <p style={{ fontSize: 12.5, color: '#2F9E67', margin: '0 0 12px', background: '#EAFBF2', borderRadius: 10, padding: '8px 10px' }}>
+            💡 {insight.smartMove}
+          </p>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
