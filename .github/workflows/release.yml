@@ -8,6 +8,9 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
     services:
       postgres:
@@ -50,11 +53,9 @@ jobs:
         run: npm run build
 
       - name: Deploy production to Netlify
+        if: env.NETLIFY_SITE_ID != '' && env.NETLIFY_AUTH_TOKEN != ''
         uses: nwtgck/actions-netlify@v3
         with:
           publish-dir: dist
           production-deploy: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
