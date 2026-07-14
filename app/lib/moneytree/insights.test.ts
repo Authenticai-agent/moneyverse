@@ -12,6 +12,7 @@ function fakeResult(over: Partial<TurnResult> = {}): TurnResult {
     before,
     after: before,
     contribution: 0,
+    allocationWeights: { safe: 0.34, growth: 0.33, moonshot: 0.33 },
     returns: RETURNS,
     event: null,
     total: 300,

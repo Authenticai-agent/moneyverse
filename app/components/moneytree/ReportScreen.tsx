@@ -15,6 +15,7 @@ import { BUCKETS, type Bucket, type GameConfig, type TurnResult } from '@/app/li
 import { BUCKET_PROFILES } from '@/app/lib/moneytree/content';
 import GrowthBreakdown from './GrowthBreakdown';
 import MoneyCard from './MoneyCard';
+import SellComparison from './SellComparison';
 
 function biggestBucket(last: TurnResult | undefined): Bucket {
   if (!last) return 'safe';
@@ -117,6 +118,10 @@ export default function ReportScreen({
         )}
 
         <GrowthBreakdown contributed={summary.contributed} grew={grew} growthPct={growthPct} years={config.years} total={summary.total} />
+
+        {summary.soldAnything && (
+          <SellComparison treeValue={summary.treeValue} cashOut={summary.cashOut} total={summary.total} shadowTotal={summary.shadowTotal} />
+        )}
       </div>
 
       {/* lessons */}

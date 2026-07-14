@@ -48,12 +48,16 @@ export default function AllocationBar({
   allocation,
   onChange,
   onGrow,
+  onOpenCashOut,
+  cashOut,
   disabled,
 }: {
   coins: number;
   allocation: Allocation;
   onChange: (a: Allocation) => void;
   onGrow: () => void;
+  onOpenCashOut: () => void;
+  cashOut: number;
   disabled?: boolean;
 }) {
   const total = BUCKETS.reduce((s, b) => s + allocation[b], 0) || 1;
@@ -94,19 +98,33 @@ export default function AllocationBar({
           );
         })}
       </div>
-      <button
-        type="button"
-        onClick={onGrow}
-        disabled={disabled}
-        className="font-display"
-        style={{
-          marginTop: 10, width: '100%', border: 'none', cursor: disabled ? 'default' : 'pointer', color: '#fff', borderRadius: 999,
-          background: disabled ? '#B9AEEB' : '#6B4EFF', fontWeight: 600, fontSize: 16, padding: '13px 22px',
-          boxShadow: '0 12px 26px -12px rgba(107,78,255,.7)',
-        }}
-      >
-        🌤️ Grow the year ▶
-      </button>
+      <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+        <button
+          type="button"
+          onClick={onOpenCashOut}
+          disabled={disabled}
+          className="font-display"
+          style={{
+            border: '1.5px solid #F0DDA0', cursor: disabled ? 'default' : 'pointer', color: '#B8860B', borderRadius: 999,
+            background: '#FFF7E6', fontWeight: 700, fontSize: 13, padding: '13px 16px', whiteSpace: 'nowrap',
+          }}
+        >
+          💰{cashOut > 0 ? ` ${money(cashOut)}` : ' Cash Out'}
+        </button>
+        <button
+          type="button"
+          onClick={onGrow}
+          disabled={disabled}
+          className="font-display"
+          style={{
+            flex: 1, border: 'none', cursor: disabled ? 'default' : 'pointer', color: '#fff', borderRadius: 999,
+            background: disabled ? '#B9AEEB' : '#6B4EFF', fontWeight: 600, fontSize: 16, padding: '13px 22px',
+            boxShadow: '0 12px 26px -12px rgba(107,78,255,.7)',
+          }}
+        >
+          🌤️ Grow the year ▶
+        </button>
+      </div>
     </div>
   );
 }

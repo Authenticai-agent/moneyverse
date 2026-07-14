@@ -197,6 +197,13 @@ export const MONEY_CARDS: MoneyCard[] = [
     blurb: 'Adding money regularly — not just once — keeps feeding the snowball and smooths out the bumpy years.',
     unlock: 'Play with weekly or monthly contributions.',
   },
+  {
+    id: 'opportunity-cost',
+    emoji: '⏳',
+    concept: 'Opportunity Cost',
+    blurb: 'Money you cash out stops growing. Selling early can be smart — but it always costs you future compounding.',
+    unlock: 'Sell shares from any bucket during a game.',
+  },
 ];
 
 /* ------------------------------- badges -------------------------------- */
@@ -225,5 +232,11 @@ export const BADGES: Badge[] = [
     emoji: '🧘',
     name: 'Steady Hand',
     description: 'Survive a recession and still finish in the green.',
+  },
+  {
+    id: 'diamond-hands',
+    emoji: '💎',
+    name: 'Diamond Hands',
+    description: 'Ride out a down year without selling a single share — and still finish ahead.',
   },
 ];

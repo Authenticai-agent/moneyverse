@@ -6,10 +6,19 @@
  * Owns the game lifecycle (setup → playing → resolving → report) on top of the
  * pure engine. Authoritative mutable data lives in refs (so callbacks never see
  * stale values); a tick forces re-render. Progress persists to localStorage.
+ *
+ * Selling: the player can cash out part or all of a bucket during the
+ * 'playing' phase. Proceeds move to a separate cash pile that no longer
+ * compounds — the tree only knows about what's still invested. Combined
+ * wealth (tree + cash) is what "bankrupt" and the final score are judged on,
+ * so a deliberate full cash-out is never confused with going broke.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { coinsForYear, emptyPortfolio, resolveTurn } from './engine';
+import { BANKRUPT_THRESHOLD } from './content';
+import { coinsForYear, emptyPortfolio, resolveTurn, sellFromBucket } from './engine';
+import { sellReactionLine } from './coach';
+import { mascotById } from './mascots';
 import { createRng, type Rng } from './rng';
 import { summarizeGame, type GameSummary } from './summary';
 import {
@@ -19,7 +28,7 @@ import {
   saveProgress,
   type MoneyTreeProgress,
 } from './storage';
-import type { Allocation, GameConfig, GamePhase, Portfolio, TurnResult } from './types';
+import type { Allocation, Bucket, GameConfig, GamePhase, Portfolio, TurnResult, Withdrawal } from './types';
 
 /** Percentages that sum to 100 — a friendly, diversified default. */
 export const DEFAULT_ALLOCATION: Allocation = { safe: 34, growth: 33, moonshot: 33 };
@@ -45,9 +54,16 @@ export interface MoneyTreeGame {
   isNewBest: boolean;
   newCardIds: string[];
   newBadgeIds: string[];
+  /** Total dollars cashed out so far this game (no longer invested). */
+  cashOut: number;
+  withdrawals: Withdrawal[];
+  /** The coach's reaction to the most recent sale, or null once dismissed/superseded. */
+  lastSellMessage: string | null;
 
   startGame: (config: GameConfig) => void;
   setAllocation: (allocation: Allocation) => void;
+  /** Cash out a fraction (0..1] of one bucket. Only during the 'playing' phase. */
+  sellShares: (bucket: Bucket, fraction: number) => void;
   /** Resolve the current year → moves to `resolving` so the UI can show it. */
   growYear: () => void;
   /** Acknowledge the resolved year → next year, or the report if the game ended. */
@@ -73,6 +89,9 @@ export function useMoneyTreeGame(): MoneyTreeGame {
   const isNewBestRef = useRef(false);
   const newCardIdsRef = useRef<string[]>([]);
   const newBadgeIdsRef = useRef<string[]>([]);
+  const cashRef = useRef(0);
+  const withdrawalsRef = useRef<Withdrawal[]>([]);
+  const lastSellMessageRef = useRef<string | null>(null);
 
   const [, setTick] = useState(0);
   const render = useCallback(() => setTick((t) => t + 1), []);
@@ -97,6 +116,9 @@ export function useMoneyTreeGame(): MoneyTreeGame {
       isNewBestRef.current = false;
       newCardIdsRef.current = [];
       newBadgeIdsRef.current = [];
+      cashRef.current = 0;
+      withdrawalsRef.current = [];
+      lastSellMessageRef.current = null;
       phaseRef.current = 'playing';
       render();
     },
@@ -108,6 +130,30 @@ export function useMoneyTreeGame(): MoneyTreeGame {
   const setAllocation = useCallback(
     (allocation: Allocation) => {
       allocationRef.current = allocation;
+      render();
+    },
+    [render]
+  );
+
+  const sellShares = useCallback(
+    (bucket: Bucket, fraction: number) => {
+      const config = configRef.current;
+      if (phaseRef.current !== 'playing' || !config) return;
+
+      const { portfolio: after, proceeds } = sellFromBucket(portfolioRef.current, bucket, fraction);
+      if (proceeds <= 0) return;
+
+      portfolioRef.current = after;
+      cashRef.current += proceeds;
+      const soldAll = after[bucket] <= 0.01;
+      withdrawalsRef.current = [
+        ...withdrawalsRef.current,
+        { year: yearRef.current, bucket, fraction: Math.min(1, Math.max(0, fraction)), proceeds },
+      ];
+
+      const mascot = mascotById(config.mascot);
+      const yearsRemaining = Math.max(1, config.years - yearRef.current + 1);
+      lastSellMessageRef.current = sellReactionLine(mascot, { bucket, amount: proceeds, soldAll, yearsRemaining });
       render();
     },
     [render]
@@ -125,6 +171,7 @@ export function useMoneyTreeGame(): MoneyTreeGame {
     resultsRef.current = [...resultsRef.current, res];
     allocationsRef.current = [...allocationsRef.current, allocationRef.current];
     lastResultRef.current = res;
+    lastSellMessageRef.current = null;
     phaseRef.current = 'resolving';
     render();
   }, [render]);
@@ -133,9 +180,15 @@ export function useMoneyTreeGame(): MoneyTreeGame {
     const config = configRef.current;
     if (phaseRef.current !== 'resolving' || !config) return;
 
-    const gameOver = yearRef.current >= config.years || !!lastResultRef.current?.bankrupt;
+    // Combined wealth (still-invested tree + cash already taken out) decides
+    // whether the player is truly out of the game — a deliberate full
+    // cash-out must never be mistaken for going bankrupt.
+    const combinedWealth = (lastResultRef.current?.total ?? 0) + cashRef.current;
+    const trulyBankrupt = combinedWealth <= BANKRUPT_THRESHOLD;
+    const gameOver = yearRef.current >= config.years || trulyBankrupt;
+
     if (gameOver) {
-      const summary = summarizeGame(config, resultsRef.current, allocationsRef.current);
+      const summary = summarizeGame(config, resultsRef.current, allocationsRef.current, withdrawalsRef.current);
       const merged = mergeSummary(progressRef.current, summary);
       saveProgress(merged.progress);
       summaryRef.current = summary;
@@ -178,8 +231,12 @@ export function useMoneyTreeGame(): MoneyTreeGame {
     isNewBest: isNewBestRef.current,
     newCardIds: newCardIdsRef.current,
     newBadgeIds: newBadgeIdsRef.current,
+    cashOut: cashRef.current,
+    withdrawals: withdrawalsRef.current,
+    lastSellMessage: lastSellMessageRef.current,
     startGame,
     setAllocation,
+    sellShares,
     growYear,
     next,
     replay,

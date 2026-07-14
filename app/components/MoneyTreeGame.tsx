@@ -9,11 +9,14 @@
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { useState } from 'react';
+import { BANKRUPT_THRESHOLD } from '@/app/lib/moneytree/content';
 import { coinsForYear, normalizeAllocation, totalOf } from '@/app/lib/moneytree/engine';
 import { allocationCoachLine, introLine } from '@/app/lib/moneytree/coach';
 import { mascotById } from '@/app/lib/moneytree/mascots';
 import { useMoneyTreeGame } from '@/app/lib/moneytree/useMoneyTreeGame';
 import AllocationBar from './moneytree/AllocationBar';
+import CashOutPanel from './moneytree/CashOutPanel';
 import Coach from './moneytree/Coach';
 import EventCard from './moneytree/EventCard';
 import HUD from './moneytree/HUD';
@@ -31,6 +34,7 @@ const STAGE_BG = 'linear-gradient(180deg, #E9F5FF 0%, #F4FBF3 58%, #E0F5E7 100%)
 export default function MoneyTreeGame() {
   const game = useMoneyTreeGame();
   const coach = mascotById(game.config?.mascot ?? 'wizard');
+  const [cashOutOpen, setCashOutOpen] = useState(false);
 
   if (game.phase === 'setup') {
     return (
@@ -68,7 +72,8 @@ export default function MoneyTreeGame() {
   const riskLine = allocationCoachLine(coach, weights);
   const coachText = game.phase === 'playing' ? (riskLine ?? (game.year === 1 ? introLine(coach) : null)) : null;
   const wilting = !!game.lastResult && game.lastResult.total < totalOf(game.lastResult.before);
-  const isFinalTurn = !!game.config && (game.year >= game.config.years || !!game.lastResult?.bankrupt);
+  const combinedWealth = (game.lastResult?.total ?? 0) + game.cashOut;
+  const isFinalTurn = !!game.config && (game.year >= game.config.years || combinedWealth <= BANKRUPT_THRESHOLD);
 
   // growth stats for the HUD: vs previous year, and vs everything put in so far
   const currentTotal = totalOf(game.portfolio);
@@ -80,7 +85,13 @@ export default function MoneyTreeGame() {
 
   return (
     <main className="min-h-screen" style={{ background: '#FBFBFE' }}>
-      <div className="relative mx-auto w-full max-w-3xl" style={{ height: 'min(88vh, 760px)', margin: '12px auto', borderRadius: 24, overflow: 'hidden', background: STAGE_BG, border: '1px solid #E3EFE6', boxShadow: '0 24px 56px -30px rgba(60,120,80,.45)' }}>
+      <div
+        className="relative mx-auto w-full max-w-3xl"
+        style={{
+          height: 'min(88vh, 760px)', margin: '12px auto', borderRadius: 24, overflow: 'hidden',
+          background: STAGE_BG, border: '1px solid #E3EFE6', boxShadow: '0 24px 56px -30px rgba(60,120,80,.45)',
+        }}
+      >
         {/* sky decor */}
         <div aria-hidden style={{ position: 'absolute', top: 30, right: 40, width: 54, height: 54, borderRadius: '50%', background: 'radial-gradient(circle at 32% 28%, #FFECAE, #FFD84D 58%, #F3C218)', boxShadow: '0 6px 18px rgba(243,194,24,.5)' }} />
         {/* ground */}
@@ -92,8 +103,33 @@ export default function MoneyTreeGame() {
 
         {coachText && <Coach emoji={coach.emoji} name={coach.name} text={coachText} />}
 
-        {game.phase === 'playing' && (
-          <AllocationBar coins={game.coinsThisYear} allocation={game.allocation} onChange={game.setAllocation} onGrow={game.growYear} />
+        {/*
+          Always mounted (never conditionally rendered) — toggling this in and
+          out of the tree previously triggered a layout-corruption bug in the
+          Stage's other absolutely-positioned children. Visibility is
+          controlled with CSS instead of mount/unmount.
+        */}
+        <div style={{ visibility: game.phase === 'playing' ? 'visible' : 'hidden' }}>
+          <AllocationBar
+            coins={game.coinsThisYear}
+            allocation={game.allocation}
+            onChange={game.setAllocation}
+            onGrow={game.growYear}
+            onOpenCashOut={() => setCashOutOpen(true)}
+            cashOut={game.cashOut}
+            disabled={game.phase !== 'playing'}
+          />
+        </div>
+
+        {game.phase === 'playing' && cashOutOpen && (
+          <CashOutPanel
+            portfolio={game.portfolio}
+            cashOut={game.cashOut}
+            mascot={coach}
+            sellMessage={game.lastSellMessage}
+            onSell={game.sellShares}
+            onClose={() => setCashOutOpen(false)}
+          />
         )}
 
         {game.phase === 'resolving' && game.lastResult && (

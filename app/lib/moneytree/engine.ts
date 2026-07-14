@@ -96,7 +96,7 @@ export function drawEvent(rng: Rng): MarketEvent | null {
 }
 
 /** Apply a flat dollar change: gains land in safe; losses drain safe→growth→moonshot. */
-function applyCashDelta(p: Portfolio, delta: number): void {
+export function applyCashDelta(p: Portfolio, delta: number): void {
   if (delta >= 0) {
     p.safe += delta;
     return;
@@ -167,6 +167,7 @@ export function applyTurn(
     before,
     after,
     contribution: dep,
+    allocationWeights: weights,
     returns,
     event,
     total,
@@ -190,4 +191,38 @@ export function resolveTurn(
   const event = drawEvent(rng);
   const rawReturns = rollReturns(rng);
   return applyTurn(before, allocation, deposit, year, rawReturns, event);
+}
+
+/**
+ * Cash out a fraction of one bucket. Proceeds leave the portfolio entirely —
+ * they become plain cash the player holds, no longer invested and no longer
+ * growing. Fraction is clamped to [0, 1]; selling from an empty bucket is a
+ * no-op with zero proceeds.
+ */
+export function sellFromBucket(
+  portfolio: Portfolio,
+  bucket: Bucket,
+  fraction: number
+): { portfolio: Portfolio; proceeds: number } {
+  const f = Math.min(1, Math.max(0, fraction));
+  const proceeds = portfolio[bucket] * f;
+  return { portfolio: { ...portfolio, [bucket]: portfolio[bucket] - proceeds }, proceeds };
+}
+
+/**
+ * The honest counterfactual: what the tree would be worth today if the player
+ * had never cashed anything out. Replays the SAME sequence of contributions,
+ * allocation choices, market returns, and events recorded in `results` — the
+ * only thing that changes is that nothing is ever withdrawn along the way, so
+ * every dollar keeps compounding. Used to show the true cost of selling early.
+ */
+export function replayWithoutWithdrawals(results: TurnResult[]): number {
+  let shadow = emptyPortfolio();
+  for (const r of results) {
+    for (const b of BUCKETS) shadow[b] += r.contribution * r.allocationWeights[b];
+    for (const b of BUCKETS) shadow[b] = shadow[b] * (1 + r.returns[b]);
+    if (r.event?.effects.cashDelta) applyCashDelta(shadow, r.event.effects.cashDelta);
+    for (const b of BUCKETS) shadow[b] = Math.max(0, shadow[b]);
+  }
+  return totalOf(shadow);
 }

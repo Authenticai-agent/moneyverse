@@ -5,8 +5,10 @@ import {
   contributionForYear,
   emptyPortfolio,
   normalizeAllocation,
+  replayWithoutWithdrawals,
   resolveTurn,
   rollBucketReturn,
+  sellFromBucket,
   stageOf,
   totalOf,
 } from './engine';
@@ -208,5 +210,78 @@ describe('resolveTurn — randomness & determinism', () => {
     }
     const contributed = baseConfig.startAmount + baseConfig.contributionAmount * baseConfig.years;
     expect(totalOf(port)).toBeGreaterThan(contributed); // compounding beat plain saving
+  });
+});
+
+describe('sellFromBucket', () => {
+  it('moves the sold fraction out of the bucket and returns matching proceeds', () => {
+    const portfolio: Portfolio = { safe: 200, growth: 300, moonshot: 100 };
+    const { portfolio: after, proceeds } = sellFromBucket(portfolio, 'growth', 0.5);
+    expect(proceeds).toBeCloseTo(150);
+    expect(after.growth).toBeCloseTo(150);
+    expect(after.safe).toBe(200); // other buckets untouched
+    expect(after.moonshot).toBe(100);
+  });
+
+  it('selling 100% empties the bucket', () => {
+    const portfolio: Portfolio = { safe: 0, growth: 0, moonshot: 400 };
+    const { portfolio: after, proceeds } = sellFromBucket(portfolio, 'moonshot', 1);
+    expect(after.moonshot).toBeCloseTo(0);
+    expect(proceeds).toBeCloseTo(400);
+  });
+
+  it('clamps fractions outside [0, 1]', () => {
+    const portfolio: Portfolio = { safe: 100, growth: 0, moonshot: 0 };
+    expect(sellFromBucket(portfolio, 'safe', 1.5).proceeds).toBeCloseTo(100);
+    expect(sellFromBucket(portfolio, 'safe', -1).proceeds).toBeCloseTo(0);
+  });
+
+  it('selling from an empty bucket is a harmless no-op', () => {
+    const portfolio: Portfolio = { safe: 0, growth: 50, moonshot: 0 };
+    const { portfolio: after, proceeds } = sellFromBucket(portfolio, 'safe', 1);
+    expect(proceeds).toBe(0);
+    expect(after).toEqual(portfolio);
+  });
+
+  it('does not mutate the input portfolio', () => {
+    const portfolio: Portfolio = { safe: 100, growth: 0, moonshot: 0 };
+    sellFromBucket(portfolio, 'safe', 0.5);
+    expect(portfolio.safe).toBe(100);
+  });
+});
+
+describe('replayWithoutWithdrawals', () => {
+  it('matches the real total when nothing was ever sold', () => {
+    const rng = createRng(55);
+    let port = emptyPortfolio();
+    const results = [];
+    for (let year = 1; year <= 6; year++) {
+      const res = resolveTurn(port, { safe: 1, growth: 1, moonshot: 1 }, 100, year, rng);
+      results.push(res);
+      port = res.after; // no selling — real trajectory == shadow trajectory
+    }
+    expect(replayWithoutWithdrawals(results)).toBeCloseTo(totalOf(port), 6);
+  });
+
+  it('is higher than the real total once money has been sold and stopped compounding', () => {
+    const rng = createRng(77);
+    let port = emptyPortfolio();
+    const results = [];
+    for (let year = 1; year <= 8; year++) {
+      const res = resolveTurn(port, { safe: 1, growth: 1, moonshot: 1 }, 100, year, rng);
+      results.push(res);
+      port = res.after;
+      if (year === 3) {
+        // cash out everything in growth after year 3 — it stops growing from here on
+        const sold = sellFromBucket(port, 'growth', 1);
+        port = sold.portfolio;
+      }
+    }
+    const shadow = replayWithoutWithdrawals(results);
+    expect(shadow).toBeGreaterThan(totalOf(port));
+  });
+
+  it('returns 0 for an empty results list', () => {
+    expect(replayWithoutWithdrawals([])).toBe(0);
   });
 });

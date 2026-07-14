@@ -7,6 +7,7 @@
  * ever shows bare, unexplained numbers.
  */
 
+import { createPortal } from 'react-dom';
 import { BUCKET_PROFILES } from '@/app/lib/moneytree/content';
 import { eventReactionLine } from '@/app/lib/moneytree/coach';
 import { money, percent } from '@/app/lib/moneytree/format';
@@ -39,8 +40,10 @@ export default function EventCard({
   const insight = yearInsight(result);
   const reaction = eventReactionLine(mascot, result);
 
-  return (
-    <div className="absolute inset-0 z-[9] flex items-center justify-center p-4" style={{ background: 'rgba(20,16,40,.35)', backdropFilter: 'blur(2px)' }}>
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9] flex items-center justify-center p-4" style={{ background: 'rgba(20,16,40,.4)', backdropFilter: 'blur(2px)' }}>
       <div style={{ width: '100%', maxWidth: 440, background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 30px 60px -20px rgba(30,20,60,.5)' }}>
         <div style={{ background: TONE_BG[insight.tone], color: TONE_FG[insight.tone], padding: '12px 16px', fontWeight: 800, fontSize: 15 }}>
           {insight.emoji} {insight.title} — Year {result.year}
@@ -89,6 +92,7 @@ export default function EventCard({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

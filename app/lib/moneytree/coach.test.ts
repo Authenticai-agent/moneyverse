@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { allocationCoachLine, eventReactionLine, introLine, reportLine } from './coach';
+import { allocationCoachLine, eventReactionLine, introLine, reportLine, sellReactionLine } from './coach';
 import { MASCOTS } from './mascots';
 import type { Portfolio, TurnResult } from './types';
 
@@ -12,6 +12,7 @@ function fakeResult(over: Partial<TurnResult> = {}): TurnResult {
     before,
     after: before,
     contribution: 0,
+    allocationWeights: { safe: 0.34, growth: 0.33, moonshot: 0.33 },
     returns: { safe: 0.03, growth: 0.05, moonshot: 0.1 },
     event: null,
     total: 340,
@@ -118,5 +119,37 @@ describe('reportLine', () => {
     const line = reportLine(sage, opts);
     expect(line).toContain('$1,000');
     expect(line).toContain('$500');
+  });
+});
+
+describe('sellReactionLine', () => {
+  const partial = { bucket: 'growth' as const, amount: 250, soldAll: false, yearsRemaining: 4 };
+  const full = { bucket: 'moonshot' as const, amount: 900, soldAll: true, yearsRemaining: 1 };
+
+  it('gives every mascot a distinct, non-empty reaction for a partial sale', () => {
+    const lines = MASCOTS.map((m) => sellReactionLine(m, partial));
+    expect(lines.every((l) => l.length > 30)).toBe(true);
+    expect(new Set(lines).size).toBe(MASCOTS.length);
+  });
+
+  it('mentions the dollar amount and bucket name', () => {
+    const mascot = MASCOTS[0];
+    const line = sellReactionLine(mascot, partial);
+    expect(line).toContain('$250');
+    expect(line).toContain('Growth Tree');
+  });
+
+  it('has a distinct message when the whole bucket was sold vs a partial sale', () => {
+    const mascot = MASCOTS.find((m) => m.persona === 'cautious')!;
+    const partialLine = sellReactionLine(mascot, { ...partial, bucket: 'moonshot' });
+    const fullLine = sellReactionLine(mascot, full);
+    expect(partialLine).not.toBe(fullLine);
+  });
+
+  it('handles a 1-year vs multi-year remaining horizon without crashing', () => {
+    for (const m of MASCOTS) {
+      expect(sellReactionLine(m, full).length).toBeGreaterThan(20);
+      expect(sellReactionLine(m, { ...partial, yearsRemaining: 10 }).length).toBeGreaterThan(20);
+    }
   });
 });

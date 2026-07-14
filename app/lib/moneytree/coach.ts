@@ -82,6 +82,47 @@ export function allocationCoachLine(mascot: Mascot, weights: Record<Bucket, numb
   return null;
 }
 
+const BUCKET_LABEL: Record<Bucket, string> = { safe: 'Safe Seed', growth: 'Growth Tree', moonshot: 'Moonshot' };
+
+/**
+ * The coach's in-character reaction right after the player cashes out shares —
+ * always teaches the same core truth (money you sell stops compounding) but
+ * in a voice that matches their risk philosophy.
+ */
+export function sellReactionLine(
+  mascot: Mascot,
+  ctx: { bucket: Bucket; amount: number; soldAll: boolean; yearsRemaining: number }
+): string {
+  const { bucket, amount, soldAll, yearsRemaining } = ctx;
+  const bucketLabel = BUCKET_LABEL[bucket];
+  const amt = money(amount);
+  const years1 = yearsRemaining === 1 ? 'year' : 'years';
+
+  if (soldAll) {
+    switch (mascot.persona) {
+      case 'bold':
+        return `Cashing out ALL of your ${bucketLabel}? Bold move — you've locked in ${amt}, no take-backs. Just know that money's done growing for the ${yearsRemaining} ${years1} left. Was it worth it?`;
+      case 'balanced':
+        return `You sold every last coin from ${bucketLabel} — ${amt} in your pocket now. That's fine sometimes, but remember: that money can't compound anymore. Balance means knowing when to hold, too.`;
+      case 'calm':
+        return `Selling all of ${bucketLabel} for ${amt}. No judgment — but that money stops growing the moment it leaves the tree. Make sure it was worth more to you now than later.`;
+      case 'cautious':
+        return `*beep* Full withdrawal from ${bucketLabel} confirmed — ${amt} secured, zero risk from here. Smart if you needed certainty. Just remember: locked-in money can't grow anymore either.`;
+    }
+  }
+
+  switch (mascot.persona) {
+    case 'bold':
+      return `Cashed out ${amt} from ${bucketLabel}. Locking in a win now and again isn't a bad instinct — just remember, that ${amt} won't be riding the next big swing with the rest.`;
+    case 'balanced':
+      return `You pulled ${amt} out of ${bucketLabel}. That's ${amt} that stops compounding — sometimes worth it, but the real magic happens when money stays invested.`;
+    case 'calm':
+      return `Took ${amt} out of ${bucketLabel}. That's okay — just know that ${amt} won't be quietly growing alongside the rest anymore.`;
+    case 'cautious':
+      return `*beep* ${amt} withdrawn from ${bucketLabel} and safely in hand. No more risk on that portion — but also no more growth. Trade-offs, trade-offs.`;
+  }
+}
+
 /** Whether a resolved year was, on balance, a win, a loss, or roughly flat. */
 function outcomeTone(result: TurnResult): 'good' | 'bad' | 'flat' {
   const before = totalOf(result.before);

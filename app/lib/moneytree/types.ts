@@ -93,6 +93,8 @@ export interface TurnResult {
   after: Portfolio;
   /** Dollars added as this year's contribution. */
   contribution: number;
+  /** Normalised allocation weights used to place the contribution this year. */
+  allocationWeights: Record<Bucket, number>;
   /** Per-bucket return fraction actually applied this year (e.g. 0.07 = +7%). */
   returns: Record<Bucket, number>;
   /** The event that struck this year, if any. */
@@ -103,6 +105,17 @@ export interface TurnResult {
   stage: Stage;
   /** True once the player is effectively wiped out. */
   bankrupt: boolean;
+}
+
+/** A record of the player cashing out part or all of a bucket mid-game. */
+export interface Withdrawal {
+  /** The year (1-based) in which the sale happened, just before that year's turn. */
+  year: number;
+  bucket: Bucket;
+  /** Fraction of that bucket's balance sold (0..1]. */
+  fraction: number;
+  /** Dollars received — added to cash, no longer invested or growing. */
+  proceeds: number;
 }
 
 /** Where a game currently sits in its lifecycle. */
