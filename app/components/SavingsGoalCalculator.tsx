@@ -7,11 +7,25 @@ function formatCurrency(n: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 }
 
+function formatDuration(months: number): string {
+  if (!isFinite(months) || months < 0) return '—';
+  const days = Math.round(months * 30.44);
+  if (days <= 0) return '0 days';
+  if (days < 30) return `${days} day${days === 1 ? '' : 's'}`;
+  const wholeMonths = Math.round(months);
+  if (wholeMonths < 12) return `${wholeMonths} month${wholeMonths === 1 ? '' : 's'}`;
+  const years = Math.floor(wholeMonths / 12);
+  const leftoverMonths = wholeMonths % 12;
+  if (leftoverMonths === 0) return `${years} year${years === 1 ? '' : 's'}`;
+  return `${years} year${years === 1 ? '' : 's'} and ${leftoverMonths} month${leftoverMonths === 1 ? '' : 's'}`;
+}
+
 export default function SavingsGoalCalculator() {
   const [goalName, setGoalName] = useState('New bike');
   const [target, setTarget] = useState(200);
   const [current, setCurrent] = useState(20);
   const [weekly, setWeekly] = useState(10);
+  const [monthly, setMonthly] = useState(Math.round(10 * 4.33));
   const [timeline, setTimeline] = useState(20);
   const [email, setEmail] = useState('');
   const [showPlan, setShowPlan] = useState(false);
@@ -22,6 +36,12 @@ export default function SavingsGoalCalculator() {
     if (weekly <= 0) return Infinity;
     return Math.ceil(remaining / weekly);
   }, [remaining, weekly]);
+
+  const monthsToGoal = useMemo(() => {
+    if (remaining <= 0) return 0;
+    if (monthly <= 0) return Infinity;
+    return remaining / monthly;
+  }, [remaining, monthly]);
 
   const requiredWeekly = useMemo(() => {
     if (timeline <= 0) return 0;
@@ -67,7 +87,7 @@ export default function SavingsGoalCalculator() {
 
         <div>
           <label htmlFor="target" className="block text-sm font-medium text-mv-dark mb-1">
-            Target amount
+            Goal amount
           </label>
           <input
             id="target"
@@ -104,10 +124,33 @@ export default function SavingsGoalCalculator() {
             type="number"
             min={0}
             value={weekly}
-            onChange={(e) => setWeekly(Math.max(0, Number(e.target.value)))}
+            onChange={(e) => {
+              const w = Math.max(0, Number(e.target.value));
+              setWeekly(w);
+              setMonthly(Math.round(w * 4.33));
+            }}
             className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
           />
           <p className="text-xs text-mv-dark/60 mt-1">How much money you will put into savings each week.</p>
+        </div>
+
+        <div>
+          <label htmlFor="monthly" className="block text-sm font-medium text-mv-dark mb-1">
+            Monthly contribution
+          </label>
+          <input
+            id="monthly"
+            type="number"
+            min={0}
+            value={monthly}
+            onChange={(e) => {
+              const m = Math.max(0, Number(e.target.value));
+              setMonthly(m);
+              setWeekly(Math.round((m / 4.33) * 100) / 100);
+            }}
+            className="w-full rounded-lg border border-mv-lavender px-4 py-2 text-mv-dark focus:outline-none focus:ring-2 focus:ring-mv-primary"
+          />
+          <p className="text-xs text-mv-dark/60 mt-1">How much money you will put into savings each month.</p>
         </div>
 
         <div>
@@ -160,6 +203,22 @@ export default function SavingsGoalCalculator() {
             {formatCurrency(current + weekly * timeline)}
           </p>
         </div>
+      </div>
+
+      <div className="mb-8 p-5 bg-mv-light rounded-xl border border-mv-lavender">
+        <h2 className="font-semibold text-mv-dark mb-2">Time to reach your goal</h2>
+        <p className="text-mv-dark/80">
+          {remaining <= 0 ? (
+            <>You have already reached your goal of {formatCurrency(target)}! 🎉</>
+          ) : monthly <= 0 ? (
+            <>Add a monthly contribution to see how long it will take to reach {formatCurrency(target)}.</>
+          ) : (
+            <>
+              If you continue adding <strong>{formatCurrency(monthly)} per month</strong>, you will get
+              there in <strong>{formatDuration(monthsToGoal)}</strong>.
+            </>
+          )}
+        </p>
       </div>
 
       <div className="mb-8 p-4 bg-mv-light rounded-xl">

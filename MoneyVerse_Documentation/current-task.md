@@ -2,7 +2,7 @@
 
 ## Goal
 
-Implement the new MoneyVerse landing hero (design "2a") and the redesigned `/tools` index (design "3a") from the design handoff bundles.
+Implement the new MoneyVerse landing hero (design "2a"), the redesigned `/tools` index (design "3a"), the Money Tree game page (design "4a"), and add a monthly goal-time message to the Savings Goal Calculator.
 
 ## Status
 
@@ -17,6 +17,7 @@ Implemented and verified.
 - Wired the landing hero's primary CTA to `/tools` and the secondary "Join the waitlist" CTA to `/register`.
 - Clarified the hero's waitlist note: it is for MoneyVerse Plus updates, not unlocking features, and removed "premium cosmetics".
 - Removed the standalone waitlist section below the hero.
+- Updated the Savings Goal Calculator with a `Monthly contribution` input (synced with weekly) and a friendly "Time to reach your goal" message in days/months/years.
 - Confirmed the Tailwind `mv` color tokens and `font-display`/`font-sans` families resolve correctly.
 
 ## Verification

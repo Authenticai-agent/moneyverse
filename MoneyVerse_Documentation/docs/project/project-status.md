@@ -1,7 +1,7 @@
 # Project Status
 
 - Current phase: Phase 3 — Game world / MoneyVerse Lite public tools
-- Current task: New landing hero design 2a, redesigned /tools index design 3a, and Money Tree game page design 4a implemented and verified
+- Current task: New landing hero design 2a, redesigned /tools index design 3a, Money Tree game page design 4a, and Savings Goal Calculator monthly time-to-goal feature implemented and verified
 - Launch readiness: Accessibility audit, penetration test, load test, privacy review, and production checks completed
 - Build: Passing
 - Tests: Passing
