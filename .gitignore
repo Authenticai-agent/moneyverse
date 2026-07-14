@@ -37,3 +37,6 @@ Thumbs.db
 # logs
 *.log
 npm-debug.log*
+
+# Brainstorming visual-companion scratch
+.superpowers/
