@@ -40,3 +40,6 @@ npm-debug.log*
 
 # Brainstorming visual-companion scratch
 .superpowers/
+
+# Money Tree raw 3D assets — commit compressed versions at Step 8
+public/models/moneytree/*.glb

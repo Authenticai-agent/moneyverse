@@ -49,13 +49,29 @@ export type Allocation = Record<Bucket, number>;
 /** A growth stage derived from total portfolio value. */
 export type Stage = 'seed' | 'sapling' | 'tree' | 'forest';
 
+/**
+ * How an event changes a year's outcome. All fields optional; an event uses
+ * whichever express its real-world effect most clearly.
+ */
+export interface EventEffects {
+  /** Additive change to a bucket's return this year (e.g. -0.15 = 15pp worse). */
+  returnDeltas?: Partial<Record<Bucket, number>>;
+  /** Multiply the money already held in a bucket (e.g. scam drains moonshot → 0.6). */
+  bucketMultipliers?: Partial<Record<Bucket, number>>;
+  /** Flat dollar change to the portfolio (windfall +, surprise expense −). */
+  cashDelta?: number;
+}
+
 /** An economic event that can strike during a market roll. */
 export interface MarketEvent {
   id: string;
   emoji: string;
   title: string;
-  /** Multiplier applied to each bucket's return this year (1 = no effect). */
-  modifiers: Partial<Record<Bucket, number>>;
+  /** Relative likelihood when an event is drawn (higher = more common). */
+  weight: number;
+  /** Whether this event is broadly good, bad, or mixed — used for UI tone. */
+  tone: 'good' | 'bad' | 'mixed';
+  effects: EventEffects;
   /** Kid-friendly explanation surfaced in the EventCard. */
   copy: {
     whatHappened: string;
@@ -87,3 +103,39 @@ export interface TurnResult {
 
 /** Where a game currently sits in its lifecycle. */
 export type GamePhase = 'setup' | 'playing' | 'resolving' | 'report';
+
+/** Static description of a risk bucket, shown in the UI and used by the engine. */
+export interface BucketProfile {
+  id: Bucket;
+  emoji: string;
+  label: string;
+  /** One-line kid description of what this bucket represents. */
+  blurb: string;
+  /** Lowest possible yearly return in a normal year (fraction, e.g. -0.10). */
+  minReturn: number;
+  /** Highest possible yearly return in a normal year (fraction). */
+  maxReturn: number;
+  /**
+   * Small chance (0..1) of a catastrophic wipe of this bucket's holdings in a
+   * given year (models a Moonshot going to zero). 0 for safe buckets.
+   */
+  wipeChance: number;
+}
+
+/** A collectible concept card unlocked through play. */
+export interface MoneyCard {
+  id: string;
+  emoji: string;
+  concept: string;
+  blurb: string;
+  /** Human-readable unlock condition (also documents the trigger). */
+  unlock: string;
+}
+
+/** A badge awarded for a play achievement. */
+export interface Badge {
+  id: string;
+  emoji: string;
+  name: string;
+  description: string;
+}
