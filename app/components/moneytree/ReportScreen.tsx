@@ -8,11 +8,12 @@
 import { useState } from 'react';
 import { BADGES, MONEY_CARDS, STAGE_THRESHOLDS } from '@/app/lib/moneytree/content';
 import { reportLine } from '@/app/lib/moneytree/coach';
-import { money, percent } from '@/app/lib/moneytree/format';
+import { money } from '@/app/lib/moneytree/format';
 import type { Mascot } from '@/app/lib/moneytree/mascots';
 import type { GameSummary } from '@/app/lib/moneytree/summary';
 import { BUCKETS, type Bucket, type GameConfig, type TurnResult } from '@/app/lib/moneytree/types';
 import { BUCKET_PROFILES } from '@/app/lib/moneytree/content';
+import GrowthBreakdown from './GrowthBreakdown';
 import MoneyCard from './MoneyCard';
 
 function biggestBucket(last: TurnResult | undefined): Bucket {
@@ -111,25 +112,11 @@ export default function ReportScreen({
         )}
         <div className="font-display" style={{ fontSize: 40, fontWeight: 800, color: '#6B4EFF', lineHeight: 1.1 }}>{money(summary.total)}</div>
 
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center', marginTop: 6 }}>
-          <span style={{ fontSize: 12, color: '#6E6A85', background: '#F2F0FB', borderRadius: 999, padding: '4px 11px' }}>
-            🪙 You planted <b style={{ color: '#1C1F2E' }}>{money(summary.contributed)}</b>
-          </span>
-          {grew > 0 && (
-            <span style={{ fontSize: 12, color: '#2F9E67', background: '#EAFBF2', borderRadius: 999, padding: '4px 11px', fontWeight: 600 }}>
-              ✨ it grew by {money(grew)}
-            </span>
-          )}
-          {growthPct !== null && (
-            <span style={{ fontSize: 12, color: grew >= 0 ? '#2F9E67' : '#C0392B', background: grew >= 0 ? '#EAFBF2' : '#FFECEC', borderRadius: 999, padding: '4px 11px', fontWeight: 700 }}>
-              {grew >= 0 ? '📈' : '📉'} {percent(growthPct)} total growth
-            </span>
-          )}
-        </div>
-
         {isNewBest && (
           <div style={{ fontSize: 12, color: '#6B4EFF', fontWeight: 800, marginTop: 6 }}>🎉 New best!</div>
         )}
+
+        <GrowthBreakdown contributed={summary.contributed} grew={grew} growthPct={growthPct} years={config.years} total={summary.total} />
       </div>
 
       {/* lessons */}
