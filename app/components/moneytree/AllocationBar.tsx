@@ -50,6 +50,7 @@ export default function AllocationBar({
   onGrow,
   onOpenCashOut,
   cashOut,
+  canSell,
   disabled,
 }: {
   coins: number;
@@ -58,6 +59,8 @@ export default function AllocationBar({
   onGrow: () => void;
   onOpenCashOut: () => void;
   cashOut: number;
+  /** Whether there's anything invested yet to sell (false before the first year resolves). */
+  canSell: boolean;
   disabled?: boolean;
 }) {
   const total = BUCKETS.reduce((s, b) => s + allocation[b], 0) || 1;
@@ -99,18 +102,20 @@ export default function AllocationBar({
         })}
       </div>
       <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-        <button
-          type="button"
-          onClick={onOpenCashOut}
-          disabled={disabled}
-          className="font-display"
-          style={{
-            border: '1.5px solid #F0DDA0', cursor: disabled ? 'default' : 'pointer', color: '#B8860B', borderRadius: 999,
-            background: '#FFF7E6', fontWeight: 700, fontSize: 13, padding: '13px 16px', whiteSpace: 'nowrap',
-          }}
-        >
-          💰{cashOut > 0 ? ` ${money(cashOut)}` : ' Cash Out'}
-        </button>
+        {canSell && (
+          <button
+            type="button"
+            onClick={onOpenCashOut}
+            disabled={disabled}
+            className="font-display"
+            style={{
+              border: '1.5px solid #F0DDA0', cursor: disabled ? 'default' : 'pointer', color: '#B8860B', borderRadius: 999,
+              background: '#FFF7E6', fontWeight: 700, fontSize: 13, padding: '13px 16px', whiteSpace: 'nowrap',
+            }}
+          >
+            💰{cashOut > 0 ? ` ${money(cashOut)}` : ' Cash Out'}
+          </button>
+        )}
         <button
           type="button"
           onClick={onGrow}

@@ -117,6 +117,7 @@ export default function MoneyTreeGame() {
             onGrow={game.growYear}
             onOpenCashOut={() => setCashOutOpen(true)}
             cashOut={game.cashOut}
+            canSell={currentTotal > 0}
             disabled={game.phase !== 'playing'}
           />
         </div>
