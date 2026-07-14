@@ -28,7 +28,7 @@ const baseConfig: GameConfig = {
   contributionAmount: 10,
   frequency: 'yearly',
   years: 12,
-  mascot: 'penny',
+  mascot: 'wizard',
   seed: 1,
 };
 

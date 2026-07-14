@@ -13,7 +13,7 @@ function baseConfig(over: Partial<GameConfig> = {}): GameConfig {
     contributionAmount: 20,
     frequency: 'yearly',
     years: 12,
-    mascot: 'penny',
+    mascot: 'wizard',
     seed: 4242,
     ...over,
   };

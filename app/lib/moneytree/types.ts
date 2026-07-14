@@ -13,8 +13,8 @@ export const BUCKETS: readonly Bucket[] = ['safe', 'growth', 'moonshot'] as cons
 /** How often the player contributes money. Aggregated to a yearly deposit. */
 export type ContributionFrequency = 'weekly' | 'monthly' | 'yearly' | 'once';
 
-/** Which mascot the player picked as their coach. */
-export type MascotId = 'penny' | 'hoot' | 'leo' | 'max' | 'zoe' | 'mia';
+/** Which mascot the player picked as their coach (maps to a 3D model). */
+export type MascotId = 'wizard' | 'robot' | 'adventurer' | 'hero';
 
 /** Player-chosen setup, fixed for the duration of a game. */
 export interface GameConfig {
