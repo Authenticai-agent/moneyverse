@@ -10,6 +10,21 @@ Each step is small, independently verifiable, and leaves the app in a working
 state. Build order goes **engine first (pure, tested) → state → UI → 3D**, so the
 rules are proven before anything renders.
 
+## Status — Phase 1 COMPLETE ✅ (2026-07-13)
+
+All nine steps landed on `money-tree-3d-game`. 47 unit tests pass (`npm run
+test:unit`), type-check and lint are clean, the production build succeeds, and
+the game was playtested end-to-end in the browser (setup → 3D stage → allocate →
+grow → event explainers with correct math → report with badges/cards → persisted
+best score).
+
+**⚠️ One deployment gap:** the raw GLB models (64 MB) are gitignored, so they
+exist locally but are NOT committed. On a deployed build the tree model will
+404 and the game falls back to the 2D tree. Before deploy: compress the GLBs
+(Draco / meshopt via gltf-transform — should cut them ~5-10×) and commit the
+compressed versions, or host them on a CDN. Local dev already works because the
+files are present on disk.
+
 ---
 
 ## Step 1 — Engine types & seeded RNG
