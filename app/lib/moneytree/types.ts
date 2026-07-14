@@ -56,8 +56,12 @@ export type Stage = 'seed' | 'sapling' | 'tree' | 'forest';
 export interface EventEffects {
   /** Additive change to a bucket's return this year (e.g. -0.15 = 15pp worse). */
   returnDeltas?: Partial<Record<Bucket, number>>;
-  /** Multiply the money already held in a bucket (e.g. scam drains moonshot → 0.6). */
-  bucketMultipliers?: Partial<Record<Bucket, number>>;
+  /**
+   * Force a bucket's return outright this year, ignoring the market roll and any
+   * delta (e.g. a scam forces Moonshot to a loss). Used when the event's effect
+   * must always show clearly on the bucket's displayed return.
+   */
+  returnOverrides?: Partial<Record<Bucket, number>>;
   /** Flat dollar change to the portfolio (windfall +, surprise expense −). */
   cashDelta?: number;
 }

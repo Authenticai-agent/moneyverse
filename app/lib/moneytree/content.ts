@@ -96,10 +96,10 @@ export const EVENTS: MarketEvent[] = [
     title: 'Investment Scam',
     weight: 2,
     tone: 'bad',
-    effects: { bucketMultipliers: { moonshot: 0.6 } },
+    effects: { returnOverrides: { moonshot: -0.5 } },
     copy: {
       whatHappened:
-        'A "too good to be true" scheme turned out to be a scam, and it hit risky Moonshot money the hardest.',
+        'A "too good to be true" scheme turned out to be a scam. Risky Moonshot money got hit hard and lost half its value this year.',
       smartMove:
         'If someone promises guaranteed huge returns with no risk, be suspicious. Spreading money out means one scam can’t wipe you out.',
     },

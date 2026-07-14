@@ -21,8 +21,8 @@ import {
 } from './storage';
 import type { Allocation, GameConfig, GamePhase, Portfolio, TurnResult } from './types';
 
-/** Even split across all three buckets — a friendly, diversified default. */
-export const DEFAULT_ALLOCATION: Allocation = { safe: 1, growth: 1, moonshot: 1 };
+/** Percentages that sum to 100 — a friendly, diversified default. */
+export const DEFAULT_ALLOCATION: Allocation = { safe: 34, growth: 33, moonshot: 33 };
 
 function randomSeed(): number {
   return Math.floor(Math.random() * 0xffffffff) >>> 0;

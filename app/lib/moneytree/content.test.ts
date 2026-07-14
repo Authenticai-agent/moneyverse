@@ -48,16 +48,16 @@ describe('events', () => {
       expect(e.copy.smartMove.length).toBeGreaterThan(0);
 
       // at least one effect must actually do something
-      const { returnDeltas, bucketMultipliers, cashDelta } = e.effects;
+      const { returnDeltas, returnOverrides, cashDelta } = e.effects;
       const hasEffect =
         (returnDeltas && Object.keys(returnDeltas).length > 0) ||
-        (bucketMultipliers && Object.keys(bucketMultipliers).length > 0) ||
+        (returnOverrides && Object.keys(returnOverrides).length > 0) ||
         typeof cashDelta === 'number';
       expect(hasEffect).toBe(true);
 
       // any bucket keys referenced must be real buckets
       for (const key of Object.keys(returnDeltas ?? {})) expect(validBuckets.has(key)).toBe(true);
-      for (const key of Object.keys(bucketMultipliers ?? {})) expect(validBuckets.has(key)).toBe(true);
+      for (const key of Object.keys(returnOverrides ?? {})) expect(validBuckets.has(key)).toBe(true);
     }
   });
 

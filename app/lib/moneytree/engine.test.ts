@@ -147,11 +147,12 @@ describe('applyTurn — money math', () => {
     expect(res.after.growth).toBeCloseTo(93);
   });
 
-  it('applies a scam as a bucket multiplier on Moonshot holdings', () => {
+  it('a scam forces Moonshot to a loss even when the market rolled way up', () => {
     const before: Portfolio = { safe: 0, growth: 0, moonshot: 100 };
-    // scam has no return delta; moonshot raw 0 => holdings * 0.6
-    const res = applyTurn(before, ALL_MOON, 0, 4, noReturns, event('scam'));
-    expect(res.after.moonshot).toBeCloseTo(60);
+    // market rolled +140%, but the scam override must win → -50% shown & applied
+    const res = applyTurn(before, ALL_MOON, 0, 4, { ...noReturns, moonshot: 1.4 }, event('scam'));
+    expect(res.returns.moonshot).toBeCloseTo(-0.5);
+    expect(res.after.moonshot).toBeCloseTo(50);
   });
 
   it('adds a windfall to safe and drains an expense from safe first', () => {

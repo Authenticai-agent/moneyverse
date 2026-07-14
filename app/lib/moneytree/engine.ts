@@ -145,23 +145,17 @@ export function applyTurn(
   const dep = Math.max(0, deposit);
   for (const b of BUCKETS) after[b] += dep * weights[b];
 
-  // 2. returns (raw + event delta)
+  // 2. returns: an override wins over the roll+delta, so the displayed return
+  //    always reflects the event (e.g. a scam forcing Moonshot down).
   const returns = { safe: 0, growth: 0, moonshot: 0 } as Record<Bucket, number>;
   for (const b of BUCKETS) {
-    const r = rawReturns[b] + (event?.effects.returnDeltas?.[b] ?? 0);
+    const override = event?.effects.returnOverrides?.[b];
+    const r = override != null ? override : rawReturns[b] + (event?.effects.returnDeltas?.[b] ?? 0);
     returns[b] = r;
     after[b] = after[b] * (1 + r);
   }
 
-  // 3. bucket multipliers
-  const mult = event?.effects.bucketMultipliers;
-  if (mult) {
-    for (const b of BUCKETS) {
-      if (mult[b] != null) after[b] *= mult[b] as number;
-    }
-  }
-
-  // 4. cash delta
+  // 3. cash delta (windfall / surprise expense)
   if (event?.effects.cashDelta) applyCashDelta(after, event.effects.cashDelta);
 
   // clamp and finish
