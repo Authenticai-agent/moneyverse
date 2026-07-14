@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import MoneyTreeForm from '@/app/components/MoneyTreeForm';
+import MoneyTreeGameWrapper from '@/app/components/MoneyTreeGameWrapper';
 import JsonLd from '@/app/components/JsonLd';
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function MoneyTreeCalculatorPage() {
   return (
-    <main className="min-h-screen bg-mv-light text-mv-dark py-12 px-6">
+    <>
       <JsonLd
         schema={{
           '@context': 'https://schema.org',
@@ -26,7 +26,7 @@ export default function MoneyTreeCalculatorPage() {
             'A free compound interest calculator for kids. See how weekly savings can grow over time with the MoneyVerse Money Tree simulator.',
         }}
       />
-      <MoneyTreeForm />
-    </main>
+      <MoneyTreeGameWrapper />
+    </>
   );
 }

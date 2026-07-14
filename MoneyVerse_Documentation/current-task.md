@@ -12,7 +12,8 @@ Implemented and verified.
 
 - Added `app/components/MoneyVerseHero.tsx` from `design_handoff_hero_2a` and rendered it on the landing page.
 - Added `app/components/ToolsIndex.tsx` from `design_handoff_tools_3a` and rewrote `app/tools/page.tsx` to use it while preserving existing metadata.
-- Added lightweight client wrappers (`MoneyVerseHeroWrapper`, `ToolsIndexWrapper`) that load the large handoff components with `ssr: false` to avoid a Next.js 15.5 dev-server missing-chunk error.
+- Added `app/components/MoneyTreeGame.tsx` from `design_handoff_tree_4a` and rewrote `app/tools/money-tree-calculator/page.tsx` to use it while preserving existing metadata and JSON-LD.
+- Added lightweight client wrappers (`MoneyVerseHeroWrapper`, `ToolsIndexWrapper`, `MoneyTreeGameWrapper`) that load the large handoff components with `ssr: false` to avoid a Next.js 15.5 dev-server missing-chunk error.
 - Wired the landing hero's primary CTA to `/tools` and the secondary "Join the waitlist" CTA to `/register`.
 - Clarified the hero's waitlist note: it is for MoneyVerse Plus updates, not unlocking features, and removed "premium cosmetics".
 - Removed the standalone waitlist section below the hero.
