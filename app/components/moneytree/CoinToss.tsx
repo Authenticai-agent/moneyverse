@@ -112,7 +112,7 @@ function BucketMesh({ bucket, interactive }: { bucket: Bucket; interactive: bool
       </RigidBody>
       <Text
         position={[0, 0.72, 0]}
-        font="/fonts/inter-bold.woff2"
+        font="/fonts/inter-bold.woff"
         fontSize={0.16}
         maxWidth={1.1}
         textAlign="center"
