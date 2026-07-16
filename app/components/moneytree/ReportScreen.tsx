@@ -22,23 +22,61 @@ function biggestBucket(last: TurnResult | undefined): Bucket {
   return BUCKETS.reduce((best, b) => (last.after[b] > last.after[best] ? b : best), 'safe' as Bucket);
 }
 
+/** The single heaviest bucket bet the player made in any one year, and the
+ * bucket's balance right after that year - used to judge whether a "win" came
+ * from a real strategy or from betting most of the tree on one risky bucket. */
+function peakConcentration(results: TurnResult[]): { share: number; bucket: Bucket; balanceThatYear: number } {
+  let best = { share: 0, bucket: 'safe' as Bucket, balanceThatYear: 0 };
+  for (const r of results) {
+    for (const b of BUCKETS) {
+      if (r.allocationWeights[b] > best.share) best = { share: r.allocationWeights[b], bucket: b, balanceThatYear: r.after[b] };
+    }
+  }
+  return best;
+}
+
+/** Share of coins in one bucket above which a year counts as "went heavy" -
+ * intentionally above the 50% "diversified" badge threshold, so a merely
+ * risk-tolerant split isn't confused with an all-in bet. */
+const HEAVY_CONCENTRATION = 0.7;
+
 function insights(summary: GameSummary, config: GameConfig, results: TurnResult[]) {
   const last = results[results.length - 1];
   const sawRecession = results.some((r) => r.event?.id === 'recession');
+  const peak = peakConcentration(results);
+  const wentHeavy = peak.share >= HEAVY_CONCENTRATION;
+  const stayedBalanced =
+    results.length > 0 &&
+    results.every((r) => Math.max(r.allocationWeights.safe, r.allocationWeights.growth, r.allocationWeights.moonshot) <= 0.5 + 1e-9);
+  const peakLabel = BUCKET_PROFILES[peak.bucket].label;
+  const worstCaseLoss = Math.abs(peak.balanceThatYear * BUCKET_PROFILES[peak.bucket].minReturn);
+
   const worked = summary.bankrupt
-    ? 'You took big swings - brave, but risky.'
-    : `Your ${BUCKET_PROFILES[biggestBucket(last)].label} did the heavy lifting.`;
+    ? 'You took big risks - brave, but risky.'
+    : wentHeavy && peak.bucket === 'moonshot'
+      ? "You put most of your coins in Moonshot and it paid off this time - but that's luck, not skill. Moonshot is a coin flip that can just as easily crash."
+      : stayedBalanced
+        ? 'Spreading your money across all three buckets is what really worked - no single bad year could sink your whole tree.'
+        : `Your ${BUCKET_PROFILES[biggestBucket(last)].label} did most of the work.`;
+
   const watchOut = summary.bankrupt
-    ? 'Betting almost everything on Moonshots let one crash wipe you out.'
-    : sawRecession
-      ? 'A recession shook the markets - spreading your risk softened the blow.'
-      : 'Riskier buckets swing hard; keep some money safe for the bumps.';
-  const tryNext =
-    config.years < 8
-      ? `You grew for ${config.years} year${config.years === 1 ? '' : 's'}. Try more years - compounding gets powerful with time.`
+    ? 'Putting almost everything in Moonshot let one crash wipe you out.'
+    : wentHeavy && peak.bucket === 'moonshot'
+      ? `If Moonshot had crashed instead, that ${money(peak.balanceThatYear)} could have shrunk by about ${money(worstCaseLoss)} in a single year. Betting almost everything on one risky bucket is gambling, not investing.`
+      : wentHeavy
+        ? `You leaned hard into ${peakLabel} - it worked out, but putting most of your coins in one bucket means a bad year there would hit a lot harder too.`
+        : sawRecession
+          ? 'The economy had a rough patch - spreading your money out softened the blow.'
+          : 'Riskier buckets bounce around a lot; keep some money safe for the bumpy years.';
+
+  const tryNext = wentHeavy
+    ? 'Try splitting your coins across all three buckets next time - real investors almost never bet nearly everything on one.'
+    : config.years < 8
+      ? `You grew your tree for ${config.years} year${config.years === 1 ? '' : 's'}. Try more years next time - your money snowballs more the longer it grows.`
       : summary.total >= 20000
-        ? 'Amazing! Try a shorter horizon or a bolder mix to test your skills.'
-        : 'Stay patient and diversified to reach a $20,000 Money Forest.';
+        ? 'Amazing! Try fewer years or a bolder mix next time to test your skills.'
+        : 'Stay patient and spread out to reach a $20,000 Money Forest.';
+
   return { worked, watchOut, tryNext };
 }
 
@@ -101,7 +139,7 @@ export default function ReportScreen({
           <>
             <div style={{ fontSize: 56 }}>🪵💀</div>
             <h2 className="font-display" style={{ fontSize: 26, fontWeight: 700, color: '#C0392B', margin: '4px 0' }}>Wiped out!</h2>
-            <p style={{ fontSize: 13, color: '#6E6A85' }}>Your tree lost everything - but every investor learns from a crash. Spread your risk and try again. 🌱</p>
+            <p style={{ fontSize: 13, color: '#6E6A85' }}>Your tree lost everything - but every investor learns from a crash! Spread your money out and try again. 🌱</p>
           </>
         ) : (
           <>

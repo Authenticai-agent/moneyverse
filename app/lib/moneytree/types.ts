@@ -128,6 +128,8 @@ export interface BucketProfile {
   label: string;
   /** One-line kid description of what this bucket represents. */
   blurb: string;
+  /** Real-world comparison + earning expectation, shown when a player taps for more info. */
+  realWorld: string;
   /** Lowest possible yearly return in a normal year (fraction, e.g. -0.10). */
   minReturn: number;
   /** Highest possible yearly return in a normal year (fraction). */

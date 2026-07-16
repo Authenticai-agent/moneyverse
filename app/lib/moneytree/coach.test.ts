@@ -1,5 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { allocationCoachLine, eventReactionLine, introLine, reportLine, sellReactionLine } from './coach';
+import {
+  allocationCoachLine,
+  cashOutGreetingLine,
+  cashOutSuggestionLine,
+  educationalTipLine,
+  eventReactionLine,
+  introLine,
+  playingPhaseLine,
+  reportLine,
+  sellReactionLine,
+  sendOffLine,
+} from './coach';
 import { MASCOTS } from './mascots';
 import type { Portfolio, TurnResult } from './types';
 
@@ -119,6 +130,76 @@ describe('reportLine', () => {
     const line = reportLine(sage, opts);
     expect(line).toContain('$1,000');
     expect(line).toContain('$500');
+  });
+});
+
+describe('educationalTipLine', () => {
+  it('gives every mascot a non-empty tip for a range of years, deterministically', () => {
+    for (const m of MASCOTS) {
+      for (let year = 1; year <= 10; year++) {
+        const tip = educationalTipLine(m, year);
+        expect(tip.length).toBeGreaterThan(20);
+        expect(educationalTipLine(m, year)).toBe(tip); // deterministic
+      }
+    }
+  });
+
+  it('varies across years for the same mascot (not one repeated line)', () => {
+    const mascot = MASCOTS[0];
+    const tips = new Set(Array.from({ length: 5 }, (_, i) => educationalTipLine(mascot, i + 1)));
+    expect(tips.size).toBeGreaterThan(1);
+  });
+});
+
+describe('cashOutSuggestionLine', () => {
+  const portfolio: Portfolio = { safe: 100, growth: 500, moonshot: 50 };
+
+  it('mentions the largest bucket by dollar value, not just the first one', () => {
+    for (const m of MASCOTS) {
+      const line = cashOutSuggestionLine(m, portfolio, 3);
+      expect(line).toContain('Growth Tree');
+      expect(line).toContain('$500');
+    }
+  });
+
+  it('produces a non-empty line for every persona', () => {
+    for (const m of MASCOTS) {
+      expect(cashOutSuggestionLine(m, portfolio, 3).length).toBeGreaterThan(20);
+    }
+  });
+});
+
+describe('playingPhaseLine', () => {
+  const portfolio: Portfolio = { safe: 100, growth: 500, moonshot: 50 };
+
+  it('surfaces a cash-out suggestion every 3rd year from year 3', () => {
+    const mascot = MASCOTS[0];
+    const line = playingPhaseLine(mascot, { year: 3, portfolio });
+    expect(line).toBe(cashOutSuggestionLine(mascot, portfolio, 3));
+  });
+
+  it('falls back to an educational tip on other years', () => {
+    const mascot = MASCOTS[0];
+    const line = playingPhaseLine(mascot, { year: 2, portfolio });
+    expect(line).toBe(educationalTipLine(mascot, 2));
+  });
+});
+
+describe('sendOffLine', () => {
+  it('gives every mascot a non-empty, deterministic hype line', () => {
+    for (const m of MASCOTS) {
+      const line = sendOffLine(m, 4);
+      expect(line.length).toBeGreaterThan(5);
+      expect(sendOffLine(m, 4)).toBe(line);
+    }
+  });
+});
+
+describe('cashOutGreetingLine', () => {
+  it('gives every mascot a non-empty greeting', () => {
+    for (const m of MASCOTS) {
+      expect(cashOutGreetingLine(m, 2).length).toBeGreaterThan(10);
+    }
   });
 });
 

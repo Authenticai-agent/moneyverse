@@ -5,7 +5,15 @@ import Turnstile from './Turnstile';
 
 type Interest = 'parent' | 'teacher';
 
-export default function WaitlistSection() {
+type WaitlistSectionProps = {
+  heading?: string;
+  subtitle?: string;
+};
+
+export default function WaitlistSection({
+  heading = 'Join the MoneyVerse waitlist',
+  subtitle = 'Be the first to know when the full family dashboard and classroom tools are ready.',
+}: WaitlistSectionProps = {}) {
   const [email, setEmail] = useState('');
   const [interest, setInterest] = useState<Interest>('parent');
   const [turnstileToken, setTurnstileToken] = useState('');
@@ -42,10 +50,8 @@ export default function WaitlistSection() {
 
   return (
     <section className="bg-white rounded-2xl shadow-lg p-6 md:p-10 border border-mv-lavender max-w-3xl mx-auto">
-      <h2 className="text-2xl md:text-3xl font-bold text-mv-primary mb-2">Join the MoneyVerse waitlist</h2>
-      <p className="text-mv-dark/70 mb-6">
-        Be the first to know when the full family dashboard and classroom tools are ready.
-      </p>
+      <h2 className="text-2xl md:text-3xl font-bold text-mv-primary mb-2">{heading}</h2>
+      <p className="text-mv-dark/70 mb-6">{subtitle}</p>
 
       {submitted ? (
         <div className="p-4 bg-mv-green/10 rounded-xl border border-mv-green">

@@ -7,8 +7,9 @@
 
 import { useState } from 'react';
 import { compoundingLine } from '@/app/lib/moneytree/coach';
+import { BUCKET_PROFILES } from '@/app/lib/moneytree/content';
 import { MASCOTS, mascotById, type CoachPersona } from '@/app/lib/moneytree/mascots';
-import type { ContributionFrequency, GameConfig, MascotId } from '@/app/lib/moneytree/types';
+import { BUCKETS, type Bucket, type ContributionFrequency, type GameConfig, type MascotId } from '@/app/lib/moneytree/types';
 
 const PURPLE = '#6B4EFF';
 
@@ -17,6 +18,12 @@ const PERSONA_TINT: Record<CoachPersona, { bg: string; fg: string }> = {
   balanced: { bg: '#F0E9FF', fg: '#6B4EFF' },
   calm: { bg: '#EAF2FF', fg: '#3A6DD8' },
   cautious: { bg: '#EAFBF2', fg: '#2F9E67' },
+};
+
+const BUCKET_TINT: Record<Bucket, { bg: string; fg: string; border: string }> = {
+  safe: { bg: '#EAFBF2', fg: '#2F9E67', border: '#CDEFDD' },
+  growth: { bg: '#EAF2FF', fg: '#3A6DD8', border: '#CFE0FF' },
+  moonshot: { bg: '#FFEAF0', fg: '#D8407A', border: '#FFD0DE' },
 };
 
 const FREQUENCIES: { id: ContributionFrequency; label: string }[] = [
@@ -124,11 +131,29 @@ export default function SetupScreen({ onStart }: { onStart: (config: GameConfig)
         </div>
       </div>
 
+      {/* bucket explainer */}
+      <div style={{ marginTop: 20 }}>
+        <span style={{ fontSize: 12.5, fontWeight: 600, color: '#413B5A' }}>🪣 Where your money can go</span>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 8 }}>
+          {BUCKETS.map((b) => {
+            const p = BUCKET_PROFILES[b];
+            const tint = BUCKET_TINT[b];
+            return (
+              <div key={b} style={{ flex: '1 1 220px', maxWidth: 280, background: tint.bg, border: `1px solid ${tint.border}`, borderRadius: 14, padding: '12px 14px' }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: tint.fg, marginBottom: 5 }}>{p.emoji} {p.label}</div>
+                <p style={{ fontSize: 11.5, color: '#4B4470', margin: '0 0 6px', lineHeight: 1.4 }}>{p.blurb}</p>
+                <p style={{ fontSize: 11, color: tint.fg, margin: 0, lineHeight: 1.4 }}>{p.realWorld}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* compounding coach line */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', background: '#F6F4FF', border: '1px solid #E6E0FA', borderRadius: 14, padding: 12, marginTop: 18 }}>
         <div style={{ fontSize: 30, lineHeight: 1 }}>{coach.emoji}</div>
         <p style={{ fontSize: 12.5, color: '#4B4470', margin: 0 }}>
-          <b style={{ color: PURPLE }}>{coach.name}:</b> {compoundingLine(frequency)}
+          <b style={{ color: PURPLE }}>{coach.name}:</b> {compoundingLine(coach, frequency)}
         </p>
       </div>
 

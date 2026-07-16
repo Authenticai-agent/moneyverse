@@ -29,6 +29,7 @@ export default function CashOutPanel({
   cashOut,
   mascot,
   sellMessage,
+  greeting,
   onSell,
   onClose,
 }: {
@@ -36,13 +37,18 @@ export default function CashOutPanel({
   cashOut: number;
   mascot: Mascot;
   sellMessage: string | null;
+  /** Shown when no sale has happened yet this time the panel is open. */
+  greeting?: string;
   onSell: (bucket: Bucket, fraction: number) => void;
   onClose: () => void;
 }) {
   if (typeof document === 'undefined') return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9] flex items-center justify-center p-4" style={{ background: 'rgba(20,16,40,.4)', backdropFilter: 'blur(2px)' }}>
+    // z-[60] - above the Stage's own z-index (50 when maximized/fullscreen;
+    // this portals straight into document.body, a sibling of the Stage, so it
+    // needs to out-rank that explicit z-index to still appear on top there.
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ background: 'rgba(20,16,40,.4)', backdropFilter: 'blur(2px)' }}>
       <div style={{ width: '100%', maxWidth: 440, background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 30px 60px -20px rgba(30,20,60,.5)' }}>
         <div style={{ background: '#FFF7E6', color: '#B8860B', padding: '12px 16px', fontWeight: 800, fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span>💰 Cash Out</span>
@@ -53,7 +59,9 @@ export default function CashOutPanel({
 
         <div style={{ padding: '14px 16px' }}>
           <p style={{ fontSize: 12.5, color: '#4B4470', margin: '0 0 12px' }}>
-            Sell shares from any bucket to lock in cash. Sold money stops growing - it&rsquo;s yours to keep, but it won&rsquo;t compound anymore.
+            Take money out of any bucket to turn it into cash. It&rsquo;s yours to keep - but it stops growing the moment you take it out.
+            That&rsquo;s totally fine for a real <b style={{ color: '#2F9E67' }}>need</b> (or something you&rsquo;ve saved up for and can
+            afford) - just go easy on quick <b style={{ color: '#B8860B' }}>wants</b>, since those are what cost you the most growth later.
           </p>
 
           {BUCKETS.map((b) => {
@@ -88,11 +96,11 @@ export default function CashOutPanel({
             );
           })}
 
-          {sellMessage && (
+          {(sellMessage || greeting) && (
             <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', background: '#F6F4FF', border: '1px solid #E6E0FA', borderRadius: 12, padding: '9px 11px', marginTop: 6 }}>
               <span style={{ fontSize: 22, lineHeight: 1 }}>{mascot.emoji}</span>
               <p style={{ fontSize: 12, color: '#4B4470', margin: 0, lineHeight: 1.4 }}>
-                <b style={{ color: '#6B4EFF' }}>{mascot.name}:</b> {sellMessage}
+                <b style={{ color: '#6B4EFF' }}>{mascot.name}:</b> {sellMessage ?? greeting}
               </p>
             </div>
           )}

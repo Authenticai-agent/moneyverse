@@ -39,15 +39,15 @@ const CALM_TEMPLATES: CalmTemplate[] = [
     return {
       emoji: '📊',
       title: 'A Calm Year',
-      whatHappened: `No big news this year - just everyday ups and downs. ${BUCKET_PROFILES[best].emoji} ${BUCKET_PROFILES[best].label} did best at ${percent(r[best])}, while ${BUCKET_PROFILES[worst].emoji} ${BUCKET_PROFILES[worst].label} lagged at ${percent(r[worst])}.`,
+      whatHappened: `Nothing big happened this year - just normal ups and downs. ${BUCKET_PROFILES[best].emoji} ${BUCKET_PROFILES[best].label} did best at ${percent(r[best])}, while ${BUCKET_PROFILES[worst].emoji} ${BUCKET_PROFILES[worst].label} lagged behind at ${percent(r[worst])}.`,
       smartMove:
-        "Markets don't need a big event to move - prices wiggle a little almost every year. It's the big picture over many years that matters, not any single one.",
+        "Money doesn't need big news to move around a little - it happens almost every year. What matters is the big picture over many years, not any single one.",
     };
   },
   (r) => ({
     emoji: '🌤️',
     title: 'Smooth Sailing',
-    whatHappened: `A quiet year in the markets. ${BUCKET_PROFILES.safe.emoji} Safe Seed barely moved (${percent(r.safe)}) because it's built to hold steady, while your riskier buckets swung around a bit more.`,
+    whatHappened: `A quiet year for your money. ${BUCKET_PROFILES.safe.emoji} Safe Seed barely moved (${percent(r.safe)}) because it's built to hold steady, while your riskier buckets bounced around a bit more.`,
     smartMove: 'Boring years are good news - they mean you can keep adding coins without stress. Steady beats flashy over time.',
   }),
   (r) => {
@@ -55,7 +55,7 @@ const CALM_TEMPLATES: CalmTemplate[] = [
     return {
       emoji: '🎢',
       title: 'Risk in Action',
-      whatHappened: `Notice the spread this year? 🚀 Moonshot moved ${percent(r.moonshot)} while 🏦 Safe barely budged at ${percent(r.safe)} - about a ${spreadPp}-point gap.`,
+      whatHappened: `Notice the gap this year? 🚀 Moonshot moved ${percent(r.moonshot)} while 🏦 Safe barely budged at ${percent(r.safe)} - about a ${spreadPp}-point difference.`,
       smartMove: "That gap IS risk: bigger possible moves, up or down. Riskier buckets can win big or lose big - Safe just... stays safe.",
     };
   },
@@ -64,16 +64,16 @@ const CALM_TEMPLATES: CalmTemplate[] = [
     title: 'Behind the Numbers',
     whatHappened: `Every bucket moved a little differently this year: 🏦 Safe ${percent(r.safe)}, 🌳 Growth ${percent(r.growth)}, 🚀 Moonshot ${percent(
       r.moonshot
-    )}. That's the market doing what markets do - nobody controls it, not even grown-ups!`,
-    smartMove: 'Since nobody can predict every wiggle, the best strategy is to stay invested and diversified, year after year.',
+    )}. That's just how money moves - nobody controls it, not even grown-ups!`,
+    smartMove: 'Since nobody can guess every wiggle, the best plan is to stay invested and spread out, year after year.',
   }),
   (r) => ({
     emoji: '🔍',
-    title: 'Market Check-In',
-    whatHappened: `This year had no major headlines - just the normal push and pull of buyers and sellers. Your ${percent(
+    title: 'Money Check-In',
+    whatHappened: `This year had no big headlines - just the normal buying and selling that happens every day. Your money kept quietly working in the background at about ${percent(
       (r.safe + r.growth + r.moonshot) / 3
-    )} average move kept your money quietly working in the background.`,
-    smartMove: 'This is what most years actually look like. The exciting headlines are rare - patience is what wins in the long run.',
+    )} on average.`,
+    smartMove: 'This is what most years actually look like. Exciting headlines are rare - patience is what wins in the long run.',
   }),
 ];
 

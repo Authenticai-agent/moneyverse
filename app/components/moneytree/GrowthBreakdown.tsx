@@ -52,8 +52,8 @@ export default function GrowthBreakdown({
           </div>
           <p style={{ fontSize: 11.5, color: '#6E6A85', margin: '2px 0 0', lineHeight: 1.4 }}>
             {grew >= 0
-              ? `This is extra money you didn’t put in yourself - it’s what your investments earned on their own over ${years} ${years1}, through compounding.`
-              : `This wasn’t money you added - it’s value your investments lost over ${years} ${years1} because of risky bets or a market crash.`}
+              ? `This is extra money you didn’t put in yourself - your money made it all on its own over ${years} ${years1}. That’s compounding!`
+              : `This isn’t money you lost from your pocket - it’s value your buckets lost over ${years} ${years1} from risky bets or a bad year.`}
           </p>
         </div>
       </div>

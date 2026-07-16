@@ -2,6 +2,7 @@
 
 /** HUD - floating status chips over the 3D stage. */
 
+import Link from 'next/link';
 import { money, percent } from '@/app/lib/moneytree/format';
 import { STAGE_THRESHOLDS } from '@/app/lib/moneytree/content';
 import type { Stage } from '@/app/lib/moneytree/types';
@@ -39,36 +40,51 @@ export default function HUD({
   year,
   totalYears,
   best,
-  prevTotal,
-  contributed,
+  yoy,
+  totalGrowth,
   muted,
   onToggleMuted,
+  maximized,
+  onToggleMaximized,
 }: {
   total: number;
   stage: Stage;
   year: number;
   totalYears: number;
   best: number;
-  /** Tree value at the end of the previous year, or null before year 2. */
-  prevTotal: number | null;
-  /** Total dollars put in so far (start + contributions placed). */
-  contributed: number;
+  /** This year's actual investment return (excludes the new deposit's principal), or null before year 1 resolves. */
+  yoy: number | null;
+  /** Growth of combined wealth (tree + cashed-out) against everything contributed, or null before anything's been put in. */
+  totalGrowth: number | null;
   muted: boolean;
   onToggleMuted: () => void;
+  maximized: boolean;
+  onToggleMaximized: () => void;
 }) {
-  const yoy = prevTotal !== null && prevTotal > 0 ? (total - prevTotal) / prevTotal : null;
-  const totalGrowth = contributed > 0 ? (total - contributed) / contributed : null;
-
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-[4] flex items-start justify-between p-4">
-      <div style={chip}>
-        <div style={{ fontSize: 10.5, fontWeight: 600, color: '#8480A0' }}>Tree value</div>
-        <div className="font-display" style={{ fontWeight: 700, fontSize: 26, lineHeight: 1.05, color: '#6B4EFF' }}>{money(total)}</div>
-        <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
-          <GrowthStat label="this yr" fraction={yoy} />
-          <GrowthStat label="total" fraction={totalGrowth} />
+      <div className="flex flex-col items-start gap-2">
+        <Link
+          href="/tools"
+          prefetch={false}
+          aria-label="Back to all tools"
+          style={{
+            pointerEvents: 'auto', cursor: 'pointer', border: '1px solid #E3EFE6', background: 'rgba(255,255,255,.92)',
+            borderRadius: 999, width: 40, height: 40, fontSize: 18, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 6px 14px -8px rgba(60,40,120,.3)', textDecoration: 'none', color: '#1C1F2E',
+          }}
+        >
+          ←
+        </Link>
+        <div style={chip}>
+          <div style={{ fontSize: 10.5, fontWeight: 600, color: '#8480A0' }}>Tree value</div>
+          <div className="font-display" style={{ fontWeight: 700, fontSize: 26, lineHeight: 1.05, color: '#6B4EFF' }}>{money(total)}</div>
+          <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
+            <GrowthStat label="this yr" fraction={yoy} />
+            <GrowthStat label="total" fraction={totalGrowth} />
+          </div>
+          <div style={{ fontSize: 10.5, color: '#2F9E67', fontWeight: 600, marginTop: 1 }}>{stageLabel(stage)}</div>
         </div>
-        <div style={{ fontSize: 10.5, color: '#2F9E67', fontWeight: 600, marginTop: 1 }}>{stageLabel(stage)}</div>
       </div>
       <div className="flex flex-col items-end gap-2">
         <div style={{ ...chip, textAlign: 'right' }}>
@@ -80,18 +96,32 @@ export default function HUD({
             🏆 Best {money(best)}
           </div>
         )}
-        <button
-          type="button"
-          onClick={onToggleMuted}
-          aria-label={muted ? 'Unmute sound' : 'Mute sound'}
-          style={{
-            pointerEvents: 'auto', cursor: 'pointer', border: '1px solid #E3EFE6', background: 'rgba(255,255,255,.92)',
-            borderRadius: 999, width: 30, height: 30, fontSize: 14, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 6px 14px -8px rgba(60,40,120,.3)',
-          }}
-        >
-          {muted ? '🔇' : '🔊'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onToggleMaximized}
+            aria-label={maximized ? 'Exit fullscreen' : 'Play fullscreen'}
+            style={{
+              pointerEvents: 'auto', cursor: 'pointer', border: '1px solid #E3EFE6', background: 'rgba(255,255,255,.92)',
+              borderRadius: 999, width: 40, height: 40, fontSize: 15, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 6px 14px -8px rgba(60,40,120,.3)',
+            }}
+          >
+            {maximized ? '⤡' : '⤢'}
+          </button>
+          <button
+            type="button"
+            onClick={onToggleMuted}
+            aria-label={muted ? 'Unmute sound' : 'Mute sound'}
+            style={{
+              pointerEvents: 'auto', cursor: 'pointer', border: '1px solid #E3EFE6', background: 'rgba(255,255,255,.92)',
+              borderRadius: 999, width: 40, height: 40, fontSize: 16, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 6px 14px -8px rgba(60,40,120,.3)',
+            }}
+          >
+            {muted ? '🔇' : '🔊'}
+          </button>
+        </div>
       </div>
     </div>
   );

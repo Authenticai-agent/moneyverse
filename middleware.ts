@@ -13,11 +13,19 @@ function buildCsp(isDev: boolean, nonce: string) {
   const scriptExtra = turnstile ? ` ${turnstileOrigin}` : '';
   const connectExtra = turnstile ? ` ${turnstileOrigin}` : '';
   const frameExtra = turnstile ? ` ${turnstileOrigin}` : '';
+  // blob: is needed in script-src (not just worker-src) because troika-three-text
+  // (drei's <Text>, used for the 3D bucket labels) builds its worker by
+  // `importScripts()`-ing a second blob URL from inside the worker itself -
+  // worker-src only covers the `new Worker(...)` call, script-src covers what
+  // that worker is then allowed to load/execute.
   const scriptSrc = isDev
-    ? `script-src 'self' 'unsafe-eval' 'nonce-${nonce}'${scriptExtra}`
-    : `script-src 'self' 'nonce-${nonce}' 'wasm-unsafe-eval'${scriptExtra}`;
+    ? `script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' 'nonce-${nonce}' blob:${scriptExtra}`
+    : `script-src 'self' 'nonce-${nonce}' 'wasm-unsafe-eval' blob:${scriptExtra}`;
 
-  return `default-src 'self'; ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:${connectExtra}; frame-src 'self'${frameExtra}; frame-ancestors 'none'; form-action 'self'; base-uri 'self';`;
+  // worker-src needs its own entry (blob:) - Rapier's WASM physics engine spins
+  // up a Worker from a blob URL, and without this, worker-src falls back to
+  // script-src, which doesn't allow blob:, silently blocking the worker.
+  return `default-src 'self'; ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:${connectExtra}; worker-src 'self' blob:; frame-src 'self'${frameExtra}; frame-ancestors 'none'; form-action 'self'; base-uri 'self';`;
 }
 
 export function middleware(request: NextRequest) {

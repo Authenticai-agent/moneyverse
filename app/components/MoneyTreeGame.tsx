@@ -11,15 +11,16 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { BANKRUPT_THRESHOLD, STAGE_THRESHOLDS } from '@/app/lib/moneytree/content';
-import { coinsForYear, normalizeAllocation, totalOf } from '@/app/lib/moneytree/engine';
-import { allocationCoachLine, introLine, outcomeTone } from '@/app/lib/moneytree/coach';
+import { coinsForYear, normalizeAllocation, stageOf, totalOf } from '@/app/lib/moneytree/engine';
+import { allocationCoachLine, cashOutGreetingLine, introLine, outcomeTone, playingPhaseLine } from '@/app/lib/moneytree/coach';
 import { mascotById } from '@/app/lib/moneytree/mascots';
 import { isMuted, setMuted, sfx } from '@/app/lib/moneytree/sound';
-import type { Stage } from '@/app/lib/moneytree/types';
+import type { Bucket, Stage } from '@/app/lib/moneytree/types';
 import { useMoneyTreeGame } from '@/app/lib/moneytree/useMoneyTreeGame';
 import AllocationBar from './moneytree/AllocationBar';
 import CashOutPanel from './moneytree/CashOutPanel';
 import Coach from './moneytree/Coach';
+import { NUM_COINS } from './moneytree/CoinToss';
 import Confetti from './moneytree/Confetti';
 import EventCard from './moneytree/EventCard';
 import HUD from './moneytree/HUD';
@@ -48,8 +49,19 @@ const JUICE_STYLES = `
   80% { transform: translateX(4px); }
 }
 .mtg-shake { animation: mtgShake .4s ease-in-out; }
+@keyframes mtg-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.mtg-bucket-card { transition: transform .12s ease, box-shadow .12s ease; }
+.mtg-bucket-card:active { transform: scale(0.96); }
+@media (hover: hover) {
+  .mtg-bucket-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -12px rgba(30,20,60,.35); }
+}
 @media (prefers-reduced-motion: reduce) {
   .mtg-confetti-piece, .mtg-shake { animation: none !important; }
+  [style*="mtg-bob"] { animation: none !important; }
+  .mtg-bucket-card, .mtg-bucket-card:hover, .mtg-bucket-card:active { transform: none !important; }
 }
 `;
 
@@ -64,6 +76,56 @@ export default function MoneyTreeGame() {
   const [muted, setMutedState] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
   const [shaking, setShaking] = useState(false);
+  const [maximized, setMaximized] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  // Which bucket each of this year's coins has been tossed into so far, in
+  // order - the single source of truth the 3D coin toss and the 2D readout
+  // both render from. `epoch` bumps on every new game/replay (on top of
+  // `game.year` already changing every turn) so a fresh coin pile always
+  // starts empty, even for a 1-year game replayed back-to-back.
+  const [tossHistory, setTossHistory] = useState<Bucket[]>([]);
+  const [epoch, setEpoch] = useState(0);
+  const roundKey = `${epoch}-${game.year}`;
+  // Reset the pile the instant a new round starts (rather than in an
+  // effect, which would paint one stale frame first) - this is React's
+  // documented pattern for resetting state when a derived key changes.
+  const [prevRoundKey, setPrevRoundKey] = useState(roundKey);
+  if (roundKey !== prevRoundKey) {
+    setPrevRoundKey(roundKey);
+    setTossHistory([]);
+  }
+
+  const toss = (bucket: Bucket) => {
+    if (game.phase !== 'playing' || tossHistory.length >= NUM_COINS) return;
+    setTossHistory((h) => [...h, bucket]);
+  };
+  const undoToss = () => {
+    if (tossHistory.length === 0) return;
+    sfx.coinBack();
+    setTossHistory((h) => h.slice(0, -1));
+  };
+
+  // Convert the coin toss into the engine's weighted allocation - no bucket
+  // gets a coin until the player actually taps it (AllocationBar's "Grow the
+  // year" button stays disabled until every coin is placed, so this never
+  // reaches the engine still holding unplaced coins in practice; normalizeAllocation's
+  // own all-zero fallback to 100% Safe only matters before the very first tap).
+  useEffect(() => {
+    const counts: Record<Bucket, number> = { safe: 0, growth: 0, moonshot: 0 };
+    for (const b of tossHistory) counts[b]++;
+    game.setAllocation(counts);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tossHistory]);
+
+  const startGame: typeof game.startGame = (config) => {
+    setEpoch((e) => e + 1);
+    game.startGame(config);
+  };
+  const replay: typeof game.replay = () => {
+    setEpoch((e) => e + 1);
+    game.replay();
+  };
 
   const prevStageRef = useRef<Stage | null>(null);
   const celebTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -77,6 +139,44 @@ export default function MoneyTreeGame() {
     setMutedState(next);
     if (!next) sfx.click();
   };
+
+  // "Maximized" always drives the visual size via CSS (works on every device,
+  // including iOS Safari which has no fullscreen API for arbitrary elements);
+  // the native Fullscreen API is layered on top as a bonus where supported,
+  // so on desktop/Android it also hides browser chrome. `fullscreenchange`
+  // keeps the two in sync if the player exits fullscreen a native way (Esc,
+  // browser UI) instead of the in-game button.
+  const toggleMaximized = () => {
+    const next = !maximized;
+    setMaximized(next);
+    if (next) {
+      stageRef.current?.requestFullscreen?.().catch(() => {});
+    } else if (document.fullscreenElement) {
+      document.exitFullscreen?.().catch(() => {});
+    }
+  };
+
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      if (!document.fullscreenElement) setMaximized(false);
+    };
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', onFullscreenChange);
+  }, []);
+
+  useEffect(() => {
+    if (!maximized) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMaximized(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [maximized]);
 
   const triggerShake = () => {
     setShaking(false);
@@ -138,7 +238,7 @@ export default function MoneyTreeGame() {
             ← Free Tools
           </Link>
         </div>
-        <SetupScreen onStart={game.startGame} />
+        <SetupScreen onStart={startGame} />
       </main>
     );
   }
@@ -154,7 +254,7 @@ export default function MoneyTreeGame() {
           isNewBest={game.isNewBest}
           newCardIds={game.newCardIds}
           newBadgeIds={game.newBadgeIds}
-          onReplay={game.replay}
+          onReplay={replay}
           onNewPlan={game.resetToSetup}
         />
       </main>
@@ -164,51 +264,99 @@ export default function MoneyTreeGame() {
   // playing or resolving → the Stage
   const weights = normalizeAllocation(game.allocation);
   const riskLine = allocationCoachLine(coach, weights);
-  const coachText = game.phase === 'playing' ? (riskLine ?? (game.year === 1 ? introLine(coach) : null)) : null;
+  // Priority while playing: an active risk warning first (safety-critical),
+  // then the year-1 intro, then a rotating mix of educational tips and
+  // proactive cash-out nudges so there's always something to learn.
+  let coachReaction: { text: string; warn: boolean } | null = null;
+  if (game.phase === 'playing') {
+    if (riskLine) {
+      coachReaction = riskLine;
+    } else if (game.year === 1) {
+      coachReaction = { text: introLine(coach), warn: false };
+    } else {
+      coachReaction = { text: playingPhaseLine(coach, { year: game.year, portfolio: game.portfolio }), warn: false };
+    }
+  }
+  const coachText = coachReaction?.text ?? null;
+  const coachWarn = coachReaction?.warn ?? false;
   const wilting = !!game.lastResult && game.lastResult.total < totalOf(game.lastResult.before);
   const combinedWealth = (game.lastResult?.total ?? 0) + game.cashOut;
   const isFinalTurn = !!game.config && (game.year >= game.config.years || combinedWealth <= BANKRUPT_THRESHOLD);
 
-  // growth stats for the HUD: vs previous year, and vs everything put in so far
+  // growth stats for the HUD: this year's actual return, and combined-wealth
+  // growth vs everything put in so far.
   const currentTotal = totalOf(game.portfolio);
-  const prevTotal = game.results.length >= 2 ? game.results[game.results.length - 2].total : null;
+  const lastResult = game.lastResult;
+  // The pool this year's return was actually earned on: the portfolio before
+  // this turn, plus the deposit placed into it (both land in the bucket
+  // before the return multiplies it - see engine.ts applyTurn). Comparing
+  // the after-turn total against just "before" would count the new deposit's
+  // principal as if it were investment growth.
+  const yoyBase = lastResult ? totalOf(lastResult.before) + lastResult.contribution : null;
+  const yoy = yoyBase !== null && yoyBase > 0 ? (lastResult!.total - yoyBase) / yoyBase : null;
   let contributed = 0;
   if (game.config) {
     for (let y = 1; y <= game.results.length; y++) contributed += coinsForYear(game.config, y);
   }
+  // Combined wealth (tree + cashed-out), matching the Best-score and final
+  // report's definition of "total growth" - excluding cash-out here would
+  // make the stat look worse right after a player wisely locks in gains.
+  const liveWealth = currentTotal + game.cashOut;
+  const totalGrowth = contributed > 0 ? (liveWealth - contributed) / contributed : null;
 
   return (
     <main className="min-h-screen" style={{ background: '#FBFBFE' }}>
       <style dangerouslySetInnerHTML={{ __html: JUICE_STYLES }} />
       <div
+        ref={stageRef}
         className={`relative mx-auto w-full max-w-3xl${shaking ? ' mtg-shake' : ''}`}
         style={{
-          height: 'min(88vh, 760px)', margin: '12px auto', borderRadius: 24, overflow: 'hidden',
-          background: STAGE_BG, border: '1px solid #E3EFE6', boxShadow: '0 24px 56px -30px rgba(60,120,80,.45)',
+          height: maximized ? '100dvh' : 'min(88dvh, 760px)',
+          margin: maximized ? 0 : '12px auto',
+          maxWidth: maximized ? 'none' : undefined,
+          position: maximized ? 'fixed' : 'relative',
+          top: maximized ? 0 : undefined,
+          left: maximized ? 0 : undefined,
+          right: maximized ? 0 : undefined,
+          bottom: maximized ? 0 : undefined,
+          zIndex: maximized ? 50 : undefined,
+          borderRadius: maximized ? 0 : 24,
+          overflow: 'hidden',
+          background: STAGE_BG,
+          border: maximized ? 'none' : '1px solid #E3EFE6',
+          boxShadow: maximized ? 'none' : '0 24px 56px -30px rgba(60,120,80,.45)',
+          containerType: 'inline-size',
         }}
       >
         {/* sky decor */}
         <div aria-hidden style={{ position: 'absolute', top: 30, right: 40, width: 54, height: 54, borderRadius: '50%', background: 'radial-gradient(circle at 32% 28%, #FFECAE, #FFD84D 58%, #F3C218)', boxShadow: '0 6px 18px rgba(243,194,24,.5)' }} />
-        {/* ground */}
-        <div aria-hidden style={{ position: 'absolute', bottom: 70, left: -80, right: -80, height: 200, background: '#6FCF94', borderRadius: '50% 50% 0 0 / 110px 110px 0 0' }} />
 
         <HUD
           total={currentTotal}
-          stage={game.lastResult?.stage ?? 'seed'}
+          stage={stageOf(currentTotal)}
           year={game.year}
           totalYears={game.totalYears}
           best={game.progress.bestScore}
-          prevTotal={prevTotal}
-          contributed={contributed}
+          yoy={yoy}
+          totalGrowth={totalGrowth}
           muted={muted}
           onToggleMuted={toggleMuted}
+          maximized={maximized}
+          onToggleMaximized={toggleMaximized}
         />
 
-        <TreeScene total={totalOf(game.portfolio)} wilting={wilting} fallback={<PlaceholderTree total={totalOf(game.portfolio)} wilting={wilting} />} />
+        <TreeScene
+          total={totalOf(game.portfolio)}
+          wilting={wilting}
+          tossHistory={tossHistory}
+          tossInteractive={game.phase === 'playing'}
+          onToss={toss}
+          fallback={<PlaceholderTree total={totalOf(game.portfolio)} wilting={wilting} />}
+        />
+
+        {coachText && <Coach emoji={coach.emoji} name={coach.name} text={coachText} warn={coachWarn} />}
 
         {celebrating && <Confetti />}
-
-        {coachText && <Coach emoji={coach.emoji} name={coach.name} text={coachText} />}
 
         {/*
           Always mounted (never conditionally rendered) - toggling this in and
@@ -219,8 +367,11 @@ export default function MoneyTreeGame() {
         <div style={{ visibility: game.phase === 'playing' ? 'visible' : 'hidden' }}>
           <AllocationBar
             coins={game.coinsThisYear}
-            allocation={game.allocation}
-            onChange={game.setAllocation}
+            numCoins={NUM_COINS}
+            history={tossHistory}
+            portfolio={game.portfolio}
+            onToss={toss}
+            onUndo={undoToss}
             onGrow={() => {
               sfx.grow();
               game.growYear();
@@ -238,6 +389,7 @@ export default function MoneyTreeGame() {
             cashOut={game.cashOut}
             mascot={coach}
             sellMessage={game.lastSellMessage}
+            greeting={cashOutGreetingLine(coach, game.year)}
             onSell={(bucket, fraction) => {
               game.sellShares(bucket, fraction);
               sfx.cashOut();

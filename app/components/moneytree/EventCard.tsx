@@ -9,7 +9,7 @@
 
 import { createPortal } from 'react-dom';
 import { BUCKET_PROFILES } from '@/app/lib/moneytree/content';
-import { eventReactionLine } from '@/app/lib/moneytree/coach';
+import { eventReactionLine, sendOffLine } from '@/app/lib/moneytree/coach';
 import { money, percent } from '@/app/lib/moneytree/format';
 import { yearInsight } from '@/app/lib/moneytree/insights';
 import type { Mascot } from '@/app/lib/moneytree/mascots';
@@ -39,11 +39,16 @@ export default function EventCard({
 }) {
   const insight = yearInsight(result);
   const reaction = eventReactionLine(mascot, result);
+  // A forward-looking hype line for the year ahead - only when there is one.
+  const hype = isFinal ? null : sendOffLine(mascot, result.year + 1);
 
   if (typeof document === 'undefined') return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9] flex items-center justify-center p-4" style={{ background: 'rgba(20,16,40,.4)', backdropFilter: 'blur(2px)' }}>
+    // z-[60] - above the Stage's own z-index (50 when maximized/fullscreen;
+    // this portals straight into document.body, a sibling of the Stage, so it
+    // needs to out-rank that explicit z-index to still appear on top there.
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ background: 'rgba(20,16,40,.4)', backdropFilter: 'blur(2px)' }}>
       <div style={{ width: '100%', maxWidth: 440, background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 30px 60px -20px rgba(30,20,60,.5)' }}>
         <div style={{ background: TONE_BG[insight.tone], color: TONE_FG[insight.tone], padding: '12px 16px', fontWeight: 800, fontSize: 15 }}>
           {insight.emoji} {insight.title} - Year {result.year}
@@ -69,12 +74,16 @@ export default function EventCard({
             💡 {insight.smartMove}
           </p>
 
-          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', margin: '0 0 12px' }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', margin: hype ? '0 0 8px' : '0 0 12px' }}>
             <span style={{ fontSize: 22, lineHeight: 1 }}>{mascot.emoji}</span>
             <p style={{ fontSize: 12, color: '#5A5478', margin: 0, lineHeight: 1.4, fontStyle: 'italic' }}>
               <b style={{ color: '#6B4EFF', fontStyle: 'normal' }}>{mascot.name}:</b> {reaction}
             </p>
           </div>
+
+          {hype && (
+            <p style={{ fontSize: 12.5, color: '#6B4EFF', fontWeight: 700, margin: '0 0 12px 30px' }}>{hype}</p>
+          )}
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
