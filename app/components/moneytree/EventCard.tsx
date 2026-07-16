@@ -8,9 +8,9 @@
  */
 
 import { BUCKET_PROFILES } from '@/app/lib/moneytree/content';
-import { eventReactionLine, sendOffLine } from '@/app/lib/moneytree/coach';
+import { coachAdviceLine, eventReactionLine, sendOffLine } from '@/app/lib/moneytree/coach';
 import { money, percent } from '@/app/lib/moneytree/format';
-import { yearInsight } from '@/app/lib/moneytree/insights';
+import { moneyLessonLine, yearInsight } from '@/app/lib/moneytree/insights';
 import type { Mascot } from '@/app/lib/moneytree/mascots';
 import { BUCKETS, type TurnResult } from '@/app/lib/moneytree/types';
 
@@ -38,6 +38,13 @@ export default function EventCard({
 }) {
   const insight = yearInsight(result);
   const reaction = eventReactionLine(mascot, result);
+  // A rotating financial-literacy fact, independent of this year's specific
+  // event/calm framing - insight.smartMove explains THIS year's numbers,
+  // this teaches an idea that's true every year.
+  const lesson = moneyLessonLine(result.year);
+  // The coach's own forward-looking opinion on the split just used, distinct
+  // from `reaction` (which responds to the outcome, not the strategy).
+  const advice = coachAdviceLine(mascot, result.allocationWeights);
   // A forward-looking hype line for the year ahead - only when there is one.
   const hype = isFinal ? null : sendOffLine(mascot, result.year + 1);
 
@@ -49,11 +56,11 @@ export default function EventCard({
     // renders the fullscreened element's own subtree - anything portaled out
     // simply never appears on screen at all, no z-index can fix that.
     <div className="absolute inset-0 z-[9] flex items-center justify-center p-4" style={{ background: 'rgba(20,16,40,.4)', backdropFilter: 'blur(2px)' }}>
-      <div style={{ width: '100%', maxWidth: 440, background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 30px 60px -20px rgba(30,20,60,.5)' }}>
-        <div style={{ background: TONE_BG[insight.tone], color: TONE_FG[insight.tone], padding: '12px 16px', fontWeight: 800, fontSize: 15 }}>
+      <div style={{ width: '100%', maxWidth: 440, maxHeight: '92%', display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 30px 60px -20px rgba(30,20,60,.5)' }}>
+        <div style={{ background: TONE_BG[insight.tone], color: TONE_FG[insight.tone], padding: '12px 16px', fontWeight: 800, fontSize: 15, flexShrink: 0 }}>
           {insight.emoji} {insight.title} - Year {result.year}
         </div>
-        <div style={{ padding: '14px 16px' }}>
+        <div style={{ padding: '14px 16px', overflowY: 'auto', flex: '1 1 auto', minHeight: 0 }}>
           <p style={{ fontSize: 13, color: '#2C2A3A', margin: '0 0 10px' }}>{insight.whatHappened}</p>
 
           {/* per-bucket returns */}
@@ -74,10 +81,22 @@ export default function EventCard({
             💡 {insight.smartMove}
           </p>
 
-          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', margin: hype ? '0 0 8px' : '0 0 12px' }}>
+          <div style={{ margin: '0 0 10px', background: '#EEF2FF', borderRadius: 10, padding: '8px 10px' }}>
+            <div style={{ fontSize: 11, fontWeight: 800, color: '#6B4EFF', marginBottom: 2 }}>🎓 Money Lesson</div>
+            <p style={{ fontSize: 12.5, color: '#3C3760', margin: 0, lineHeight: 1.4 }}>{lesson}</p>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', margin: '0 0 8px' }}>
             <span style={{ fontSize: 22, lineHeight: 1 }}>{mascot.emoji}</span>
             <p style={{ fontSize: 12, color: '#5A5478', margin: 0, lineHeight: 1.4, fontStyle: 'italic' }}>
               <b style={{ color: '#6B4EFF', fontStyle: 'normal' }}>{mascot.name}:</b> {reaction}
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', margin: hype ? '0 0 8px' : '0 0 12px', background: '#FFF7E6', borderRadius: 10, padding: '8px 10px' }}>
+            <span style={{ fontSize: 15, lineHeight: 1.3 }}>🧭</span>
+            <p style={{ fontSize: 12, color: '#7A5B0E', margin: 0, lineHeight: 1.4 }}>
+              <b style={{ color: '#B8860B' }}>{mascot.name}&rsquo;s advice for next year:</b> {advice}
             </p>
           </div>
 

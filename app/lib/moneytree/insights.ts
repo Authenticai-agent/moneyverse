@@ -97,3 +97,34 @@ export function yearInsight(result: TurnResult): YearInsight {
   }
   return calmYearInsight(result.returns, result.year);
 }
+
+/**
+ * A rotating pool of real financial-literacy concepts, independent of
+ * whatever happened this specific year (event or calm) - `yearInsight`
+ * explains THIS year's numbers; this teaches an idea that stays true every
+ * year, so every resolved turn adds a genuinely new piece of understanding
+ * instead of repeating the same "what happened" framing. Picked
+ * deterministically by year, same pattern as `calmYearInsight`.
+ */
+const MONEY_LESSONS: string[] = [
+  "Compounding is when your money earns money, and then that new money earns money too. It's like a snowball rolling downhill - small at first, then huge the longer it rolls.",
+  'Spreading money across different buckets is called diversifying. If one bucket has a bad year, the others can help balance it out.',
+  'Riskier investments can grow faster - but they can also drop faster. That trade-off between risk and reward is one of the biggest ideas in investing.',
+  'The earlier you start investing, the more years your money has to grow. Time is one of the most powerful tools any investor has.',
+  "Prices go up a little almost every year - that's called inflation. If your money doesn't grow at least that fast, it's quietly losing power even if the number looks the same.",
+  "A bucket dropping for one year doesn't mean it's a bad investment. What matters most is where it ends up after many years, not any single year.",
+  "Real 'Growth Tree'-style index funds can own tiny slices of hundreds of real companies at once - so even if a few struggle, the fund can still do okay overall.",
+  'When it costs more to borrow money, some companies grow slower. That\'s part of why interest rates can shake up Growth Tree and Moonshot more than Safe Seed.',
+  "Adding money regularly, instead of waiting for the 'perfect' moment, is called dollar-cost averaging. Over many years it usually works out just fine.",
+  "Every dollar you invest is a dollar you're not spending today. Smart investors ask 'is this the best use of this dollar?' - not just 'is this good?'",
+  "The biggest mistake many investors make isn't picking the wrong thing - it's panicking and selling during a scary year, then missing the recovery afterward.",
+  'Keeping some money in something safe (like Safe Seed) means you\'re never forced to sell your growing investments at a bad moment just to cover a surprise.',
+  'A stock or coin (like Moonshot) is a bet on ONE thing doing well. An index fund (like Growth Tree) is a bet on MANY things averaging out well. Both are real strategies - they just carry very different risk.',
+  'Nobody, not even professional investors, can predict the market perfectly every year. The plan that works is staying invested for a long time, not guessing right every single year.',
+];
+
+/** A rotating financial-literacy fact, deterministic by year (pure, testable). */
+export function moneyLessonLine(year: number): string {
+  const idx = ((year % MONEY_LESSONS.length) + MONEY_LESSONS.length) % MONEY_LESSONS.length;
+  return MONEY_LESSONS[idx];
+}

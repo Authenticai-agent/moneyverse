@@ -417,6 +417,68 @@ export function eventReactionLine(mascot: Mascot, result: TurnResult): string {
   return pool[idx];
 }
 
+/** How concentrated a split has to be before it reads as "heavy" in either
+ * direction - independent of `RISK_WARN_THRESHOLD`, which only fires above a
+ * persona-specific Moonshot danger line. This is about giving an opinion on
+ * the *shape* of the split, not flagging risk. */
+const SAFE_HEAVY_THRESHOLD = 0.55;
+const MOONSHOT_HEAVY_THRESHOLD = 0.35;
+
+type SplitShape = 'safe-heavy' | 'moonshot-heavy' | 'balanced';
+
+function splitShape(weights: Record<Bucket, number>): SplitShape {
+  if (weights.safe >= SAFE_HEAVY_THRESHOLD) return 'safe-heavy';
+  if (weights.moonshot >= MOONSHOT_HEAVY_THRESHOLD) return 'moonshot-heavy';
+  return 'balanced';
+}
+
+/**
+ * The coach's own forward-looking opinion on the split just used this year -
+ * distinct from `eventReactionLine` (which reacts to the *outcome*) and from
+ * `allocationCoachLine` (a live risk warning shown while still choosing) -
+ * this is "here's what I, personally, would do next year," always shown, no
+ * threshold to cross. One line per persona per split shape.
+ */
+const ADVICE_LINES: Record<CoachPersona, Record<SplitShape, string>> = {
+  bold: {
+    'safe-heavy':
+      "Playing it THIS safe isn't really my style - even a little more in Moonshot next year could wake things up. Your tree, your call though!",
+    balanced:
+      "A solid mix - I can respect that. Personally I'd still nudge a bit more toward Moonshot next year, but this works too.",
+    'moonshot-heavy':
+      "Now we're talking! Just remember - even I keep something in Safe Seed, so one bad year can't take everything.",
+  },
+  balanced: {
+    'safe-heavy':
+      "You're leaning heavy into Safe Seed. That's fine for peace of mind, but a little more in Growth next year could help your tree climb faster.",
+    balanced:
+      "This is exactly the mix I'd pick - a little in each bucket means no single bad year can knock you all the way down.",
+    'moonshot-heavy':
+      "That's a lot riding on Moonshot. I'd spread a bit more into Safe and Growth next year, just so one rough year doesn't hurt too much.",
+  },
+  calm: {
+    'safe-heavy':
+      "Nice and steady - I like it. If you want a little more growth over time, even a small slice in Growth Tree could help, no rush though.",
+    balanced: "A calm, sensible mix. Slow and steady really does add up - keep this going.",
+    'moonshot-heavy':
+      "That's more excitement than I'd usually choose. No judgment - just know Moonshot can swing hard, so keep an eye on it.",
+  },
+  cautious: {
+    'safe-heavy': 'Beep - this is exactly the kind of plan I approve of. Predictable and steady wins in my calculations.',
+    balanced:
+      "Beep - a balanced plan. Acceptable, though I'd still recommend shifting a bit more toward Safe Seed for extra peace of mind.",
+    'moonshot-heavy':
+      "Beep - warning: that's a lot of risk concentrated in one bucket. My recommendation is always to keep more in Safe Seed.",
+  },
+};
+
+/** The coach's personal, opinionated suggestion for next year's split, based
+ * on the shape of the split just used this year. Always returns a line (no
+ * threshold to cross), so it reads as ongoing advice, not just a warning. */
+export function coachAdviceLine(mascot: Mascot, weights: Record<Bucket, number>): string {
+  return ADVICE_LINES[mascot.persona][splitShape(weights)];
+}
+
 interface ReportOpts {
   bankrupt: boolean;
   years: number;
