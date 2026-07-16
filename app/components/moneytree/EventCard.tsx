@@ -7,7 +7,6 @@
  * ever shows bare, unexplained numbers.
  */
 
-import { createPortal } from 'react-dom';
 import { BUCKET_PROFILES } from '@/app/lib/moneytree/content';
 import { eventReactionLine, sendOffLine } from '@/app/lib/moneytree/coach';
 import { money, percent } from '@/app/lib/moneytree/format';
@@ -42,13 +41,14 @@ export default function EventCard({
   // A forward-looking hype line for the year ahead - only when there is one.
   const hype = isFinal ? null : sendOffLine(mascot, result.year + 1);
 
-  if (typeof document === 'undefined') return null;
-
-  return createPortal(
-    // z-[60] - above the Stage's own z-index (50 when maximized/fullscreen;
-    // this portals straight into document.body, a sibling of the Stage, so it
-    // needs to out-rank that explicit z-index to still appear on top there.
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ background: 'rgba(20,16,40,.4)', backdropFilter: 'blur(2px)' }}>
+  return (
+    // Rendered in-tree (not a document.body portal) and absolutely positioned
+    // to fill the Stage exactly - a portal to document.body sits outside the
+    // Stage's own DOM subtree, and when the native Fullscreen API is actually
+    // engaged (not just the CSS-driven "maximized" state), the browser only
+    // renders the fullscreened element's own subtree - anything portaled out
+    // simply never appears on screen at all, no z-index can fix that.
+    <div className="absolute inset-0 z-[9] flex items-center justify-center p-4" style={{ background: 'rgba(20,16,40,.4)', backdropFilter: 'blur(2px)' }}>
       <div style={{ width: '100%', maxWidth: 440, background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 30px 60px -20px rgba(30,20,60,.5)' }}>
         <div style={{ background: TONE_BG[insight.tone], color: TONE_FG[insight.tone], padding: '12px 16px', fontWeight: 800, fontSize: 15 }}>
           {insight.emoji} {insight.title} - Year {result.year}
@@ -101,7 +101,6 @@ export default function EventCard({
           </div>
         </div>
       </div>
-    </div>,
-    document.body
+    </div>
   );
 }
