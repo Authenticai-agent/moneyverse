@@ -62,6 +62,17 @@ export interface EventEffects {
    * must always show clearly on the bucket's displayed return.
    */
   returnOverrides?: Partial<Record<Bucket, number>>;
+  /**
+   * Ceiling applied to a bucket's return after the roll + delta (e.g. a recession
+   * caps the risky buckets below 0 so their wide random roll can never sneak out
+   * a gain in a year the copy says they dropped).
+   */
+  returnCaps?: Partial<Record<Bucket, number>>;
+  /**
+   * Floor applied to a bucket's return after the roll + delta (e.g. a boom keeps
+   * the risky buckets above 0 so they always show the gain the copy promises).
+   */
+  returnFloors?: Partial<Record<Bucket, number>>;
   /** Flat dollar change to the portfolio (windfall +, surprise expense −). */
   cashDelta?: number;
 }

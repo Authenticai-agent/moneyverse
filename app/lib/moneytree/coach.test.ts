@@ -3,6 +3,7 @@ import {
   allocationCoachLine,
   cashOutGreetingLine,
   cashOutSuggestionLine,
+  coachAdviceLine,
   educationalTipLine,
   eventReactionLine,
   introLine,
@@ -99,6 +100,38 @@ describe('eventReactionLine', () => {
         expect(eventReactionLine(mascot, result).length).toBeGreaterThan(5);
       }
     }
+  });
+});
+
+describe('coachAdviceLine', () => {
+  it('gives every mascot a non-empty opinion across safe-heavy, balanced, and moonshot-heavy splits', () => {
+    const splits = [
+      { safe: 0.8, growth: 0.1, moonshot: 0.1 }, // safe-heavy
+      { safe: 0.34, growth: 0.33, moonshot: 0.33 }, // balanced
+      { safe: 0.1, growth: 0.1, moonshot: 0.8 }, // moonshot-heavy
+    ];
+    for (const mascot of MASCOTS) {
+      for (const split of splits) {
+        expect(coachAdviceLine(mascot, split).length).toBeGreaterThan(10);
+      }
+    }
+  });
+
+  it('is deterministic for the same mascot and split', () => {
+    const mascot = MASCOTS[0];
+    expect(coachAdviceLine(mascot, EVEN)).toBe(coachAdviceLine(mascot, EVEN));
+  });
+
+  it('differs between a safe-heavy and a moonshot-heavy split for the same persona', () => {
+    const mascot = MASCOTS.find((m) => m.persona === 'balanced')!;
+    const safeHeavy = { safe: 0.8, growth: 0.1, moonshot: 0.1 };
+    const moonshotHeavy = { safe: 0.1, growth: 0.1, moonshot: 0.8 };
+    expect(coachAdviceLine(mascot, safeHeavy)).not.toBe(coachAdviceLine(mascot, moonshotHeavy));
+  });
+
+  it('gives every persona a distinct opinion on the same balanced split', () => {
+    const lines = MASCOTS.map((m) => coachAdviceLine(m, EVEN));
+    expect(new Set(lines).size).toBe(MASCOTS.length);
   });
 });
 

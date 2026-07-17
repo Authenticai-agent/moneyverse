@@ -57,7 +57,13 @@ export const EVENTS: MarketEvent[] = [
     title: 'Recession',
     weight: 3,
     tone: 'bad',
-    effects: { returnDeltas: { growth: -0.12, moonshot: -0.35 } },
+    // Deltas push the risky buckets down; the caps guarantee they actually land
+    // in the red, so the numbers can never contradict "both dropped". Safe Seed
+    // is untouched and holds steady, exactly as the copy says.
+    effects: {
+      returnDeltas: { growth: -0.12, moonshot: -0.35 },
+      returnCaps: { growth: -0.02, moonshot: -0.05 },
+    },
     copy: {
       whatHappened:
         'A "recession" hit - that means businesses everywhere sold less stuff and made less money. Safe Seed held steady, but Growth Tree and Moonshot both dropped.',
@@ -71,7 +77,13 @@ export const EVENTS: MarketEvent[] = [
     title: 'Boom Year',
     weight: 3,
     tone: 'good',
-    effects: { returnDeltas: { growth: 0.1, moonshot: 0.4 } },
+    // Mirror of the recession: deltas lift the risky buckets and the floors keep
+    // them in the green, so the numbers always match "jumped up, especially the
+    // riskier ones".
+    effects: {
+      returnDeltas: { growth: 0.1, moonshot: 0.4 },
+      returnFloors: { growth: 0.02, moonshot: 0.05 },
+    },
     copy: {
       whatHappened:
         'A "boom" hit - businesses everywhere did great and made more money. Your investments jumped up, especially the riskier ones.',

@@ -44,3 +44,6 @@ npm-debug.log*
 
 # Money Tree raw 3D assets — commit compressed versions at Step 8
 public/models/moneytree/*.glb
+
+# unrelated Godot scaffold, not part of this Next.js app
+/money-verse/

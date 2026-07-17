@@ -150,7 +150,15 @@ export function applyTurn(
   const returns = { safe: 0, growth: 0, moonshot: 0 } as Record<Bucket, number>;
   for (const b of BUCKETS) {
     const override = event?.effects.returnOverrides?.[b];
-    const r = override != null ? override : rawReturns[b] + (event?.effects.returnDeltas?.[b] ?? 0);
+    let r = override != null ? override : rawReturns[b] + (event?.effects.returnDeltas?.[b] ?? 0);
+    // Clamp so an event's stated direction always holds. A bucket's random roll
+    // can be wide (Moonshot spans -60%..+150%), so an additive delta alone can
+    // still leave a gain in a year the copy says everything dropped. A recession
+    // caps the risky buckets below 0; a boom floors them above 0.
+    const cap = event?.effects.returnCaps?.[b];
+    if (cap != null) r = Math.min(r, cap);
+    const floor = event?.effects.returnFloors?.[b];
+    if (floor != null) r = Math.max(r, floor);
     returns[b] = r;
     after[b] = after[b] * (1 + r);
   }

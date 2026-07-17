@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { EVENTS } from './content';
-import { calmYearInsight, yearInsight } from './insights';
+import { calmYearInsight, moneyLessonLine, yearInsight } from './insights';
 import type { Portfolio, TurnResult } from './types';
 
 const RETURNS = { safe: 0.03, growth: 0.07, moonshot: -0.15 };
@@ -73,5 +73,22 @@ describe('yearInsight', () => {
     expect(insight).toEqual(calmYearInsight(result.returns, 2));
     expect(insight.whatHappened.length).toBeGreaterThan(0);
     expect(insight.smartMove.length).toBeGreaterThan(0);
+  });
+});
+
+describe('moneyLessonLine', () => {
+  it('is deterministic for the same year', () => {
+    expect(moneyLessonLine(5)).toBe(moneyLessonLine(5));
+  });
+
+  it('rotates through more than one lesson across years', () => {
+    const lessons = new Set(Array.from({ length: 14 }, (_, y) => moneyLessonLine(y)));
+    expect(lessons.size).toBeGreaterThan(1);
+  });
+
+  it('never returns empty text, including for negative years (defensive)', () => {
+    for (let year = -5; year < 30; year++) {
+      expect(moneyLessonLine(year).length).toBeGreaterThan(10);
+    }
   });
 });
