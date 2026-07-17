@@ -8,6 +8,7 @@ import {
   replayWithoutWithdrawals,
   resolveTurn,
   rollBucketReturn,
+  rollReturns,
   sellFromBucket,
   stageOf,
   totalOf,
@@ -147,6 +148,47 @@ describe('applyTurn - money math', () => {
     const res = applyTurn(before, { safe: 0, growth: 1, moonshot: 0 }, 0, 5, { ...noReturns, growth: 0.05 }, event('recession'));
     expect(res.returns.growth).toBeCloseTo(-0.07);
     expect(res.after.growth).toBeCloseTo(93);
+  });
+
+  it('a recession keeps Moonshot in the red even when the market rolled way up', () => {
+    const before: Portfolio = { safe: 0, growth: 0, moonshot: 100 };
+    // market rolled +150%, delta -35% would still net +115% — the cap must win
+    const res = applyTurn(before, ALL_MOON, 0, 7, { ...noReturns, moonshot: 1.5 }, event('recession'));
+    expect(res.returns.moonshot).toBeLessThan(0);
+    expect(res.returns.moonshot).toBeCloseTo(-0.05); // capped
+    expect(res.after.moonshot).toBeLessThan(100);
+  });
+
+  it('a recession never lets Growth or Moonshot post a gain, whatever the roll', () => {
+    const rng = createRng(4242);
+    for (let i = 0; i < 500; i++) {
+      const res = applyTurn(
+        { safe: 0, growth: 100, moonshot: 100 },
+        { safe: 0, growth: 1, moonshot: 1 },
+        0,
+        1,
+        rollReturns(rng),
+        event('recession')
+      );
+      expect(res.returns.growth).toBeLessThanOrEqual(-0.02);
+      expect(res.returns.moonshot).toBeLessThanOrEqual(-0.05);
+    }
+  });
+
+  it('a boom never lets Growth or Moonshot post a loss, whatever the roll', () => {
+    const rng = createRng(2424);
+    for (let i = 0; i < 500; i++) {
+      const res = applyTurn(
+        { safe: 0, growth: 100, moonshot: 100 },
+        { safe: 0, growth: 1, moonshot: 1 },
+        0,
+        1,
+        rollReturns(rng),
+        event('boom')
+      );
+      expect(res.returns.growth).toBeGreaterThanOrEqual(0.02);
+      expect(res.returns.moonshot).toBeGreaterThanOrEqual(0.05);
+    }
   });
 
   it('a scam forces Moonshot to a loss even when the market rolled way up', () => {
