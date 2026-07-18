@@ -47,6 +47,26 @@ function splitDollars(allocation: Record<Bucket, number>, totalWeight: number, c
   return result;
 }
 
+/** One step of the first-turn "how to play" strip. Numbers are used because
+ * this genuinely is an ordered sequence (drop coins → split them → grow),
+ * not decorative section-markers. */
+function HowToStep({ n, label, sub }: { n: number; label: string; sub: string }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid #E6E0FA', borderRadius: 999, padding: '4px 11px 4px 4px' }}>
+      <span
+        className="font-display"
+        style={{ display: 'grid', placeItems: 'center', width: 20, height: 20, borderRadius: '50%', background: '#6B4EFF', color: '#fff', fontSize: 11, fontWeight: 700, flexShrink: 0 }}
+      >
+        {n}
+      </span>
+      <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15, textAlign: 'left' }}>
+        <span style={{ fontSize: 11.5, fontWeight: 800, color: '#2A2740' }}>{label}</span>
+        <span style={{ fontSize: 10, color: '#5F5980' }}>{sub}</span>
+      </span>
+    </div>
+  );
+}
+
 export default function AllocationBar({
   coins,
   numCoins,
@@ -96,11 +116,30 @@ export default function AllocationBar({
       className="absolute inset-x-0 bottom-0 z-[6]"
       style={{ background: 'rgba(255,255,255,.96)', backdropFilter: 'blur(8px)', borderTop: '1px solid #E3EFE6', padding: '10px 14px 14px' }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 6 }}>
-        <span style={{ fontSize: 12, color: '#6E6A85' }}>
-          🪙 Toss your <b style={{ color: '#6B4EFF' }}>{money(coins)}</b> into the buckets - tap a bucket!
-        </span>
-      </div>
+      {placed === 0 && !disabled ? (
+        // First turn: teach the whole loop before any coin is placed.
+        <div style={{ background: '#F6F4FF', border: '1px solid #E6E0FA', borderRadius: 12, padding: '9px 10px', marginBottom: 9, textAlign: 'center' }}>
+          <div style={{ fontSize: 13, fontWeight: 800, color: '#3C3760' }}>
+            🪙 You have <span style={{ color: '#6B4EFF' }}>{money(coins)}</span> to plant this year — here&rsquo;s how:
+          </div>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center', marginTop: 8 }}>
+            <HowToStep n={1} label="Tap a bucket" sub="drops a coin in" />
+            <HowToStep n={2} label={`Split all ${numCoins}`} sub="safe or risky, your call" />
+            <HowToStep n={3} label="Grow the year" sub="see how it did" />
+          </div>
+        </div>
+      ) : (
+        // Once they're playing: a one-line nudge toward the current action.
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 6 }}>
+          <span style={{ fontSize: 12, color: '#5F5980' }}>
+            {allPlaced ? (
+              <>🌤️ All {numCoins} coins tossed! Tap <b style={{ color: '#6B4EFF' }}>Grow the year ▶</b> to see how you did.</>
+            ) : (
+              <>🪙 Keep splitting your <b style={{ color: '#6B4EFF' }}>{money(coins)}</b> — tap any bucket below.</>
+            )}
+          </span>
+        </div>
+      )}
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 10 }}>
         <div style={{ display: 'flex', height: 8, borderRadius: 999, overflow: 'hidden', flex: '1 1 auto', maxWidth: 360, background: '#EEEAFB' }}>
