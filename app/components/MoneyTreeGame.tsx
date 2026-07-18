@@ -7,31 +7,22 @@
  * heavy react-three-fiber bundle only arrives when a game is in progress.
  */
 
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { BANKRUPT_THRESHOLD, STAGE_THRESHOLDS } from '@/app/lib/moneytree/content';
-import { coinsForYear, normalizeAllocation, stageOf, totalOf } from '@/app/lib/moneytree/engine';
-import { allocationCoachLine, cashOutGreetingLine, introLine, outcomeTone, playingPhaseLine } from '@/app/lib/moneytree/coach';
+import { cashOutGreetingLine, outcomeTone } from '@/app/lib/moneytree/coach';
 import { mascotById } from '@/app/lib/moneytree/mascots';
 import { isMuted, setMuted, sfx } from '@/app/lib/moneytree/sound';
 import type { Bucket, Stage } from '@/app/lib/moneytree/types';
 import { useMoneyTreeGame } from '@/app/lib/moneytree/useMoneyTreeGame';
-import AllocationBar from './moneytree/AllocationBar';
 import CashOutPanel from './moneytree/CashOutPanel';
-import Coach from './moneytree/Coach';
-import { NUM_COINS } from './moneytree/CoinToss';
 import Confetti from './moneytree/Confetti';
 import EventCard from './moneytree/EventCard';
-import HUD from './moneytree/HUD';
-import PlaceholderTree from './moneytree/PlaceholderTree';
 import SetupScreen from './moneytree/SetupScreen';
 import ReportScreen from './moneytree/ReportScreen';
-
-const TreeScene = dynamic(() => import('./moneytree/TreeScene'), {
-  ssr: false,
-  loading: () => null,
-});
+import Trailer from './moneytree/Trailer';
+import { GardenStage } from './moneytree-world/GardenStage';
+import { COINS_PER_YEAR } from './moneytree-world/useWorldStore';
 
 const STAGE_BG = 'linear-gradient(180deg, #E9F5FF 0%, #F4FBF3 58%, #E0F5E7 100%)';
 
@@ -77,6 +68,10 @@ export default function MoneyTreeGame() {
   const [celebrating, setCelebrating] = useState(false);
   const [shaking, setShaking] = useState(false);
   const [maximized, setMaximized] = useState(false);
+  // The intro trailer plays once on first open (fresh navigation from /tools),
+  // then reveals the setup screen. It doesn't replay on "New plan" because the
+  // component stays mounted.
+  const [showTrailer, setShowTrailer] = useState(true);
   const stageRef = useRef<HTMLDivElement>(null);
 
   // Which bucket each of this year's coins has been tossed into so far, in
@@ -97,12 +92,12 @@ export default function MoneyTreeGame() {
   }
 
   const toss = (bucket: Bucket) => {
-    if (game.phase !== 'playing' || tossHistory.length >= NUM_COINS) return;
+    if (game.phase !== 'playing' || tossHistory.length >= COINS_PER_YEAR) return;
     setTossHistory((h) => [...h, bucket]);
   };
+  // Silent - GardenControls plays the coin-back sound for its own Undo button.
   const undoToss = () => {
     if (tossHistory.length === 0) return;
-    sfx.coinBack();
     setTossHistory((h) => h.slice(0, -1));
   };
 
@@ -230,6 +225,21 @@ export default function MoneyTreeGame() {
     []
   );
 
+  // The playing view fills the whole viewport, so stop the page behind it from
+  // scrolling while a game is in progress.
+  useEffect(() => {
+    if (game.phase !== 'playing' && game.phase !== 'resolving') return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [game.phase]);
+
+  if (showTrailer) {
+    return <Trailer src="/video/money-tree-trailer.mp4" onDone={() => setShowTrailer(false)} />;
+  }
+
   if (game.phase === 'setup') {
     return (
       <main className="min-h-screen" style={{ background: '#FBFBFE' }}>
@@ -261,127 +271,60 @@ export default function MoneyTreeGame() {
     );
   }
 
-  // playing or resolving → the Stage
-  const weights = normalizeAllocation(game.allocation);
-  const riskLine = allocationCoachLine(coach, weights);
-  // Priority while playing: an active risk warning first (safety-critical),
-  // then the year-1 intro, then a rotating mix of educational tips and
-  // proactive cash-out nudges so there's always something to learn.
-  let coachReaction: { text: string; warn: boolean } | null = null;
-  if (game.phase === 'playing') {
-    if (riskLine) {
-      coachReaction = riskLine;
-    } else if (game.year === 1) {
-      coachReaction = { text: introLine(coach), warn: false };
-    } else {
-      coachReaction = { text: playingPhaseLine(coach, { year: game.year, portfolio: game.portfolio }), warn: false };
-    }
-  }
-  const coachText = coachReaction?.text ?? null;
-  const coachWarn = coachReaction?.warn ?? false;
-  const wilting = !!game.lastResult && game.lastResult.total < totalOf(game.lastResult.before);
+  // playing or resolving → the painted garden Stage, driven by the real game.
   const combinedWealth = (game.lastResult?.total ?? 0) + game.cashOut;
   const isFinalTurn = !!game.config && (game.year >= game.config.years || combinedWealth <= BANKRUPT_THRESHOLD);
 
-  // growth stats for the HUD: this year's actual return, and combined-wealth
-  // growth vs everything put in so far.
-  const currentTotal = totalOf(game.portfolio);
-  const lastResult = game.lastResult;
-  // The pool this year's return was actually earned on: the portfolio before
-  // this turn, plus the deposit placed into it (both land in the bucket
-  // before the return multiplies it - see engine.ts applyTurn). Comparing
-  // the after-turn total against just "before" would count the new deposit's
-  // principal as if it were investment growth.
-  const yoyBase = lastResult ? totalOf(lastResult.before) + lastResult.contribution : null;
-  const yoy = yoyBase !== null && yoyBase > 0 ? (lastResult!.total - yoyBase) / yoyBase : null;
-  let contributed = 0;
-  if (game.config) {
-    for (let y = 1; y <= game.results.length; y++) contributed += coinsForYear(game.config, y);
-  }
-  // Combined wealth (tree + cashed-out), matching the Best-score and final
-  // report's definition of "total growth" - excluding cash-out here would
-  // make the stat look worse right after a player wisely locks in gains.
-  const liveWealth = currentTotal + game.cashOut;
-  const totalGrowth = contributed > 0 ? (liveWealth - contributed) / contributed : null;
-
   return (
     <main className="min-h-screen" style={{ background: '#FBFBFE' }}>
-      <style dangerouslySetInnerHTML={{ __html: JUICE_STYLES }} />
+      <style>{JUICE_STYLES}</style>
       <div
         ref={stageRef}
-        className={`relative mx-auto w-full max-w-3xl${shaking ? ' mtg-shake' : ''}`}
+        className={shaking ? 'mtg-shake' : undefined}
         style={{
-          height: maximized ? '100dvh' : 'min(88dvh, 760px)',
-          margin: maximized ? 0 : '12px auto',
-          maxWidth: maximized ? 'none' : undefined,
-          position: maximized ? 'fixed' : 'relative',
-          top: maximized ? 0 : undefined,
-          left: maximized ? 0 : undefined,
-          right: maximized ? 0 : undefined,
-          bottom: maximized ? 0 : undefined,
-          zIndex: maximized ? 50 : undefined,
-          borderRadius: maximized ? 0 : 24,
+          // Full-viewport immersive play area (same as the old /dev/ world),
+          // rather than a small centered card. The maximize button layers the
+          // native Fullscreen API on top to also hide the browser chrome.
+          position: 'fixed',
+          inset: 0,
+          height: '100dvh',
+          width: '100%',
+          zIndex: 40,
           overflow: 'hidden',
           background: STAGE_BG,
-          border: maximized ? 'none' : '1px solid #E3EFE6',
-          boxShadow: maximized ? 'none' : '0 24px 56px -30px rgba(60,120,80,.45)',
           containerType: 'inline-size',
         }}
       >
-        {/* sky decor */}
-        <div aria-hidden style={{ position: 'absolute', top: 30, right: 40, width: 54, height: 54, borderRadius: '50%', background: 'radial-gradient(circle at 32% 28%, #FFECAE, #FFD84D 58%, #F3C218)', boxShadow: '0 6px 18px rgba(243,194,24,.5)' }} />
-
-        <HUD
-          total={currentTotal}
-          stage={stageOf(currentTotal)}
-          year={game.year}
-          totalYears={game.totalYears}
-          best={game.progress.bestScore}
-          yoy={yoy}
-          totalGrowth={totalGrowth}
-          muted={muted}
-          onToggleMuted={toggleMuted}
-          maximized={maximized}
-          onToggleMaximized={toggleMaximized}
-        />
-
-        <TreeScene
-          total={totalOf(game.portfolio)}
-          wilting={wilting}
+        {/* The painted 2.5D garden IS the playing view now. It reads the live
+            game state and its control bar drives the real engine (GardenStage
+            bridges the two). The tree, coach and coin-toss all live inside it. */}
+        <GardenStage
+          portfolio={game.portfolio}
           tossHistory={tossHistory}
-          tossInteractive={game.phase === 'playing'}
+          year={game.year}
+          coachId={game.config?.mascot ?? 'wizard'}
+          deposit={game.coinsThisYear}
+          lastResult={game.lastResult}
+          resolving={game.phase === 'resolving'}
           onToss={toss}
-          fallback={<PlaceholderTree total={totalOf(game.portfolio)} wilting={wilting} />}
+          onUndo={undoToss}
+          onGrow={() => game.growYear()}
+          onOpenCashOut={() => setCashOutOpen(true)}
         />
 
-        {coachText && <Coach emoji={coach.emoji} name={coach.name} text={coachText} warn={coachWarn} />}
+        {/* Fullscreen toggle - mute + year + tree value now live in the garden bar. */}
+        <button
+          type="button"
+          onClick={toggleMaximized}
+          aria-label={maximized ? 'Exit full screen' : 'Full screen'}
+          style={{ position: 'absolute', top: 12, left: 12, zIndex: 8, width: 36, height: 36, borderRadius: 999, border: 'none', cursor: 'pointer', background: 'rgba(24,20,42,.42)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', color: '#fff', display: 'grid', placeItems: 'center' }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3" />
+          </svg>
+        </button>
 
         {celebrating && <Confetti />}
-
-        {/*
-          Always mounted (never conditionally rendered) - toggling this in and
-          out of the tree previously triggered a layout-corruption bug in the
-          Stage's other absolutely-positioned children. Visibility is
-          controlled with CSS instead of mount/unmount.
-        */}
-        <div style={{ visibility: game.phase === 'playing' ? 'visible' : 'hidden' }}>
-          <AllocationBar
-            coins={game.coinsThisYear}
-            numCoins={NUM_COINS}
-            history={tossHistory}
-            portfolio={game.portfolio}
-            onToss={toss}
-            onUndo={undoToss}
-            onGrow={() => {
-              sfx.grow();
-              game.growYear();
-            }}
-            onOpenCashOut={() => setCashOutOpen(true)}
-            cashOut={game.cashOut}
-            canSell={currentTotal > 0}
-            disabled={game.phase !== 'playing'}
-          />
-        </div>
 
         {game.phase === 'playing' && cashOutOpen && (
           <CashOutPanel
