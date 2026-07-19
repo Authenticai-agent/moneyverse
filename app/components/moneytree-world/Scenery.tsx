@@ -24,8 +24,8 @@ import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
-const BUSH_TEXTURE = '/env/bush.png';
-const FLOWERS_TEXTURE = '/env/flowers.png';
+const BUSH_TEXTURE = '/env/bush.webp';
+const FLOWERS_TEXTURE = '/env/flowers.webp';
 
 type Prop = {
   kind: 'bush' | 'flowers';

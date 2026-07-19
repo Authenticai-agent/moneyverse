@@ -14,10 +14,10 @@ import type { Mascot } from '@/app/lib/moneytree/mascots';
 import { BUCKETS, type Bucket, type MascotId, type Portfolio } from '@/app/lib/moneytree/types';
 
 const COACH_IMG: Record<MascotId, string> = {
-  wizard: '/mascot/sage.png',
-  robot: '/mascot/bit.png',
-  adventurer: '/mascot/robin.png',
-  hero: '/mascot/nova.png',
+  wizard: '/mascot/sage.webp',
+  robot: '/mascot/bit.webp',
+  adventurer: '/mascot/robin.webp',
+  hero: '/mascot/nova.webp',
 };
 
 const BUCKET_COLOR: Record<Bucket, string> = { safe: '#2FA96A', growth: '#3A86E0', moonshot: '#E8477E' };

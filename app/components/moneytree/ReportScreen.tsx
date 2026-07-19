@@ -17,10 +17,10 @@ import MoneyCard from './MoneyCard';
 import SellComparison from './SellComparison';
 
 const COACH_IMG: Record<MascotId, string> = {
-  wizard: '/mascot/sage.png',
-  robot: '/mascot/bit.png',
-  adventurer: '/mascot/robin.png',
-  hero: '/mascot/nova.png',
+  wizard: '/mascot/sage.webp',
+  robot: '/mascot/bit.webp',
+  adventurer: '/mascot/robin.webp',
+  hero: '/mascot/nova.webp',
 };
 
 function biggestBucket(last: TurnResult | undefined): Bucket {

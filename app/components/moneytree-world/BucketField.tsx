@@ -16,9 +16,9 @@ import { useWorldStore } from './useWorldStore';
 import { GARDEN_PLOTS } from './worldLayout';
 
 const BUCKET_TEXTURE: Record<Bucket, string> = {
-  safe: '/env/bucket-safe.png',
-  growth: '/env/bucket-growth.png',
-  moonshot: '/env/bucket-moonshot.png',
+  safe: '/env/bucket-safe.webp',
+  growth: '/env/bucket-growth.webp',
+  moonshot: '/env/bucket-moonshot.webp',
 };
 // Per-image sprite height. The three pot illustrations frame the pot slightly
 // differently (the Moonshot pot has a short sprout, so its pot fills more of

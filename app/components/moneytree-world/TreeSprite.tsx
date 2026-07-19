@@ -15,7 +15,7 @@ import * as THREE from 'three';
 import { useWorldStore } from './useWorldStore';
 import { MONEY_TREE_POSITION } from './worldLayout';
 
-const TREE_TEXTURE = '/env/tree.png';
+const TREE_TEXTURE = '/env/tree.webp';
 const MIN_HEIGHT = 2.2;
 const MAX_HEIGHT = 5.2;
 const GROWTH_REFERENCE = 50000;
