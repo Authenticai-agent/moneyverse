@@ -61,7 +61,7 @@
 - [x] Savings Goal Calculator rebuilt as the Goal Jar — playable simulator with
       a live answer, 26-card tradeoff mechanic, and a printable signed plan
       (pure engine + 105 unit tests; route, h1, metadata and JSON-LD unchanged)
-- [ ] Goal Jar: keyboard-only and reduced-motion passes in a real browser
+- [x] Goal Jar: keyboard-only and reduced-motion passes verified in a browser
 - [ ] Goal Jar: decide the parent email field — wire to /api/waitlist or remove
 - [ ] Dispose WebGL contexts on unmount in InteractiveHero, moneytree-world and
       TreeScene (root cause of "Context Lost" on /tools; blocks any new canvas)

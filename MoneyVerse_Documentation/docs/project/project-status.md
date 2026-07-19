@@ -1,7 +1,7 @@
 # Project Status
 
 - Current phase: Phase 3 — Game world / MoneyVerse Lite public tools
-- Current task: Savings Goal Calculator rebuilt as the Goal Jar — playable simulator, 26-card tradeoff mechanic, printable signed plan. Implemented and verified; two checks await a real browser (keyboard-only, reduced-motion)
+- Current task: Savings Goal Calculator rebuilt as the Goal Jar — playable simulator, 26-card tradeoff mechanic, printable signed plan. Implemented and verified, including keyboard-only and reduced-motion passes by hand
 - Launch readiness: Accessibility audit, penetration test, load test, privacy review, and production checks completed
 - Build: Passing
 - Tests: Passing — 260 across 15 files, including 105 new Goal Jar engine tests

@@ -8,8 +8,7 @@ printable signed plan. Same route, same SEO surface, same brand.
 
 ## Status
 
-Implemented and verified, with two checks outstanding that require a human at a
-real browser (listed under Remaining).
+Implemented and verified. Complete.
 
 ## Completed work
 
@@ -83,18 +82,16 @@ Each recorded in `docs/project/open-questions.md`:
   spec's no-persistence rule, so a refresh before printing does not wipe a
   half-signed contract. Scope and bounds logged.
 
-## Remaining
+## Manual verification
 
-Both need a human at a real browser; neither can be exercised in the automated
-harness used here.
+Both were run by hand in a real browser, because the automated harness could
+exercise neither — it dispatches keydown with an empty `key`, and cannot emulate
+a motion preference.
 
-- Keyboard-only pass: pick a goal, set an amount, toggle boosts, scrub weeks,
-  reach the printable plan. Every control is a native `button`/`input` with no
-  div-with-onclick, so activation should be browser-native, but the harness
-  dispatches keydown with an empty `key` and could not drive it.
-- `prefers-reduced-motion` pass. All four rules are confirmed parsed into the
-  CSSOM and the JS path matches Money Tree's, but the harness cannot emulate the
-  preference.
+- **Keyboard-only: passes.** A goal can be picked, an amount set, boosts
+  toggled, weeks scrubbed, and the printable plan reached without a mouse.
+- **`prefers-reduced-motion`: passes.** The page is fully usable, nothing
+  animates, and every number is correct.
 
 ## Notes
 
