@@ -18,7 +18,7 @@ import { Suspense } from 'react';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
-const GROUND_TEXTURE = '/env/ground.jpg';
+const GROUND_TEXTURE = '/env/ground.webp';
 const GROUND_WIDTH = 150;
 const GROUND_DEPTH = 44;
 // Centered forward of the origin so the plane runs from ~z=-16 (horizon) to

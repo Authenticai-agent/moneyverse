@@ -20,17 +20,17 @@ import { BUCKETS, type Bucket, type ContributionFrequency, type GameConfig, type
 
 /** Hand-painted portrait for each coach (same art as the 3D garden). */
 const COACH_IMG: Record<MascotId, string> = {
-  wizard: '/mascot/sage.png',
-  robot: '/mascot/bit.png',
-  adventurer: '/mascot/robin.png',
-  hero: '/mascot/nova.png',
+  wizard: '/mascot/sage.webp',
+  robot: '/mascot/bit.webp',
+  adventurer: '/mascot/robin.webp',
+  hero: '/mascot/nova.webp',
 };
 
 /** Illustrated pot for each bucket (same art as the 3D garden). */
 const BUCKET_IMG: Record<Bucket, string> = {
-  safe: '/env/bucket-safe.png',
-  growth: '/env/bucket-growth.png',
-  moonshot: '/env/bucket-moonshot.png',
+  safe: '/env/bucket-safe.webp',
+  growth: '/env/bucket-growth.webp',
+  moonshot: '/env/bucket-moonshot.webp',
 };
 
 /** Per-persona accent color, used for the selected-coach ring + badge. */

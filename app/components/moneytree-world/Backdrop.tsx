@@ -13,7 +13,7 @@ import { Suspense } from 'react';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
-const BACKDROP_TEXTURE = '/env/backdrop.jpg';
+const BACKDROP_TEXTURE = '/env/backdrop.webp';
 
 // A painted sky wall behind the garden. The art is a low-horizon panorama
 // (sun + mountains along the bottom, sky + clouds filling the rest), so it's

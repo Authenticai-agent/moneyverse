@@ -20,7 +20,7 @@ import * as THREE from 'three';
 import { MASCOT_POSITION } from './worldLayout';
 
 const MASCOT_HEIGHT = 3.1;
-const MASCOT_TEXTURE = '/mascot/coach.png';
+const MASCOT_TEXTURE = '/mascot/coach.webp';
 
 function MascotSprite() {
   const spriteRef = useRef<THREE.Sprite>(null);

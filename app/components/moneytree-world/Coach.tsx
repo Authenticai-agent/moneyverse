@@ -25,10 +25,10 @@ const COACH_POSITION: [number, number, number] = [4, 5, -2.5];
 const COACH_HEIGHT = 2.5;
 
 const COACH_TEXTURE: Record<MascotId, string> = {
-  wizard: '/mascot/sage.png', // Sage
-  robot: '/mascot/bit.png', // Bit
-  adventurer: '/mascot/robin.png', // Robin
-  hero: '/mascot/nova.png', // Nova
+  wizard: '/mascot/sage.webp', // Sage
+  robot: '/mascot/bit.webp', // Bit
+  adventurer: '/mascot/robin.webp', // Robin
+  hero: '/mascot/nova.webp', // Nova
 };
 
 function CoachSprite({ id }: { id: MascotId }) {
