@@ -8,6 +8,16 @@ interface SavingsGoalPlanProps {
   weeksToGoal: number;
   requiredWeekly: number;
   email: string;
+  /**
+   * One-off money counted at the start of the plan - sold toys, birthday money,
+   * minus anything the player chose to spend. Optional so existing callers are
+   * unaffected.
+   *
+   * Without it the printed card does not add up: target $200, current $0,
+   * $34 a week and 5 weeks reads as $170, because the $35 of one-off money that
+   * closed the gap was nowhere on the page.
+   */
+  oneTime?: number;
 }
 
 function formatCurrency(n: number) {
@@ -22,6 +32,7 @@ export default function SavingsGoalPlan({
   weeksToGoal,
   requiredWeekly,
   email,
+  oneTime = 0,
 }: SavingsGoalPlanProps) {
   const handlePrint = () => {
     window.print();
@@ -50,6 +61,14 @@ export default function SavingsGoalPlan({
             <p className="text-sm text-mv-dark/70">Weeks to goal</p>
             <p className="text-xl font-bold text-mv-dark">{weeksToGoal}</p>
           </div>
+          {oneTime !== 0 && (
+            <div className="bg-mv-light rounded-xl p-4">
+              <p className="text-sm text-mv-dark/70">
+                {oneTime > 0 ? 'One-time money' : 'One-time spending'}
+              </p>
+              <p className="text-xl font-bold text-mv-dark">{formatCurrency(Math.abs(oneTime))}</p>
+            </div>
+          )}
         </div>
 
         {requiredWeekly !== weekly && requiredWeekly > 0 && (

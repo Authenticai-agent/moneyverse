@@ -19,6 +19,6 @@ export default defineConfig({
   test: {
     environment: 'node',
     globals: true,
-    include: ['app/lib/moneytree/**/*.test.ts'],
+    include: ['app/lib/moneytree/**/*.test.ts', 'tests/savings-goal-engine.test.ts'],
   },
 });
